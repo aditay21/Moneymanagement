@@ -11,7 +11,7 @@ class MainViewModel(private val managementRepository: MoneyManagementRepository)
 
 
     fun insertAccountDetail(id: Int, account: String) = viewModelScope.launch {
-        var value = AccountTable(account)
+        var value = AccountTable(id,account)
         managementRepository.insertItem(value);
     }
 
