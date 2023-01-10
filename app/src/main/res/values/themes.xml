@@ -40,6 +40,7 @@
 
     <style name="TextViewTitle" parent="Widget.AppCompat.TextView">
         <item name="android:textColor">@color/white</item>
+        <item name="android:textStyle">normal</item>
         <item name="android:textSize">22dp</item>
     </style>
 

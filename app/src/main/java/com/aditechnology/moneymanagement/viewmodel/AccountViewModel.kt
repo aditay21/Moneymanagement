@@ -5,7 +5,7 @@ import com.aditechnology.moneymanagement.models.AccountTable
 import com.aditechnology.moneymanagement.models.MoneyManagementRepository
 import kotlinx.coroutines.launch
 
-class MainViewModel(private val managementRepository: MoneyManagementRepository) : ViewModel(){
+class AccountViewModel(private val managementRepository: MoneyManagementRepository) : ViewModel(){
 
     val mAllDetails : LiveData<List<AccountTable>> = managementRepository.allAccountTable.asLiveData()
 
@@ -15,11 +15,11 @@ class MainViewModel(private val managementRepository: MoneyManagementRepository)
         managementRepository.insertItem(value);
     }
 
-    class MainViewModelFactory(private val repository: MoneyManagementRepository) : ViewModelProvider.Factory {
+    class AccountViewModelFactory(private val repository: MoneyManagementRepository) : ViewModelProvider.Factory {
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
-            if (modelClass.isAssignableFrom(MainViewModel::class.java)) {
+            if (modelClass.isAssignableFrom(AccountViewModel::class.java)) {
                 @Suppress("UNCHECKED_CAST")
-                return MainViewModel(repository) as T
+                return AccountViewModel(repository) as T
             }
             throw IllegalArgumentException("Unknown ViewModel class")
         }
