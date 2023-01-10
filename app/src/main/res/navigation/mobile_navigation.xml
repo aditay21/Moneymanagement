@@ -15,7 +15,7 @@
         android:id="@+id/navigation_dashboard"
         android:name="com.aditechnology.moneymanagement.ui.account.AccountFragment"
         android:label="@string/title_account"
-        tools:layout="@layout/fragment_dashboard" />
+        tools:layout="@layout/fragment_accounts" />
 
     <fragment
         android:id="@+id/navigation_notifications"
