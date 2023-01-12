@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:background="@color/color_f2f2f2"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <TextView
+        android:id="@+id/textview_account_name"
+        style="@style/TextViewTitle"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="15dp"
+        android:textStyle="bold"
+        android:inputType="number"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:textColor="@color/black"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Account Name">
+    </TextView>
+
+    <EditText
+        android:id="@+id/edittext_account_name"
+        android:layout_width="0dp"
+        android:background="@drawable/edit_text"
+        android:layout_margin="15dp"
+        android:paddingStart="4dp"
+        android:singleLine="true"
+        android:textColor="@color/black"
+        android:imeOptions="actionNext"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textview_account_name"
+        android:layout_height="50dp">
+
+    </EditText>
+
+
+    <TextView
+        android:id="@+id/textview_starting_balance"
+        style="@style/TextViewTitle"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="15dp"
+        android:textStyle="bold"
+        app:layout_constraintTop_toBottomOf="@+id/edittext_account_name"
+        app:layout_constraintStart_toStartOf="parent"
+        android:textColor="@color/black"
+
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Starting Balance">
+    </TextView>
+
+    <EditText
+        android:id="@+id/edittext_starting_balance"
+        android:layout_width="0dp"
+        android:background="@drawable/edit_text"
+        android:layout_margin="15dp"
+        android:textColor="@color/black"
+        android:paddingStart="4dp"
+        android:imeOptions="actionDone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textview_starting_balance"
+        android:inputType="number"
+        android:layout_height="50dp">
+    </EditText>
+
+<Button
+    android:id="@+id/button_create"
+    app:layout_constraintTop_toBottomOf="@+id/edittext_starting_balance"
+    app:layout_constraintEnd_toEndOf="parent"
+    android:layout_marginEnd="15dp"
+    android:text="Create"
+    android:layout_marginTop="15dp"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+</Button>
+
+
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

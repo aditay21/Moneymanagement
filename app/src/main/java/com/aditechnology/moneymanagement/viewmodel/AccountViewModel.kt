@@ -7,11 +7,11 @@ import kotlinx.coroutines.launch
 
 class AccountViewModel(private val managementRepository: MoneyManagementRepository) : ViewModel(){
 
-    val mAllDetails : LiveData<List<AccountTable>> = managementRepository.allAccountTable.asLiveData()
+    public val mAllDetails : LiveData<List<AccountTable>> = managementRepository.allAccountTable.asLiveData()
 
 
-    fun insertAccountDetail(id: Int, account: String) = viewModelScope.launch {
-        var value = AccountTable(id,account)
+    fun insertAccountDetail(id: Int, account: String,balance :Long) = viewModelScope.launch {
+        var value = AccountTable(id,account,balance);
         managementRepository.insertItem(value);
     }
 

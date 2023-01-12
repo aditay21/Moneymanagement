@@ -14,4 +14,6 @@
     <string name="title_account">Account</string>
     <string name="title_notifications">Notifications</string>
     <string name="money_management">Money Management</string>
+    <string name="total_account">Total Account</string>
+    <string name="create_account">Create Account</string>
 </resources>

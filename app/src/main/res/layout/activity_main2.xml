@@ -29,7 +29,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="0dp"
         android:layout_marginEnd="0dp"
-   app:itemBackground="@color/color_0b30e1"
+   app:itemBackground="@color/white"
         app:itemIconTint="@color/nv_tab_item_foreground"
         app:itemTextColor="@color/nv_tab_item_foreground"
         app:layout_constraintBottom_toBottomOf="parent"

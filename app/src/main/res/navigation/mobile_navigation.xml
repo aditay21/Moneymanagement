@@ -15,11 +15,29 @@
         android:id="@+id/navigation_dashboard"
         android:name="com.aditechnology.moneymanagement.ui.account.AccountFragment"
         android:label="@string/title_account"
-        tools:layout="@layout/fragment_accounts" />
+        tools:layout="@layout/fragment_accounts">
+    <action
+        android:id="@+id/action_account_to_createfragment"
+        app:destination="@id/create_account" />
+
+
+
+    </fragment>
 
     <fragment
         android:id="@+id/navigation_notifications"
         android:name="com.aditechnology.moneymanagement.ui.notifications.NotificationsFragment"
         android:label="@string/title_notifications"
         tools:layout="@layout/fragment_notifications" />
+
+
+    <fragment
+        android:id="@+id/create_account"
+        android:name="com.aditechnology.moneymanagement.ui.account.CreateAccountFragment"
+        android:label="@string/create_account"
+        tools:layout="@layout/fragment_create_account">
+
+
+    </fragment>
+
 </navigation>
