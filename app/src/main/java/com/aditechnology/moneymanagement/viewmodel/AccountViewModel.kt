@@ -10,8 +10,8 @@ class AccountViewModel(private val managementRepository: MoneyManagementReposito
     public val mAllDetails : LiveData<List<AccountTable>> = managementRepository.allAccountTable.asLiveData()
 
 
-    fun insertAccountDetail(id: Int, account: String,balance :Long) = viewModelScope.launch {
-        var value = AccountTable(id,account,balance);
+    fun insertAccountDetail(account: String,balance :Long) = viewModelScope.launch {
+        var value = AccountTable(account,balance,System.currentTimeMillis());
         managementRepository.insertItem(value);
     }
 

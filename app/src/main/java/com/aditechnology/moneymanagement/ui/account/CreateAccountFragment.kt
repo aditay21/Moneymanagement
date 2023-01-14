@@ -52,9 +52,11 @@ class CreateAccountFragment : Fragment() {
                 }
                 else -> {
                     accountViewModel.insertAccountDetail(
-                        78, binding.edittextAccountName.text.toString(),
+                        binding.edittextAccountName.text.toString(),
                         binding.edittextStartingBalance.text.toString().toLong()
                     )
+                    binding.edittextAccountName.setText("")
+                    binding.edittextStartingBalance.setText("")
                 }
             }
         }

@@ -8,75 +8,25 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:background="#ffffff"
+    android:background="@color/color_dbe9f6"
     android:layout_height="match_parent"
     tools:context=".ui.account.AccountFragment">
 
 
-    <androidx.cardview.widget.CardView
-        android:layout_width="0dp"
-        android:layout_margin="30dp"
-        android:layout_height="100dp"
-        app:cardBackgroundColor="@color/white"
-        android:outlineAmbientShadowColor="@color/color_0b30e1"
+
+
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycle_view"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:cardCornerRadius="15dp">
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:orientation="horizontal"
-            android:layout_height="match_parent">
-        <LinearLayout
-            android:layout_width="0dp"
-            android:orientation="vertical"
-            android:layout_weight="7"
-            android:background="@color/color_f2f2f2"
-            android:layout_height="match_parent">
-        <TextView
-            android:id="@+id/textview_title"
-            style="@style/TextViewTitle"
-            android:layout_marginTop="20dp"
-            android:textStyle="bold"
-            android:layout_gravity="center_vertical|center_horizontal"
-            android:layout_width="wrap_content"
-            android:textColor="@color/color_0b30e1"
-            android:layout_height="wrap_content"
-            android:text="Accounts">
-        </TextView>
-            <TextView
-                android:id="@+id/textview_total_count"
-                style="@style/TextViewTitle"
-                android:layout_marginTop="5dp"
-                android:textStyle="bold"
-                android:layout_gravity="center_horizontal"
-                android:layout_width="wrap_content"
-                android:textColor="@color/color_0b30e1"
-                android:layout_height="wrap_content"
-                android:text="@{String.valueOf(account.MAllDetails.size())}"
-                >
-            </TextView>
-        </LinearLayout>
-   <RelativeLayout
-       android:layout_width="0dp"
-       android:layout_weight="3"
-       android:layout_height="match_parent">
-
-            <ImageView
-                android:id="@+id/imageview_create"
-      android:src="@drawable/writing"
-       android:layout_width="wrap_content"
-                android:layout_centerInParent="true"
-       android:layout_gravity="center|center_horizontal"
-       android:layout_height="wrap_content">
-
-</ImageView>
-
-   </RelativeLayout>
-        </LinearLayout>
-    </androidx.cardview.widget.CardView>
+        app:layout_constraintEnd_toEndOf="parent">
 
 
+    </androidx.recyclerview.widget.RecyclerView>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
