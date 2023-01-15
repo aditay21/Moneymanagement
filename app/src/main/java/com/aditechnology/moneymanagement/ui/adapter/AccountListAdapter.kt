@@ -1,6 +1,5 @@
 package com.aditechnology.moneymanagement.ui.adapter
 
-import android.text.format.DateFormat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -51,7 +50,7 @@ class AccountListAdapter() : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         }else {
             (holder as AccountListViewHolder).accountName.text = adapterList?.get(position-1)?.accountName
             holder.accountBalance.text = adapterList?.get(position-1)?.accountBalance.toString()
-            holder.date.text = adapterList?.get(position-1)?.let { getDate(it.date) }
+            holder.date.text = adapterList?.get(position-1)?.let { getDateTime(it.date) }
         }
     }
 
@@ -69,18 +68,10 @@ class AccountListAdapter() : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         adapterList.addAll(list)
         notifyDataSetChanged()
     }
-    fun getDate(timestamp: Long) :String {
-        val calendar = Calendar.getInstance(Locale.getDefault())
-        calendar.timeInMillis = timestamp * 1000L
-        val date = DateFormat.format("dd-MM-yyyy",calendar).toString()
-        return date
-    }
-    private fun getDateTime(s: Long): String? {
+    private fun getDateTime(timeStamp: Long): String? {
         return try {
             val simpleDate = SimpleDateFormat("dd/M/yyyy hh:mm:ss")
-            val calendar = Calendar.getInstance(Locale.getDefault())
-            calendar.timeInMillis =s*1000
-            simpleDate.format(Date())
+            simpleDate.format(Date(timeStamp))
         } catch (e: Exception) {
             e.toString()
         }

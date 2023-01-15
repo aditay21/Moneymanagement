@@ -9,5 +9,4 @@ data class DetailsFileTable(
     @PrimaryKey(autoGenerate = true) val id: Int,
     @ColumnInfo(name = "type") val type :Int,
     @ColumnInfo(name="money") val money: Int,
-    @ColumnInfo(name="account_id") val account_id: Int
-    )
+    @ColumnInfo(name="account_id") val account_id: Int)

@@ -13,8 +13,7 @@ abstract class MoneymakingDatabase : RoomDatabase() {
 
 abstract fun expenseDao():ExpenseIncomeDao
 
-
-    private class WordDatabaseCallback(
+private class WordDatabaseCallback(
         private val scope: CoroutineScope
     ) : RoomDatabase.Callback() {
 
@@ -22,8 +21,6 @@ abstract fun expenseDao():ExpenseIncomeDao
             super.onCreate(db)
             INSTANCE?.let { database ->
                 scope.launch {
-
-
                 }
             }
         }
