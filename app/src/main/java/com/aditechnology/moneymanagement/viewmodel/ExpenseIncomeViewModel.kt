@@ -5,27 +5,30 @@ import com.aditechnology.moneymanagement.Type
 import com.aditechnology.moneymanagement.models.AccountTable
 import com.aditechnology.moneymanagement.models.DetailsFileTable
 import com.aditechnology.moneymanagement.models.MoneyManagementRepository
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
 class ExpenseIncomeViewModel(private val managementRepository: MoneyManagementRepository) : ViewModel(){
 
     val mAllDetails : LiveData<List<DetailsFileTable>> = managementRepository.allDetailsFileTable.asLiveData()
 
-    fun insert(money: Int, type: Type) = viewModelScope.launch {
+    fun insert(money: Int, type: Type,accountId : Int) = viewModelScope.launch {
+
         var value :DetailsFileTable
         when (type) {
             Type.EXPENSE -> {
-                 value=  DetailsFileTable(0, 1, money,1)
+                 value=  DetailsFileTable( 1, money,accountId)
             }
             else -> {
-                 value=  DetailsFileTable(0, 0, money,1)
+                 value=  DetailsFileTable( 0, money,accountId)
             }
         }
+
         managementRepository.insertItem(value);
     }
-
-
-
+    fun  getByAccountId(id : Int): List<DetailsFileTable>? {
+       return managementRepository.allDetailsByAccountId(id).asLiveData().value
+    }
 }
 
 class WordViewModelFactory(private val repository: MoneyManagementRepository) : ViewModelProvider.Factory {

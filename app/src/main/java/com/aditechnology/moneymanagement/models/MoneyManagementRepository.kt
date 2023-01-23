@@ -6,6 +6,8 @@ class MoneyManagementRepository(private val expenseIncomeDao: ExpenseIncomeDao) 
 
     val allDetailsFileTable: Flow<List<DetailsFileTable>> = expenseIncomeDao.getAllDetails()
 
+
+
     val allAccountTable: Flow<List<AccountTable>> = expenseIncomeDao.getAllAccountDetail()
 
     public suspend fun insertItem(value: DetailsFileTable){
@@ -16,6 +18,9 @@ class MoneyManagementRepository(private val expenseIncomeDao: ExpenseIncomeDao) 
         expenseIncomeDao.insertData(value)
     }
 
+    fun allDetailsByAccountId(id: Int) : Flow<List<DetailsFileTable>>{
+        return  expenseIncomeDao.getAllDetailsByAccountId(id)
+    }
 
 
 }

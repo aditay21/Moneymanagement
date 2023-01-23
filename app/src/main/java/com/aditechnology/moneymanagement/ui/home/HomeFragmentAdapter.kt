@@ -14,6 +14,7 @@ class HomeFragmentAdapter(fragment: Fragment, private val mVisibleList: ArrayLis
 
     override fun getItemCount(): Int = mVisibleList.size
 
+
     fun updateList(visibleList: ArrayList<AccountTable>){
         mVisibleList.clear()
         mVisibleList.addAll(visibleList)
@@ -21,35 +22,15 @@ class HomeFragmentAdapter(fragment: Fragment, private val mVisibleList: ArrayLis
 
     override fun createFragment(position: Int): Fragment {
         // Return a NEW fragment instance in createFragment(int)
-        val fragment = DemoObjectFragment()
+        val fragment = DetailListFragment()
         fragment.arguments = Bundle().apply {
             // Our object is just an integer :-P
             putInt(ARG_OBJECT, mVisibleList[position].accountId)
         }
         return fragment
     }
-}
-
-
-private const val ARG_OBJECT = "object"
-
-// Instances of this class are fragments representing a single
-// object in our collection.
-class DemoObjectFragment : Fragment() {
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        return inflater.inflate(R.layout.fragment_collection_tabs, container, false)
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        arguments?.takeIf { it.containsKey(ARG_OBJECT) }?.apply {
-            val textView: TextView = view.findViewById(R.id.text1)
-            textView.text = getInt(ARG_OBJECT).toString()
-        }
-    }
 
 }
+
+private const val ARG_OBJECT = "accountid"
+

@@ -1,4 +1,4 @@
-package com.aditechnology.moneymanagement.ui.home
+package com.aditechnology.moneymanagement.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
