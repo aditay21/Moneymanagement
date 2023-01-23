@@ -19,9 +19,6 @@
     <action
         android:id="@+id/action_account_to_createfragment"
         app:destination="@id/create_account" />
-
-
-
     </fragment>
 
     <fragment
@@ -36,6 +33,11 @@
         android:name="com.aditechnology.moneymanagement.ui.account.CreateAccountFragment"
         android:label="@string/create_account"
         tools:layout="@layout/fragment_create_account">
+
+        <action
+            android:id="@+id/action_popup_back"
+            app:popUpTo="@+id/registrationSuccessFragment" />
+
 
 
     </fragment>

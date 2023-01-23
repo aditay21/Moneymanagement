@@ -66,6 +66,9 @@ class AccountListAdapter() : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     fun updateList(list: List<AccountTable>){
         adapterList.clear()
         adapterList.addAll(list)
+        if(adapterList[0].accountName == "All") {
+            adapterList.removeAt(0)
+        }
         notifyDataSetChanged()
     }
     private fun getDateTime(timeStamp: Long): String? {

@@ -13,7 +13,7 @@ import com.aditechnology.moneymanagement.databinding.FragmentDetailsListBinding
 import com.aditechnology.moneymanagement.viewmodel.ExpenseIncomeViewModel
 import com.aditechnology.moneymanagement.viewmodel.WordViewModelFactory
 
-class DetailListFragment : Fragment(){
+class AllListFragment : Fragment(){
     private  lateinit var mAccountListAdapter:DetailListAdapter
     private  val ARG_OBJECT = "accountid"
     private var _binding: FragmentDetailsListBinding? = null

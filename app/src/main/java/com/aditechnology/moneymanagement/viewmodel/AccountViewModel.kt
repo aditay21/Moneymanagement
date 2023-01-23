@@ -12,7 +12,7 @@ class AccountViewModel(private val managementRepository: MoneyManagementReposito
 
     fun insertAccountDetail(account: String,balance :Long) = viewModelScope.launch {
         var value = AccountTable(account,balance,System.currentTimeMillis());
-        managementRepository.insertItem(value);
+        managementRepository.insertItem(value)
     }
 
     class AccountViewModelFactory(private val repository: MoneyManagementRepository) : ViewModelProvider.Factory {

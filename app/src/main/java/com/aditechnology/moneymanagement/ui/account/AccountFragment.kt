@@ -52,10 +52,6 @@ class AccountFragment : Fragment() {
         binding.recycleView.layoutManager =linearLayoutManager1
         binding.recycleView.adapter= mAccountListAdapter
 
-
-
-
-
         accountViewModel.mAllDetails.observe(requireActivity(), Observer { account ->
             if (account.isEmpty()){
                 Log.e("TAG","Account is empty")

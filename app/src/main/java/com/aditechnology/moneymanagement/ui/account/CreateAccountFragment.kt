@@ -10,6 +10,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import com.aditechnology.moneymanagement.MainApplication
 import com.aditechnology.moneymanagement.databinding.FragmentAccountsBinding
 import com.aditechnology.moneymanagement.databinding.FragmentCreateAccountBinding
@@ -59,7 +60,7 @@ class CreateAccountFragment : Fragment() {
                     binding.edittextAccountName.setText("")
                     binding.edittextStartingBalance.setText("")
                     Toast.makeText(requireContext(),"Account Createtd",Toast.LENGTH_SHORT).show()
-                    parentFragmentManager.popBackStack()
+                    findNavController().popBackStack()
                 }
             }
         }

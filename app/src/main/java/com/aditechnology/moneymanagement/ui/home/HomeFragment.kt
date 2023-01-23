@@ -39,10 +39,12 @@ class HomeFragment : Fragment() {
         _binding?.pager?.adapter = homeFragmentAdapter
         accountViewModel.mAllDetails.observe(requireActivity()) { account ->
             if (account.isEmpty()){
+                accountViewModel.insertAccountDetail("All",0)
                 accountViewModel.insertAccountDetail("Personal",0)
             }else {
                 mAccountList.clear()
                 mAccountList.addAll(account)
+                homeFragmentAdapter.notifyDataSetChanged()
                 _binding?.let {
                     TabLayoutMediator(it.tabLayout, it.pager) { tab, position ->
                         tab.text = mAccountList[position].accountName

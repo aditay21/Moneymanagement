@@ -22,12 +22,22 @@ class HomeFragmentAdapter(fragment: Fragment, private val mVisibleList: ArrayLis
 
     override fun createFragment(position: Int): Fragment {
         // Return a NEW fragment instance in createFragment(int)
-        val fragment = DetailListFragment()
-        fragment.arguments = Bundle().apply {
-            // Our object is just an integer :-P
-            putInt(ARG_OBJECT, mVisibleList[position].accountId)
-        }
-        return fragment
+       if (position==0) {
+           val fragment = AllListFragment()
+           fragment.arguments = Bundle().apply {
+               // Our object is just an integer :-P
+               putInt(ARG_OBJECT, mVisibleList[position].accountId)
+           }
+           return fragment
+       }else{
+           val fragment = DetailListFragment()
+           fragment.arguments = Bundle().apply {
+               // Our object is just an integer :-P
+               putInt(ARG_OBJECT, mVisibleList[position].accountId)
+
+           }
+           return fragment
+       }
     }
 
 }
