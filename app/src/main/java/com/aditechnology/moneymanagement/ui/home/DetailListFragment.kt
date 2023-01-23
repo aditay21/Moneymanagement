@@ -15,7 +15,7 @@ import com.aditechnology.moneymanagement.viewmodel.ExpenseIncomeViewModel
 import com.aditechnology.moneymanagement.viewmodel.WordViewModelFactory
 
 class DetailListFragment : Fragment(){
-    private  lateinit var mAccountListAdapter:DetailListAdapter
+    private  lateinit var mAccountListAdapter:DetailListAdapter1
     private  val ARG_OBJECT = "accountid"
     private var _binding: FragmentDetailsListBinding? = null
     private val wordViewModel: ExpenseIncomeViewModel by viewModels {
@@ -35,7 +35,7 @@ class DetailListFragment : Fragment(){
         arguments?.takeIf { it.containsKey(ARG_OBJECT) }?.apply {
 
 
-         mAccountListAdapter = DetailListAdapter()
+         mAccountListAdapter = DetailListAdapter1()
         val linearLayoutManager1 = LinearLayoutManager(context)
         linearLayoutManager1.orientation = LinearLayoutManager.VERTICAL
         binding.recycleView.layoutManager =linearLayoutManager1

@@ -3,6 +3,7 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Moneymanagement/app/src/main/res/drawable/bg_button.xml" value="0.1" />
         <entry key="..\:/Moneymanagement/app/src/main/res/drawable/edit_text.xml" value="0.1465" />
         <entry key="..\:/Moneymanagement/app/src/main/res/drawable/ic_dashboard_black_24dp.xml" value="0.1" />
         <entry key="..\:/Moneymanagement/app/src/main/res/drawable/ic_notifications_black_24dp.xml" value="0.1" />
@@ -19,6 +20,7 @@
         <entry key="..\:/Moneymanagement/app/src/main/res/layout/fragment_notifications.xml" value="0.11041666666666666" />
         <entry key="..\:/Moneymanagement/app/src/main/res/layout/view_holder_account_header.xml" value="0.16770833333333332" />
         <entry key="..\:/Moneymanagement/app/src/main/res/layout/view_holder_account_view.xml" value="0.15208333333333332" />
+        <entry key="..\:/Moneymanagement/app/src/main/res/layout/view_holder_detail_summery.xml" value="0.16666666666666666" />
         <entry key="..\:/Moneymanagement/app/src/main/res/layout/view_holder_detail_view.xml" value="0.11073108165882856" />
         <entry key="..\:/Moneymanagement/app/src/main/res/menu/bottom_nav_menu.xml" value="0.1515625" />
         <entry key="..\:/Moneymanagement/app/src/main/res/menu/menu_main.xml" value="0.1" />
