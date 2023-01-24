@@ -15,7 +15,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
 
-class DetailListAdapter(accountId: String) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class DetailListAdapter(val accountId: Int,val onClickListener: OnClickListener) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
      private val HEADER = 0
      private val NORMAL = 1
     private var  adapterList: ArrayList<DetailsFileTable> = ArrayList()
@@ -54,7 +54,7 @@ class DetailListAdapter(accountId: String) : RecyclerView.Adapter<RecyclerView.V
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         if (getItemViewType(position) == HEADER){
             (holder as HeaderViewHolder).binding.buttonAdd.setOnClickListener{
-                 //openBottomSheet(accountId)
+                onClickListener.openBottomSheet(accountId)
 
             }
         }else {
@@ -77,5 +77,8 @@ class DetailListAdapter(accountId: String) : RecyclerView.Adapter<RecyclerView.V
         adapterList.clear()
         adapterList.addAll(list)
         notifyDataSetChanged()
+    }
+    interface OnClickListener{
+        fun openBottomSheet(accountId : Int)
     }
 }

@@ -13,6 +13,7 @@ import com.aditechnology.moneymanagement.models.AccountTable
 
 class HomeFragmentAdapter(fragment: Fragment, private val mVisibleList: ArrayList<AccountTable>) : FragmentStateAdapter(fragment) {
 
+
     override fun getItemCount(): Int = mVisibleList.size
 
 

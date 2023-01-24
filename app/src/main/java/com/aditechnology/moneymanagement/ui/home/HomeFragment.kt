@@ -9,11 +9,12 @@ import androidx.fragment.app.viewModels
 import com.aditechnology.moneymanagement.MainApplication
 import com.aditechnology.moneymanagement.databinding.FragmentHomeBinding
 import com.aditechnology.moneymanagement.models.AccountTable
+import com.aditechnology.moneymanagement.ui.home.HomeFragment.*
 import com.aditechnology.moneymanagement.viewmodel.AccountViewModel
 import com.google.android.material.tabs.TabLayoutMediator
 
 
-class HomeFragment : Fragment() {
+class HomeFragment :Fragment(){
 
     private lateinit var  homeFragmentAdapter: HomeFragmentAdapter
     private var _binding: FragmentHomeBinding? = null
@@ -57,4 +58,6 @@ class HomeFragment : Fragment() {
         super.onDestroyView()
         _binding = null
     }
+
+
 }

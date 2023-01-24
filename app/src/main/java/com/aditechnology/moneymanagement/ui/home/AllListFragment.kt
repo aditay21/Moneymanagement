@@ -13,10 +13,11 @@ import com.aditechnology.moneymanagement.databinding.FragmentDetailsListBinding
 import com.aditechnology.moneymanagement.viewmodel.ExpenseIncomeViewModel
 import com.aditechnology.moneymanagement.viewmodel.WordViewModelFactory
 
-class AllListFragment : Fragment(){
+class AllListFragment : Fragment(),DetailListAdapter.OnClickListener{
     private  lateinit var mAccountListAdapter:DetailListAdapter
     private  val ARG_OBJECT = "accountid"
     private var _binding: FragmentDetailsListBinding? = null
+    private var accountId =0;
     private val wordViewModel: ExpenseIncomeViewModel by viewModels {
         WordViewModelFactory((requireActivity().application as MainApplication).repository)
     }
@@ -33,8 +34,8 @@ class AllListFragment : Fragment(){
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         arguments?.takeIf { it.containsKey(ARG_OBJECT) }?.apply {
 
-
-         mAccountListAdapter = DetailListAdapter(id.toString())
+            accountId  = requireArguments().getInt(ARG_OBJECT, 0);
+         mAccountListAdapter = DetailListAdapter(accountId,this@AllListFragment)
         val linearLayoutManager1 = LinearLayoutManager(context)
         linearLayoutManager1.orientation = LinearLayoutManager.VERTICAL
         binding.recycleView.layoutManager =linearLayoutManager1
@@ -52,6 +53,10 @@ class AllListFragment : Fragment(){
                 mAccountListAdapter.updateList(it)
             }
         }
+    }
+
+    override fun openBottomSheet(accountId: Int) {
+
     }
 
 }
