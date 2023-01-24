@@ -20,6 +20,7 @@ class DetailListFragment : Fragment(){
     private val wordViewModel: ExpenseIncomeViewModel by viewModels {
         WordViewModelFactory((requireActivity().application as MainApplication).repository)
     }
+    private var accountId =0;
     private val binding get() = _binding!!
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -32,23 +33,18 @@ class DetailListFragment : Fragment(){
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         arguments?.takeIf { it.containsKey(ARG_OBJECT) }?.apply {
-
-
-         mAccountListAdapter = DetailListAdapter()
-        val linearLayoutManager1 = LinearLayoutManager(context)
+            accountId  = requireArguments().getInt(ARG_OBJECT, 0);
+         mAccountListAdapter = DetailListAdapter(requireArguments().getString(ARG_OBJECT, 0.toString()))
+              val linearLayoutManager1 = LinearLayoutManager(context)
         linearLayoutManager1.orientation = LinearLayoutManager.VERTICAL
         binding.recycleView.layoutManager =linearLayoutManager1
         binding.recycleView.adapter= mAccountListAdapter
-            wordViewModel.getByAccountId(id)?.let {
+            wordViewModel.getByAccountId(accountId)?.let {
                 mAccountListAdapter.updateList(it)
             }
         }
-
-     //   wordViewModel.insert(134,Type.EXPENSE,id)
-
         wordViewModel.mAllDetails.observe(requireActivity()) { words ->
-            Log.e("TAG", "Details Size " + words.size)
-            wordViewModel.getByAccountId(id)?.let {
+            wordViewModel.getByAccountId(accountId)?.let {
                 mAccountListAdapter.updateList(it)
             }
         }

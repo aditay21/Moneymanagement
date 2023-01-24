@@ -34,7 +34,7 @@ class AllListFragment : Fragment(){
         arguments?.takeIf { it.containsKey(ARG_OBJECT) }?.apply {
 
 
-         mAccountListAdapter = DetailListAdapter()
+         mAccountListAdapter = DetailListAdapter(id.toString())
         val linearLayoutManager1 = LinearLayoutManager(context)
         linearLayoutManager1.orientation = LinearLayoutManager.VERTICAL
         binding.recycleView.layoutManager =linearLayoutManager1

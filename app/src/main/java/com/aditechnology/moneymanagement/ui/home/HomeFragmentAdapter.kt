@@ -1,6 +1,7 @@
 package com.aditechnology.moneymanagement.ui.home
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -34,7 +35,6 @@ class HomeFragmentAdapter(fragment: Fragment, private val mVisibleList: ArrayLis
            fragment.arguments = Bundle().apply {
                // Our object is just an integer :-P
                putInt(ARG_OBJECT, mVisibleList[position].accountId)
-
            }
            return fragment
        }
