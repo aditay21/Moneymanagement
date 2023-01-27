@@ -12,6 +12,8 @@ class ExpenseIncomeViewModel(private val managementRepository: MoneyManagementRe
 
     val mAllDetails : LiveData<List<DetailsFileTable>> = managementRepository.allDetailsFileTable.asLiveData()
 
+    val mAllDetailsById : LiveData<List<DetailsFileTable>> = managementRepository.allDetailsByAccountId(1).asLiveData()
+
     fun insert(money: Int, type: Type,accountId : Int,payTo:String,date:String,time:String,paidFor:String,) = viewModelScope.launch {
 
         var value :DetailsFileTable
@@ -26,8 +28,9 @@ class ExpenseIncomeViewModel(private val managementRepository: MoneyManagementRe
 
         managementRepository.insertItem(value);
     }
-    fun  getByAccountId(id : Int): List<DetailsFileTable>? {
-       return managementRepository.allDetailsByAccountId(id).asLiveData().value
+    fun  getByAccountId(id : Int):LiveData<List<DetailsFileTable>>? {
+        return managementRepository.allDetailsByAccountId(id).asLiveData()
+
     }
 }
 

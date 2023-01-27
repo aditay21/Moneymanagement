@@ -19,14 +19,15 @@ class DetailListAdapter(val accountId: Int,val onClickListener: OnClickListener)
      private val HEADER = 0
      private val NORMAL = 1
     private var  adapterList: ArrayList<DetailsFileTable> = ArrayList()
+    private var  headerItem: ArrayList<AccountTable> = ArrayList()
 
     class DetailListViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
     }
 
     class HeaderViewHolder(val binding: ViewHolderDetailSummeryBinding) : RecyclerView.ViewHolder(binding.root) {
-     //   val accountCount :TextView= itemView.findViewById(R.id.textview_total_count)
-       // val createAccount :ImageView= itemView.findViewById(R.id.imageview_create)
+       val totalAmount :TextView= itemView.findViewById(R.id.text_view_total_amount)
+
 
     }
 
@@ -53,9 +54,12 @@ class DetailListAdapter(val accountId: Int,val onClickListener: OnClickListener)
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         if (getItemViewType(position) == HEADER){
-            (holder as HeaderViewHolder).binding.buttonAdd.setOnClickListener{
-                onClickListener.openBottomSheet(accountId)
-
+                if (headerItem.size>0) {
+                    (holder as HeaderViewHolder).binding.textViewTotalAmount.text =
+                        headerItem[0]?.accountBalance.toString()
+                }
+            (holder as HeaderViewHolder).binding.buttonAdd.setOnClickListener {
+                        onClickListener.openBottomSheet(accountId)
             }
         }else {
             //(holder as DetailListViewHolder).accountName.text = adapterList?.get(position-1)?.accountName
@@ -78,6 +82,11 @@ class DetailListAdapter(val accountId: Int,val onClickListener: OnClickListener)
         adapterList.addAll(list)
         notifyDataSetChanged()
     }
+    fun updateHeader(item:List<AccountTable>){
+        headerItem.addAll(item)
+        notifyDataSetChanged()
+    }
+
     interface OnClickListener{
         fun openBottomSheet(accountId : Int)
     }

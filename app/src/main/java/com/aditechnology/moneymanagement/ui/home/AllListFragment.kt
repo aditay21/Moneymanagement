@@ -40,9 +40,9 @@ class AllListFragment : Fragment(),DetailListAdapter.OnClickListener{
         linearLayoutManager1.orientation = LinearLayoutManager.VERTICAL
         binding.recycleView.layoutManager =linearLayoutManager1
         binding.recycleView.adapter= mAccountListAdapter
-            wordViewModel.getByAccountId(id)?.let {
+           /* wordViewModel.getByAccountId(id)?.let {
                 mAccountListAdapter.updateList(it)
-            }
+            }*/
         }
 
      //   wordViewModel.insert(134,Type.EXPENSE,id)

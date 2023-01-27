@@ -18,6 +18,7 @@ import com.aditechnology.moneymanagement.databinding.BottomSheetAddDetailBinding
 import com.aditechnology.moneymanagement.databinding.FragmentDetailsListBinding
 import com.aditechnology.moneymanagement.utils.CalenderView
 import com.aditechnology.moneymanagement.utils.TimeView
+import com.aditechnology.moneymanagement.viewmodel.AccountViewModel
 import com.aditechnology.moneymanagement.viewmodel.ExpenseIncomeViewModel
 import com.aditechnology.moneymanagement.viewmodel.ExpenseViewModelFactory
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -28,6 +29,9 @@ class DetailListFragment : Fragment() , DetailListAdapter.OnClickListener {
     private lateinit var mAccountListAdapter: DetailListAdapter
     private val ARG_OBJECT = "accountid"
     private var _binding: FragmentDetailsListBinding? = null
+    private val accountViewModel : AccountViewModel by viewModels {
+        AccountViewModel.AccountViewModelFactory((requireActivity().application as MainApplication).repository)
+    }
     private val expenseIncomeViewModel: ExpenseIncomeViewModel by viewModels {
         ExpenseViewModelFactory((requireActivity().application as MainApplication).repository)
     }
@@ -50,18 +54,19 @@ class DetailListFragment : Fragment() , DetailListAdapter.OnClickListener {
             linearLayoutManager1.orientation = LinearLayoutManager.VERTICAL
             binding.recycleView.layoutManager = linearLayoutManager1
             binding.recycleView.adapter = mAccountListAdapter
-          /*  expenseIncomeViewModel.getByAccountId(accountId)?.let {
-                mAccountListAdapter.updateList(it)
-            }*/
         }
-        expenseIncomeViewModel.mAllDetails.observe(requireActivity()) { all ->
-            Log.e("TAG","All Size  ${all.size}")
-            expenseIncomeViewModel.getByAccountId(accountId)?.let {
-              Log.e("TAG","Size  ${it.size}")
-                mAccountListAdapter.updateList(it)
+        accountViewModel.getAccountDetailBy(accountId)?.observe(requireActivity()){
+            list->
+            mAccountListAdapter.updateHeader(list)
+        }
 
+
+        expenseIncomeViewModel.getByAccountId(accountId)?.observe(requireActivity()){
+                all->
+               mAccountListAdapter.updateList(all)
             }
-        }
+
+
     }
 
     override fun openBottomSheet(accountId: Int) {
@@ -81,6 +86,9 @@ class DetailListFragment : Fragment() , DetailListAdapter.OnClickListener {
             )
         )
         binding.textViewExpense.setOnClickListener {
+            binding.textViewWhoToPayTitle.text = "Pay to"
+            binding.textViewPaidForTitle.text = "Pay For"
+
             binding.textViewExpense.setBackgroundResource(R.drawable.toggel_bg_black)
             binding.textViewIncome.setBackgroundResource(R.drawable.button_bg_white)
 
@@ -98,6 +106,9 @@ class DetailListFragment : Fragment() , DetailListAdapter.OnClickListener {
             )
         }
         binding.textViewIncome.setOnClickListener {
+
+            binding.textViewWhoToPayTitle.text = "Get From"
+            binding.textViewPaidForTitle.text = "Get For"
             binding.textViewExpense.setBackgroundResource(R.drawable.button_bg_white)
             binding.textViewExpense.setTextColor(
                 ContextCompat.getColor(
@@ -129,6 +140,9 @@ class DetailListFragment : Fragment() , DetailListAdapter.OnClickListener {
                type,accountId,binding.edittextToPay.text.toString(),binding.textViewDate.text.toString(),binding.textViewTime.text.toString()
                    ,binding.editTextPaidFor.toString())
             }
+            accountViewModel.updateAccountBalance(
+                binding.edittextAmount.text.toString()
+            )
         }
         dialog.show()
         binding.textViewDate.text = getDate()
