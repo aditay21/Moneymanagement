@@ -12,15 +12,15 @@ class ExpenseIncomeViewModel(private val managementRepository: MoneyManagementRe
 
     val mAllDetails : LiveData<List<DetailsFileTable>> = managementRepository.allDetailsFileTable.asLiveData()
 
-    fun insert(money: Int, type: Type,accountId : Int) = viewModelScope.launch {
+    fun insert(money: Int, type: Type,accountId : Int,payTo:String,date:String,time:String,paidFor:String,) = viewModelScope.launch {
 
         var value :DetailsFileTable
         when (type) {
             Type.EXPENSE -> {
-                 value=  DetailsFileTable( 1, money,accountId)
+                 value=  DetailsFileTable( 1, money,accountId,payTo,date,time,paidFor)
             }
             else -> {
-                 value=  DetailsFileTable( 0, money,accountId)
+                 value=  DetailsFileTable( 0, money,accountId,payTo,date,time,paidFor)
             }
         }
 
@@ -31,7 +31,7 @@ class ExpenseIncomeViewModel(private val managementRepository: MoneyManagementRe
     }
 }
 
-class WordViewModelFactory(private val repository: MoneyManagementRepository) : ViewModelProvider.Factory {
+class ExpenseViewModelFactory(private val repository: MoneyManagementRepository) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(ExpenseIncomeViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST")

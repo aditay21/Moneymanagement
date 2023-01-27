@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.aditechnology.moneymanagement.MainApplication
 import com.aditechnology.moneymanagement.databinding.FragmentDetailsListBinding
 import com.aditechnology.moneymanagement.viewmodel.ExpenseIncomeViewModel
-import com.aditechnology.moneymanagement.viewmodel.WordViewModelFactory
+import com.aditechnology.moneymanagement.viewmodel.ExpenseViewModelFactory
 
 class AllListFragment : Fragment(),DetailListAdapter.OnClickListener{
     private  lateinit var mAccountListAdapter:DetailListAdapter
@@ -19,7 +19,7 @@ class AllListFragment : Fragment(),DetailListAdapter.OnClickListener{
     private var _binding: FragmentDetailsListBinding? = null
     private var accountId =0;
     private val wordViewModel: ExpenseIncomeViewModel by viewModels {
-        WordViewModelFactory((requireActivity().application as MainApplication).repository)
+        ExpenseViewModelFactory((requireActivity().application as MainApplication).repository)
     }
     private val binding get() = _binding!!
     override fun onCreateView(
@@ -46,12 +46,11 @@ class AllListFragment : Fragment(),DetailListAdapter.OnClickListener{
         }
 
      //   wordViewModel.insert(134,Type.EXPENSE,id)
-
         wordViewModel.mAllDetails.observe(requireActivity()) { words ->
-            Log.e("TAG", "Details Size " + words.size)
-            wordViewModel.getByAccountId(id)?.let {
+          //  Log.e("TAG", "Details Size " + words.size)
+           /* wordViewModel.getByAccountId(id)?.let {
                 mAccountListAdapter.updateList(it)
-            }
+            }*/
         }
     }
 
