@@ -133,40 +133,58 @@ class DetailListFragment : Fragment() , DetailListAdapter.OnClickListener {
             timepicker.show(parentFragmentManager, "showDate")
         }
         binding.buttonCreate.setOnClickListener {
-            if (TextUtils.isEmpty(binding.edittextAmount.text.toString())) {
-                Toast.makeText(requireContext(),"Please enter the amount",Toast.LENGTH_SHORT).show()
+            if (type== Type.EXPENSE && accountBalance <= 0) {
+                Toast.makeText(
+                    requireContext(),
+                    "You don't have money in account",
+                    Toast.LENGTH_SHORT
+                ).show()
             } else {
-                val date = DateTimeUtils.getTimeStampFromDate(binding.textViewDate.text.toString())
-                val time = DateTimeUtils.getTimeStampFromTime(binding.textViewTime.text.toString())
-                var paidFor = ""
-                if (binding.editTextPaidFor.text.toString().isEmpty()) {
-                     if (type==Type.EXPENSE)
-                     paidFor = "Paid For : -  Not Available"
-                    else
-                         paidFor = "Get For : -  Not Available"
-                }else{
-                    paidFor=binding.editTextPaidFor.text.toString()
-                }
-                var toPay = ""
-                if (binding.edittextToPay.text.toString().isEmpty()) {
-                    if (type==Type.EXPENSE)
-                    toPay = "Paid to : -  Not Available"
-                    else
-                        toPay = "GET From :- Not Available"
-                }else{
-                    toPay=binding.edittextToPay.text.toString()
-                }
-                expenseIncomeViewModel.insert(binding.edittextAmount.text.toString().toInt(),
-               type,accountId,toPay,date.toString()
-                    ,time.toString()
-                   ,paidFor)
-            }
-           val totalBalance =  accountBalance + binding.edittextAmount.text.toString().toInt()
-            accountViewModel.updateAccountBalance(
-                totalBalance.toString()
-            )
-            Toast.makeText(requireContext(),"Transaction added",Toast.LENGTH_SHORT).show()
-            dialog.dismiss()
+                if (TextUtils.isEmpty(binding.edittextAmount.text.toString())) {
+                    Toast.makeText(requireContext(), "Please enter the amount", Toast.LENGTH_SHORT)
+                        .show()
+                } else {
+
+
+                    var totalBalance = 0
+                    if (type == Type.EXPENSE) {
+                        totalBalance =
+                            accountBalance - binding.edittextAmount.text.toString().toInt()
+                    } else {
+                        totalBalance =
+                            accountBalance + binding.edittextAmount.text.toString().toInt()
+                    }
+
+                    if (type == Type.EXPENSE && totalBalance < 0) {
+                        Toast.makeText(
+                            requireContext(),
+                            "Your transaction is more then you have balance in this account ",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    } else {
+                        val date =
+                            DateTimeUtils.getTimeStampFromDate(binding.textViewDate.text.toString())
+                        val time =
+                            DateTimeUtils.getTimeStampFromTime(binding.textViewTime.text.toString())
+
+                        expenseIncomeViewModel.insert(
+                            binding.edittextAmount.text.toString().toInt(),
+                            type,
+                            accountId,
+                            binding.editTextPaidFor.text.toString(),
+                            date.toString(),
+                            time.toString(),
+                            binding.edittextToPay.text.toString()
+                        )
+                        accountViewModel.updateAccountBalance(
+                            totalBalance.toString()
+                        )
+                    }
+
+                    Toast.makeText(requireContext(), "Transaction added", Toast.LENGTH_SHORT).show()
+
+                    dialog.dismiss()
+            }}
         }
         dialog.show()
         binding.textViewDate.text = DateTimeUtils.getDate()

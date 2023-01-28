@@ -69,18 +69,43 @@ class DetailListAdapter(val accountId: Int,val onClickListener: OnClickListener)
 
             (holder as RowListViewHolder).binding.textViewDate.text = "$date  ${time}"
 
-            holder.binding.textViewPaidForValue.text = item.paid_for
+
             holder.binding.textViewPaidFrom.text = item.pay_to
-            if (item.type ==1){
+            if (item.type ==1){//expense
                 holder.binding.textViewTransactionAmount.text = "-"+item.money.toString()
                 holder.binding.textViewTransactionAmount.setTextColor(
                     Color.RED
                 )
+              if (item.paid_for.isEmpty()){
+                  holder.binding.textViewPaidForValue.text = "Paid For :-Record not added"
+              }else{
+                  holder.binding.textViewPaidForValue.text = "Paid For "+item.paid_for
+              }
+
+                if (item.pay_to.isEmpty()){
+                    holder.binding.textViewPaidForValue.text = "Paid To :-Record not added"
+                }else{
+                    holder.binding.textViewPaidForValue.text = "Paid to "+item.pay_to
+                }
+
+
             }else{
                 holder.binding.textViewTransactionAmount.text = "+"+item.money.toString()
                 holder.binding.textViewTransactionAmount.setTextColor(
                     Color.GREEN
                 )
+                if (item.paid_for.isEmpty()){
+                    holder.binding.textViewPaidForValue.text = "Get For :-Record not added"
+                }else{
+                    holder.binding.textViewPaidForValue.text = "Get For "+item.paid_for
+                }
+
+                if (item.pay_to.isEmpty()){
+                    holder.binding.textViewPaidForValue.text = "Get from :-Record not added"
+                }else{
+                    holder.binding.textViewPaidForValue.text = "Get Frm  "+item.pay_to
+                }
+
             }
         }
     }
