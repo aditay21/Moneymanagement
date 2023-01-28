@@ -265,7 +265,6 @@
             <EditText
                 android:id="@+id/edit_text_paid_for"
                 android:padding="10dp"
-                android:text="Not specified"
                 android:minWidth="100dp"
                 app:layout_constraintTop_toTopOf="parent"
                 android:imeOptions="actionNext"

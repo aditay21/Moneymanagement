@@ -23,7 +23,7 @@ class TimeView(val textView: TextView) : DialogFragment(), TimePickerDialog.OnTi
         val cal = Calendar.getInstance()
         cal.set(Calendar.HOUR_OF_DAY, hour);
         cal.set(Calendar.MINUTE, minute);
-        val dateFormat = SimpleDateFormat("hh:mm a")
+        val dateFormat = SimpleDateFormat(DateTimeUtils.TIME_FORMAT)
         textView.text = dateFormat.format(cal.time)
 
     }

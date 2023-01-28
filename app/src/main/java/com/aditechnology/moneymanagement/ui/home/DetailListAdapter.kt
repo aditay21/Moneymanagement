@@ -1,5 +1,6 @@
 package com.aditechnology.moneymanagement.ui.home
 
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,9 +9,13 @@ import android.widget.TextView
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.aditechnology.moneymanagement.R
+import com.aditechnology.moneymanagement.databinding.RowTransactionBinding
+import com.aditechnology.moneymanagement.databinding.ViewHolderAccountViewBinding
 import com.aditechnology.moneymanagement.databinding.ViewHolderDetailSummeryBinding
+import com.aditechnology.moneymanagement.databinding.ViewHolderDetailViewBinding
 import com.aditechnology.moneymanagement.models.AccountTable
 import com.aditechnology.moneymanagement.models.DetailsFileTable
+import com.aditechnology.moneymanagement.utils.DateTimeUtils
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
@@ -21,14 +26,12 @@ class DetailListAdapter(val accountId: Int,val onClickListener: OnClickListener)
     private var  adapterList: ArrayList<DetailsFileTable> = ArrayList()
     private var  headerItem: ArrayList<AccountTable> = ArrayList()
 
-    class DetailListViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    class RowListViewHolder(val binding: RowTransactionBinding) : RecyclerView.ViewHolder(binding.root) {
 
     }
 
     class HeaderViewHolder(val binding: ViewHolderDetailSummeryBinding) : RecyclerView.ViewHolder(binding.root) {
-       val totalAmount :TextView= itemView.findViewById(R.id.text_view_total_amount)
-
-
+      // val totalAmount :TextView= itemView.findViewById(R.id.text_view_total_amount)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -41,14 +44,9 @@ class DetailListAdapter(val accountId: Int,val onClickListener: OnClickListener)
             )
             return HeaderViewHolder(binding)
         }
-        val layoutInflater = LayoutInflater.from(parent.context)
-        return DetailListViewHolder(
-            layoutInflater.inflate(
-                R.layout.view_holder_account_view,
-                parent,
-                false
-            )
-        )
+        val  binding = RowTransactionBinding.inflate(LayoutInflater.from(parent.context))
+        return RowListViewHolder(binding)
+
     }
 
 
@@ -59,12 +57,31 @@ class DetailListAdapter(val accountId: Int,val onClickListener: OnClickListener)
                         headerItem[0]?.accountBalance.toString()
                 }
             (holder as HeaderViewHolder).binding.buttonAdd.setOnClickListener {
-                        onClickListener.openBottomSheet(accountId)
+                if (headerItem.isEmpty()){
+                    onClickListener.openBottomSheet(accountId,0)
+                }
+                headerItem[0]?.accountBalance?.let { it1 -> onClickListener.openBottomSheet(accountId, it1.toInt()) }
             }
         }else {
-            //(holder as DetailListViewHolder).accountName.text = adapterList?.get(position-1)?.accountName
-         //   holder.accountBalance.text = adapterList?.get(position-1)?.accountBalance.toString()
-           // holder.date.text = adapterList?.get(position-1)?.let { getDateTime(it.date) }
+             val item =  adapterList[position-1]
+             val date = DateTimeUtils.getDateFromTimeStamp(item.date)
+             val time = DateTimeUtils.getTimeFromTimeStamp(item.date)
+
+            (holder as RowListViewHolder).binding.textViewDate.text = "$date  ${time}"
+
+            holder.binding.textViewPaidForValue.text = item.paid_for
+            holder.binding.textViewPaidFrom.text = item.pay_to
+            if (item.type ==1){
+                holder.binding.textViewTransactionAmount.text = "-"+item.money.toString()
+                holder.binding.textViewTransactionAmount.setTextColor(
+                    Color.RED
+                )
+            }else{
+                holder.binding.textViewTransactionAmount.text = "+"+item.money.toString()
+                holder.binding.textViewTransactionAmount.setTextColor(
+                    Color.GREEN
+                )
+            }
         }
     }
 
@@ -83,11 +100,12 @@ class DetailListAdapter(val accountId: Int,val onClickListener: OnClickListener)
         notifyDataSetChanged()
     }
     fun updateHeader(item:List<AccountTable>){
+        headerItem.clear()
         headerItem.addAll(item)
         notifyDataSetChanged()
     }
 
     interface OnClickListener{
-        fun openBottomSheet(accountId : Int)
+        fun openBottomSheet(accountId:Int,accountBalance:Int)
     }
 }

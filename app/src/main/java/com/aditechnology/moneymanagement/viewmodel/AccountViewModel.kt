@@ -7,22 +7,20 @@ import kotlinx.coroutines.launch
 
 class AccountViewModel(private val managementRepository: MoneyManagementRepository) : ViewModel(){
 
-    public val mAllDetails : LiveData<List<AccountTable>> = managementRepository.allAccountTable.asLiveData()
-
+    val mAllDetails : LiveData<List<AccountTable>> = managementRepository.allAccountTable.asLiveData()
 
     fun insertAccountDetail(account: String,balance :Long) = viewModelScope.launch {
         var value = AccountTable(account,balance,System.currentTimeMillis());
         managementRepository.insertItem(value)
     }
+
     fun updateAccountBalance(amount: String) = viewModelScope.launch {
-       // var value = AccountTable(account,balance,System.currentTimeMillis());
         managementRepository.updateItem(amount)
     }
 
     fun getAccountDetailBy(accountId :Int) :LiveData<List<AccountTable>> {
        return managementRepository.getAccountDetailsByAccountId(accountId).asLiveData()
     }
-
 
     class AccountViewModelFactory(private val repository: MoneyManagementRepository) : ViewModelProvider.Factory {
         override fun <T : ViewModel> create(modelClass: Class<T>): T {

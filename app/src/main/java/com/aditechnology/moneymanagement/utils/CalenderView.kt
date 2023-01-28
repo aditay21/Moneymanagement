@@ -23,7 +23,7 @@ class CalenderView (val textView: TextView) : DialogFragment(),
     override fun onDateSet(view: DatePicker, year: Int, monthOfYear: Int, dayOfMonth: Int) {
         val cal = Calendar.getInstance()
         cal.set(year, monthOfYear, dayOfMonth);
-        val dateFormat = SimpleDateFormat("EEE MMM dd yyyy")
+        val dateFormat = SimpleDateFormat(DateTimeUtils.DATE_FORMAT)
         textView.text = dateFormat.format(cal.time)
     }
     }

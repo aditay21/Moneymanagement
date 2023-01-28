@@ -2,7 +2,6 @@ package com.aditechnology.moneymanagement.ui.home
 
 import android.os.Bundle
 import android.text.TextUtils
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,6 +16,7 @@ import com.aditechnology.moneymanagement.Type
 import com.aditechnology.moneymanagement.databinding.BottomSheetAddDetailBinding
 import com.aditechnology.moneymanagement.databinding.FragmentDetailsListBinding
 import com.aditechnology.moneymanagement.utils.CalenderView
+import com.aditechnology.moneymanagement.utils.DateTimeUtils
 import com.aditechnology.moneymanagement.utils.TimeView
 import com.aditechnology.moneymanagement.viewmodel.AccountViewModel
 import com.aditechnology.moneymanagement.viewmodel.ExpenseIncomeViewModel
@@ -28,6 +28,7 @@ import java.util.*
 class DetailListFragment : Fragment() , DetailListAdapter.OnClickListener {
     private lateinit var mAccountListAdapter: DetailListAdapter
     private val ARG_OBJECT = "accountid"
+    var mTotalBalance = 0
     private var _binding: FragmentDetailsListBinding? = null
     private val accountViewModel : AccountViewModel by viewModels {
         AccountViewModel.AccountViewModelFactory((requireActivity().application as MainApplication).repository)
@@ -50,27 +51,26 @@ class DetailListFragment : Fragment() , DetailListAdapter.OnClickListener {
         arguments?.takeIf { it.containsKey(ARG_OBJECT) }?.apply {
             accountId = requireArguments().getInt(ARG_OBJECT, 0);
             mAccountListAdapter = DetailListAdapter(accountId, this@DetailListFragment)
-            val linearLayoutManager1 = LinearLayoutManager(context)
+            var  linearLayoutManager1 = LinearLayoutManager(context)
             linearLayoutManager1.orientation = LinearLayoutManager.VERTICAL
-            binding.recycleView.layoutManager = linearLayoutManager1
+            binding.recycleView.layoutManager =linearLayoutManager1
             binding.recycleView.adapter = mAccountListAdapter
         }
         accountViewModel.getAccountDetailBy(accountId)?.observe(requireActivity()){
             list->
+            if (list.isNotEmpty()){
+                mTotalBalance = list[0].accountBalance.toInt()
+            }
             mAccountListAdapter.updateHeader(list)
         }
-
-
         expenseIncomeViewModel.getByAccountId(accountId)?.observe(requireActivity()){
                 all->
                mAccountListAdapter.updateList(all)
             }
-
-
     }
 
-    override fun openBottomSheet(accountId: Int) {
-        val type: Type = Type.EXPENSE
+    override fun openBottomSheet(accountId: Int, accountBalance: Int) {
+        var type: Type = Type.EXPENSE
         val dialog = BottomSheetDialog(requireContext(), R.style.BaseBottomSheetDialog)
         val inflater = LayoutInflater.from(requireContext())
         val binding = BottomSheetAddDetailBinding.inflate(inflater, null, false)
@@ -88,7 +88,7 @@ class DetailListFragment : Fragment() , DetailListAdapter.OnClickListener {
         binding.textViewExpense.setOnClickListener {
             binding.textViewWhoToPayTitle.text = "Pay to"
             binding.textViewPaidForTitle.text = "Pay For"
-
+            type = Type.EXPENSE
             binding.textViewExpense.setBackgroundResource(R.drawable.toggel_bg_black)
             binding.textViewIncome.setBackgroundResource(R.drawable.button_bg_white)
 
@@ -106,7 +106,7 @@ class DetailListFragment : Fragment() , DetailListAdapter.OnClickListener {
             )
         }
         binding.textViewIncome.setOnClickListener {
-
+            type = Type.INCOME
             binding.textViewWhoToPayTitle.text = "Get From"
             binding.textViewPaidForTitle.text = "Get For"
             binding.textViewExpense.setBackgroundResource(R.drawable.button_bg_white)
@@ -136,29 +136,41 @@ class DetailListFragment : Fragment() , DetailListAdapter.OnClickListener {
             if (TextUtils.isEmpty(binding.edittextAmount.text.toString())) {
                 Toast.makeText(requireContext(),"Please enter the amount",Toast.LENGTH_SHORT).show()
             } else {
-           expenseIncomeViewModel.insert(binding.edittextAmount.text.toString().toInt(),
-               type,accountId,binding.edittextToPay.text.toString(),binding.textViewDate.text.toString(),binding.textViewTime.text.toString()
-                   ,binding.editTextPaidFor.toString())
+                val date = DateTimeUtils.getTimeStampFromDate(binding.textViewDate.text.toString())
+                val time = DateTimeUtils.getTimeStampFromTime(binding.textViewTime.text.toString())
+                var paidFor = ""
+                if (binding.editTextPaidFor.text.toString().isEmpty()) {
+                     if (type==Type.EXPENSE)
+                     paidFor = "Paid For : -  Not Available"
+                    else
+                         paidFor = "Get For : -  Not Available"
+                }else{
+                    paidFor=binding.editTextPaidFor.text.toString()
+                }
+                var toPay = ""
+                if (binding.edittextToPay.text.toString().isEmpty()) {
+                    if (type==Type.EXPENSE)
+                    toPay = "Paid to : -  Not Available"
+                    else
+                        toPay = "GET From :- Not Available"
+                }else{
+                    toPay=binding.edittextToPay.text.toString()
+                }
+                expenseIncomeViewModel.insert(binding.edittextAmount.text.toString().toInt(),
+               type,accountId,toPay,date.toString()
+                    ,time.toString()
+                   ,paidFor)
             }
+           val totalBalance =  accountBalance + binding.edittextAmount.text.toString().toInt()
             accountViewModel.updateAccountBalance(
-                binding.edittextAmount.text.toString()
+                totalBalance.toString()
             )
+            Toast.makeText(requireContext(),"Transaction added",Toast.LENGTH_SHORT).show()
+            dialog.dismiss()
         }
         dialog.show()
-        binding.textViewDate.text = getDate()
-        binding.textViewTime.text = getTime()
-    }
-
-    private fun getDate(): String {
-        val cal = Calendar.getInstance()
-        val dateFormat = SimpleDateFormat("EEE MMM dd yyyy")
-        return   dateFormat.format(cal.time)
-    }
-
-    private fun getTime(): String {
-        val cal = Calendar.getInstance()
-        val dateFormat = SimpleDateFormat("hh:mm a")
-        return   dateFormat.format(cal.time)
+        binding.textViewDate.text = DateTimeUtils.getDate()
+        binding.textViewTime.text = DateTimeUtils.getTime()
     }
 
 }

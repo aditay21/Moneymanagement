@@ -1,5 +1,6 @@
 package com.aditechnology.moneymanagement.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.*
 import com.aditechnology.moneymanagement.Type
 import com.aditechnology.moneymanagement.models.AccountTable
@@ -14,7 +15,9 @@ class ExpenseIncomeViewModel(private val managementRepository: MoneyManagementRe
 
     val mAllDetailsById : LiveData<List<DetailsFileTable>> = managementRepository.allDetailsByAccountId(1).asLiveData()
 
-    fun insert(money: Int, type: Type,accountId : Int,payTo:String,date:String,time:String,paidFor:String,) = viewModelScope.launch {
+    fun  insert(money: Int, type: Type,accountId : Int,payTo:String,date:String,time:String,paidFor:String) =
+
+        viewModelScope.launch {
 
         var value :DetailsFileTable
         when (type) {
@@ -25,9 +28,9 @@ class ExpenseIncomeViewModel(private val managementRepository: MoneyManagementRe
                  value=  DetailsFileTable( 0, money,accountId,payTo,date,time,paidFor)
             }
         }
+          Log.e("TAG", "Added "+ managementRepository.insertItem(value))
 
-        managementRepository.insertItem(value);
-    }
+        }
     fun  getByAccountId(id : Int):LiveData<List<DetailsFileTable>>? {
         return managementRepository.allDetailsByAccountId(id).asLiveData()
 

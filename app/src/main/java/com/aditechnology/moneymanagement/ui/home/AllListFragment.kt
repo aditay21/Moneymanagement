@@ -54,9 +54,10 @@ class AllListFragment : Fragment(),DetailListAdapter.OnClickListener{
         }
     }
 
-    override fun openBottomSheet(accountId: Int) {
-
+    override fun openBottomSheet(accountId: Int, accountBalance: Int) {
+        TODO("Not yet implemented")
     }
+
 
 }
 
