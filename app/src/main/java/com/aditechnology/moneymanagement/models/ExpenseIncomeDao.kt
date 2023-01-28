@@ -26,8 +26,8 @@ interface ExpenseIncomeDao {
     fun getAccountDetailsByAccountId(account_id :String): Flow<List<AccountTable>>
 
 
-    @Query("UPDATE account_detail SET account_balance =:amount")
-    suspend fun updateAmountOfAccountById(amount: String)
+    @Query("UPDATE account_detail SET account_balance =:amount WHERE accountId LIKE :account_id")
+    suspend fun updateAmountOfAccountById(amount: String,account_id: String)
 
 
 }

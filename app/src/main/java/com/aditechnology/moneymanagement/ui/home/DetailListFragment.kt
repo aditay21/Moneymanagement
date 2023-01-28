@@ -65,7 +65,7 @@ class DetailListFragment : Fragment() , DetailListAdapter.OnClickListener {
         }
         expenseIncomeViewModel.getByAccountId(accountId)?.observe(requireActivity()){
                 all->
-               mAccountListAdapter.updateList(all)
+            mAccountListAdapter.updateList(all.reversed())
             }
     }
 
@@ -177,13 +177,15 @@ class DetailListFragment : Fragment() , DetailListAdapter.OnClickListener {
                             binding.edittextToPay.text.toString()
                         )
                         accountViewModel.updateAccountBalance(
-                            totalBalance.toString()
+                            totalBalance.toString(),accountId
                         )
+                        Toast.makeText(requireContext(), "Transaction added", Toast.LENGTH_SHORT).show()
+                        dialog.dismiss()
                     }
 
-                    Toast.makeText(requireContext(), "Transaction added", Toast.LENGTH_SHORT).show()
 
-                    dialog.dismiss()
+
+
             }}
         }
         dialog.show()

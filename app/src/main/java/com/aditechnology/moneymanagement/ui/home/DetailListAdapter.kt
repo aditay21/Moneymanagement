@@ -65,7 +65,7 @@ class DetailListAdapter(val accountId: Int,val onClickListener: OnClickListener)
         }else {
              val item =  adapterList[position-1]
              val date = DateTimeUtils.getDateFromTimeStamp(item.date)
-             val time = DateTimeUtils.getTimeFromTimeStamp(item.date)
+             val time = DateTimeUtils.getTimeFromTimeStamp(item.time)
 
             (holder as RowListViewHolder).binding.textViewDate.text = "$date  ${time}"
 
@@ -77,33 +77,31 @@ class DetailListAdapter(val accountId: Int,val onClickListener: OnClickListener)
                     Color.RED
                 )
               if (item.paid_for.isEmpty()){
-                  holder.binding.textViewPaidForValue.text = "Paid For :-Record not added"
+                  holder.binding.textViewPaidForValue.text = "Paid For :---"
               }else{
                   holder.binding.textViewPaidForValue.text = "Paid For "+item.paid_for
               }
 
                 if (item.pay_to.isEmpty()){
-                    holder.binding.textViewPaidForValue.text = "Paid To :-Record not added"
+                    holder.binding.textViewPaidFrom.text = "Paid To :---"
                 }else{
-                    holder.binding.textViewPaidForValue.text = "Paid to "+item.pay_to
+                    holder.binding.textViewPaidFrom.text = "Paid to "+item.pay_to
                 }
-
-
             }else{
                 holder.binding.textViewTransactionAmount.text = "+"+item.money.toString()
                 holder.binding.textViewTransactionAmount.setTextColor(
                     Color.GREEN
                 )
                 if (item.paid_for.isEmpty()){
-                    holder.binding.textViewPaidForValue.text = "Get For :-Record not added"
+                    holder.binding.textViewPaidForValue.text = "Get For :----"
                 }else{
                     holder.binding.textViewPaidForValue.text = "Get For "+item.paid_for
                 }
 
                 if (item.pay_to.isEmpty()){
-                    holder.binding.textViewPaidForValue.text = "Get from :-Record not added"
+                    holder.binding.textViewPaidFrom.text = "Get From :---"
                 }else{
-                    holder.binding.textViewPaidForValue.text = "Get Frm  "+item.pay_to
+                    holder.binding.textViewPaidFrom.text = "Get From  "+item.pay_to
                 }
 
             }
