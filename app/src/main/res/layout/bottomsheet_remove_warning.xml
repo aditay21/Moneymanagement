@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <androidx.cardview.widget.CardView
+        android:id="@+id/card_view"
+        app:cardBackgroundColor="@color/white"
+        android:layout_width="match_parent"
+        app:behavior_hideable="false"
+        android:minHeight="100dp"
+        app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
+        android:layout_height="match_parent">
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            >
+
+            <TextView
+                android:id="@+id/edittext_update_name"
+                android:padding="10dp"
+                android:textStyle="bold"
+                android:text="All transaction details will be permanently deleted Are you sure you want to delete this account?"
+                android:textSize="18dp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                android:textColor="@android:color/holo_red_dark"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"></TextView>
+
+
+            <Button
+                app:layout_constraintTop_toBottomOf="@+id/edittext_update_name"
+                app:layout_constraintStart_toStartOf="parent"
+                android:id="@+id/button_cancel"
+                android:layout_marginTop="15dp"
+                android:layout_margin="5dp"
+                android:textColor="@android:color/holo_green_dark"
+                android:background="@drawable/button_bg_black"
+                app:layout_constraintEnd_toStartOf="@+id/button_remove"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Cancel" />
+
+            <Button
+                app:layout_constraintTop_toBottomOf="@+id/edittext_update_name"
+                app:layout_constraintStart_toEndOf="@+id/button_cancel"
+                android:id="@+id/button_remove"
+                android:layout_marginTop="15dp"
+                android:layout_margin="5dp"
+                android:textColor="@android:color/holo_red_dark"
+                android:background="@drawable/button_bg_black"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Remove Account" />
+
+
+
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.cardview.widget.CardView>
+</layout>

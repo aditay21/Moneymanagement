@@ -18,8 +18,12 @@
         <entry key="..\:/Moneymanagement/app/src/main/res/drawable/ic_notifications_black_24dp.xml" value="0.1" />
         <entry key="..\:/Moneymanagement/app/src/main/res/drawable/nv_tab_item_foreground.xml" value="0.1" />
         <entry key="..\:/Moneymanagement/app/src/main/res/drawable/toggel_button_selector.xml" value="0.1" />
+        <entry key="..\:/Moneymanagement/app/src/main/res/layout/account_action_bottom_sheet.xml" value="0.10645575032064986" />
         <entry key="..\:/Moneymanagement/app/src/main/res/layout/activity_main2.xml" value="0.1515625" />
+        <entry key="..\:/Moneymanagement/app/src/main/res/layout/bottom_sheet_account_action.xml" value="0.22" />
         <entry key="..\:/Moneymanagement/app/src/main/res/layout/bottom_sheet_add_detail.xml" value="0.24957264957264957" />
+        <entry key="..\:/Moneymanagement/app/src/main/res/layout/bottomsheet_remove_warning.xml" value="0.11415134672937152" />
+        <entry key="..\:/Moneymanagement/app/src/main/res/layout/bottomsheet_update_account.xml" value="0.10645575032064986" />
         <entry key="..\:/Moneymanagement/app/src/main/res/layout/content_main.xml" value="0.15208333333333332" />
         <entry key="..\:/Moneymanagement/app/src/main/res/layout/create_new.xml" value="0.15208333333333332" />
         <entry key="..\:/Moneymanagement/app/src/main/res/layout/fragment_accounts.xml" value="0.14427083333333332" />

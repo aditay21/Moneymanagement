@@ -29,5 +29,15 @@ class MoneyManagementRepository(private val expenseIncomeDao: ExpenseIncomeDao) 
       expenseIncomeDao.updateAmountOfAccountById(amount,accountId)
     }
 
+    suspend fun updateAccountName(accountName: String, accountId: Int) {
+        expenseIncomeDao.updateAccountNameById(accountName,accountId.toString())
+
+    }
+
+   suspend fun removeAccountById(accountId: Int) {
+        expenseIncomeDao.removeAccountById(accountId.toString())
+        expenseIncomeDao.removeAccountDetailsById(accountId.toString())
+    }
+
 
 }

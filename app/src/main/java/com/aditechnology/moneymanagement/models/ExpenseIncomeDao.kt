@@ -29,5 +29,16 @@ interface ExpenseIncomeDao {
     @Query("UPDATE account_detail SET account_balance =:amount WHERE accountId LIKE :account_id")
     suspend fun updateAmountOfAccountById(amount: String,account_id: String)
 
+    @Query("UPDATE account_detail SET account_name =:accountName WHERE accountId LIKE :accountId")
+    suspend fun updateAccountNameById(accountName:String,accountId:String)
+
+
+    @Query("DELETE FROM account_detail WHERE accountId LIKE :accountId")
+    suspend fun removeAccountById(accountId: String)
+
+    @Query("DELETE FROM expense_income_details WHERE account_id LIKE :accountId")
+    suspend fun removeAccountDetailsById(accountId: String)
+
+
 
 }

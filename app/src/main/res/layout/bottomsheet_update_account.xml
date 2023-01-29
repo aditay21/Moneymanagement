@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <androidx.cardview.widget.CardView
+        android:id="@+id/card_view"
+        app:cardBackgroundColor="@color/white"
+        android:layout_width="match_parent"
+        app:behavior_hideable="false"
+        android:minHeight="100dp"
+        app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
+        android:layout_height="match_parent">
+<androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+   >
+
+    <EditText
+        android:id="@+id/edittext_update_name"
+        android:layout_margin="20dp"
+        android:padding="10dp"
+        android:inputType="textCapWords"
+        android:maxLength="10"
+        android:textSize="14dp"
+        android:hint="Please Enter the new name"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:textColorHint="@color/color_dbe9f6"
+        android:textColor="@color/black"
+        android:imeOptions="actionDone"
+        android:background="@drawable/edit_text_black_border"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"></EditText>
+
+
+    <Button
+        app:layout_constraintTop_toBottomOf="@+id/edittext_update_name"
+        app:layout_constraintStart_toStartOf="parent"
+        android:id="@+id/button_create"
+        android:layout_marginTop="15dp"
+        android:textColor="@color/black"
+        android:background="@drawable/button_bg_black"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Save" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.cardview.widget.CardView>
+</layout>

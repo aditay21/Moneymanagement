@@ -58,17 +58,27 @@ class DetailListAdapter(val accountId: Int,val onClickListener: OnClickListener)
                 }
             (holder as HeaderViewHolder).binding.buttonAdd.setOnClickListener {
                 if (headerItem.isEmpty()){
-                    onClickListener.openBottomSheet(accountId,0)
+                    onClickListener.openBottomSheet(accountId,0,null)
+                }else {
+                    headerItem[0]?.accountBalance?.let { it1 ->
+                        onClickListener.openBottomSheet(
+                            accountId,
+                            it1.toInt(),
+                            null
+
+                        )
+                    }
                 }
-                headerItem[0]?.accountBalance?.let { it1 -> onClickListener.openBottomSheet(accountId, it1.toInt()) }
-            }
+                }
         }else {
              val item =  adapterList[position-1]
              val date = DateTimeUtils.getDateFromTimeStamp(item.date)
              val time = DateTimeUtils.getTimeFromTimeStamp(item.time)
 
             (holder as RowListViewHolder).binding.textViewDate.text = "$date  ${time}"
-
+            (holder as RowListViewHolder).itemView.setOnClickListener{
+                onClickListener.openActionOnTransactionBottomSheet(item)
+            }
 
             holder.binding.textViewPaidFrom.text = item.pay_to
             if (item.type ==1){//expense
@@ -79,13 +89,13 @@ class DetailListAdapter(val accountId: Int,val onClickListener: OnClickListener)
               if (item.paid_for.isEmpty()){
                   holder.binding.textViewPaidForValue.text = "Paid For :---"
               }else{
-                  holder.binding.textViewPaidForValue.text = "Paid For "+item.paid_for
+                  holder.binding.textViewPaidForValue.text = "Paid For "+item.pay_to
               }
 
                 if (item.pay_to.isEmpty()){
                     holder.binding.textViewPaidFrom.text = "Paid To :---"
                 }else{
-                    holder.binding.textViewPaidFrom.text = "Paid to "+item.pay_to
+                    holder.binding.textViewPaidFrom.text = "Paid to "+item.paid_for
                 }
             }else{
                 holder.binding.textViewTransactionAmount.text = "+"+item.money.toString()
@@ -95,13 +105,13 @@ class DetailListAdapter(val accountId: Int,val onClickListener: OnClickListener)
                 if (item.paid_for.isEmpty()){
                     holder.binding.textViewPaidForValue.text = "Get For :----"
                 }else{
-                    holder.binding.textViewPaidForValue.text = "Get For "+item.paid_for
+                    holder.binding.textViewPaidForValue.text = "Get For "+item.pay_to
                 }
 
                 if (item.pay_to.isEmpty()){
                     holder.binding.textViewPaidFrom.text = "Get From :---"
                 }else{
-                    holder.binding.textViewPaidFrom.text = "Get From  "+item.pay_to
+                    holder.binding.textViewPaidFrom.text = "Get From  "+item.paid_for
                 }
 
             }
@@ -129,6 +139,7 @@ class DetailListAdapter(val accountId: Int,val onClickListener: OnClickListener)
     }
 
     interface OnClickListener{
-        fun openBottomSheet(accountId:Int,accountBalance:Int)
+        fun openBottomSheet(accountId:Int,accountBalance:Int,item:DetailsFileTable?)
+        fun openActionOnTransactionBottomSheet(item:DetailsFileTable)
     }
 }

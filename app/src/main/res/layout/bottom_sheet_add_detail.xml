@@ -280,7 +280,7 @@
 
             <ImageView
                 app:layout_constraintTop_toTopOf="@+id/text_view_paid_for"
-                app:layout_constraintBottom_toBottomOf="@+id/text_view_paid_for"
+
                 app:layout_constraintEnd_toEndOf="parent"
                 android:id="@+id/image_view_paid_for"
                 android:layout_marginEnd="40dp"

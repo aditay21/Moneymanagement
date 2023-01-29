@@ -22,6 +22,18 @@ class AccountViewModel(private val managementRepository: MoneyManagementReposito
        return managementRepository.getAccountDetailsByAccountId(accountId).asLiveData()
     }
 
+    fun updateAccountName(accountId: Int,accountName:String) {
+        viewModelScope.launch {
+            managementRepository.updateAccountName(accountName, accountId)
+        }
+    }
+
+    fun removeAccountById(accountId: Int) {
+        viewModelScope.launch {
+            managementRepository.removeAccountById(accountId)
+        }
+    }
+
     class AccountViewModelFactory(private val repository: MoneyManagementRepository) : ViewModelProvider.Factory {
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
             if (modelClass.isAssignableFrom(AccountViewModel::class.java)) {
