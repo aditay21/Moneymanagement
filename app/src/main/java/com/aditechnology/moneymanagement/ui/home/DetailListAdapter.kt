@@ -77,7 +77,10 @@ class DetailListAdapter(val accountId: Int,val onClickListener: OnClickListener)
 
             (holder as RowListViewHolder).binding.textViewDate.text = "$date  ${time}"
             (holder as RowListViewHolder).itemView.setOnClickListener{
-                onClickListener.openActionOnTransactionBottomSheet(item)
+                if (headerItem.size>0)
+                onClickListener.openActionOnTransactionBottomSheet(headerItem[0].
+                accountBalance.toInt(),
+                    item)
             }
 
             holder.binding.textViewPaidFrom.text = item.pay_to
@@ -141,6 +144,6 @@ class DetailListAdapter(val accountId: Int,val onClickListener: OnClickListener)
 
     interface OnClickListener{
         fun openBottomSheet(accountId:Int,accountBalance:Int,item:DetailsFileTable?)
-        fun openActionOnTransactionBottomSheet(item:DetailsFileTable)
+        fun openActionOnTransactionBottomSheet(accountId: Int,item:DetailsFileTable)
     }
 }

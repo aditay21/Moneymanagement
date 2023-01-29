@@ -237,7 +237,7 @@ class DetailListFragment : Fragment() , DetailListAdapter.OnClickListener {
         binding.textViewTime.text = DateTimeUtils.getTime()
     }
 
-    override fun openActionOnTransactionBottomSheet(item: DetailsFileTable) {
+    override fun openActionOnTransactionBottomSheet(accountBalance: Int,item: DetailsFileTable) {
 
         val dialog = BottomSheetDialog(requireContext(), R.style.BaseBottomSheetDialog)
         val inflater = LayoutInflater.from(requireContext())
@@ -249,7 +249,7 @@ class DetailListFragment : Fragment() , DetailListAdapter.OnClickListener {
         binding.textViewUpdateAccount.text = "Update Transaction"
         binding.textViewRemoveAccount.text = "Remove Transaction"
         binding.textViewUpdateAccount.setOnClickListener {
-            //  updateTheAccountName(accountId)
+            openBottomSheet(accountId,accountBalance,item)
             dialog.dismiss()
         }
         binding.textViewRemoveAccount.setOnClickListener {

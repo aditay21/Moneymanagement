@@ -41,7 +41,7 @@ class MoneyManagementRepository(private val expenseIncomeDao: ExpenseIncomeDao) 
     }
     suspend fun updateTransactionById(money: Int, type: Type, accountId : Int, payTo:String, date:String,
                  time:String, paidFor:String, id: Int){
-        expenseIncomeDao.updateTransactionById(money,type,accountId,payTo,date,time,paidFor,id)
+        expenseIncomeDao.updateTransactionById(money,type,payTo,date,time,paidFor,id)
     }
 
 }

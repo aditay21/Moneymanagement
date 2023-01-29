@@ -39,11 +39,10 @@ interface ExpenseIncomeDao {
     @Query("DELETE FROM expense_income_details WHERE account_id LIKE :accountId")
     suspend fun removeAccountDetailsById(accountId: String)
 
-    @Query("UPDATE expense_income_details set money =:money,type =:type,pay_to =:payTo,date=:date,time=:time,paid_for=:paidFor")
+    @Query("UPDATE expense_income_details set money =:money,type =:type,pay_to =:payTo,date=:date,time=:time,paid_for=:paidFor WHERE id LIKE :id")
     suspend  fun updateTransactionById(
         money: Int,
         type: Type,
-        accountId: Int,
         payTo: String,
         date: String,
         time: String,

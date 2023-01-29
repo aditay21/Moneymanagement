@@ -60,7 +60,7 @@ class AllAccountListAdapter(val onclickListener: OnClickListener) : RecyclerView
             holder.accountBalance.text = adapterList?.get(position-1)?.accountBalance.toString()
             holder.accountBalance.setTextColor(Color.RED)
             holder.date.text = adapterList?.get(position-1)?.let { getDateTime(it.date) }
-            (holder as AccountListViewHolder).itemView.setOnLongClickListener {view ->
+            (holder as AccountListViewHolder).itemView.setOnClickListener() {view ->
                 var id  = adapterList?.get(position-1)!!.accountId
                     if (adapterList?.get(position-1)!!.accountName != "Personal"){
                         onclickListener.openBottomSheet(id)
