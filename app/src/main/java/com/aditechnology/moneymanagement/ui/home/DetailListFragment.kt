@@ -85,6 +85,21 @@ class DetailListFragment : Fragment() , DetailListAdapter.OnClickListener {
                 R.color.white
             )
         )
+        if (item!=null) {
+            if (item.type ==1){
+                binding.textViewWhoToPayTitle.text = "Pay to"
+                binding.textViewPaidForTitle.text = "Pay For"
+            }else{
+                binding.textViewWhoToPayTitle.text = "Get From"
+                binding.textViewPaidForTitle.text = "Get For"
+            }
+            binding.edittextAmount.setText(item.money.toString())
+            binding.textViewTime.text = item.time
+            binding.textViewDate.text = item.date
+            binding.editTextPaidFor.setText(item.paid_for)
+            binding.edittextToPay.setText(item.pay_to)
+        }
+
         binding.textViewExpense.setOnClickListener {
             binding.textViewWhoToPayTitle.text = "Pay to"
             binding.textViewPaidForTitle.text = "Pay For"
@@ -167,19 +182,46 @@ class DetailListFragment : Fragment() , DetailListAdapter.OnClickListener {
                         val time =
                             DateTimeUtils.getTimeStampFromTime(binding.textViewTime.text.toString())
 
-                        expenseIncomeViewModel.insert(
-                            binding.edittextAmount.text.toString().toInt(),
-                            type,
-                            accountId,
-                            binding.editTextPaidFor.text.toString(),
-                            date.toString(),
-                            time.toString(),
-                            binding.edittextToPay.text.toString()
-                        )
-                        accountViewModel.updateAccountBalance(
-                            totalBalance.toString(),accountId
-                        )
-                        Toast.makeText(requireContext(), "Transaction added", Toast.LENGTH_SHORT).show()
+                        if (item==null) {
+                            expenseIncomeViewModel.insert(
+                                binding.edittextAmount.text.toString().toInt(),
+                                type,
+                                accountId,
+                                binding.editTextPaidFor.text.toString(),
+                                date.toString(),
+                                time.toString(),
+                                binding.edittextToPay.text.toString()
+                            )
+                            accountViewModel.updateAccountBalance(
+                                totalBalance.toString(),accountId
+                            )
+                            Toast.makeText(requireContext(), "Transaction added", Toast.LENGTH_SHORT).show()
+                        }else{
+                            expenseIncomeViewModel.updateTransaction(
+                                binding.edittextAmount.text.toString().toInt(),
+                                type,
+                                accountId,
+                                binding.editTextPaidFor.text.toString(),
+                                date.toString(),
+                                time.toString(),
+                                binding.edittextToPay.text.toString(),item.id
+                            )
+                            totalBalance =0
+                            if(binding.edittextAmount.text.toString().toInt() != item.money){
+                                if (binding.edittextAmount.text.toString().toInt()>item.money){
+                                 val diff =   binding.edittextAmount.text.toString().toInt() - item.money
+                                     totalBalance = accountBalance+diff
+                                }else{
+                                    val diff =  item.money- binding.edittextAmount.text.toString().toInt()
+                                    totalBalance = accountBalance-diff
+                                }
+                                accountBalance-item.money
+                            }
+                            accountViewModel.updateAccountBalance(
+                                totalBalance.toString(),accountId
+                            )
+                            Toast.makeText(requireContext(), "Transaction Updated", Toast.LENGTH_SHORT).show()
+                        }
                         dialog.dismiss()
                     }
 

@@ -1,5 +1,6 @@
 package com.aditechnology.moneymanagement.models
 
+import com.aditechnology.moneymanagement.Type
 import kotlinx.coroutines.flow.Flow
 
 class MoneyManagementRepository(private val expenseIncomeDao: ExpenseIncomeDao) {
@@ -25,7 +26,7 @@ class MoneyManagementRepository(private val expenseIncomeDao: ExpenseIncomeDao) 
         return expenseIncomeDao.getAccountDetailsByAccountId(id.toString())
     }
 
-    suspend  fun updateItem(amount: String,accountId:String) {
+    suspend  fun updateAmountOfAccountById(amount: String, accountId:String) {
       expenseIncomeDao.updateAmountOfAccountById(amount,accountId)
     }
 
@@ -38,6 +39,9 @@ class MoneyManagementRepository(private val expenseIncomeDao: ExpenseIncomeDao) 
         expenseIncomeDao.removeAccountById(accountId.toString())
         expenseIncomeDao.removeAccountDetailsById(accountId.toString())
     }
-
+    suspend fun updateTransactionById(money: Int, type: Type, accountId : Int, payTo:String, date:String,
+                 time:String, paidFor:String, id: Int){
+        expenseIncomeDao.updateTransactionById(money,type,accountId,payTo,date,time,paidFor,id)
+    }
 
 }

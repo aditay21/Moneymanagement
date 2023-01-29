@@ -15,7 +15,7 @@ class AccountViewModel(private val managementRepository: MoneyManagementReposito
     }
 
     fun updateAccountBalance(amount: String,accountId: Int) = viewModelScope.launch {
-        managementRepository.updateItem(amount,accountId.toString())
+        managementRepository.updateAmountOfAccountById(amount,accountId.toString())
     }
 
     fun getAccountDetailBy(accountId :Int) :LiveData<List<AccountTable>> {
