@@ -13,8 +13,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.aditechnology.moneymanagement.MainApplication
 import com.aditechnology.moneymanagement.R
 import com.aditechnology.moneymanagement.Type
+import com.aditechnology.moneymanagement.databinding.BottomSheetAccountActionBinding
 import com.aditechnology.moneymanagement.databinding.BottomSheetAddDetailBinding
 import com.aditechnology.moneymanagement.databinding.FragmentDetailsListBinding
+import com.aditechnology.moneymanagement.models.DetailsFileTable
 import com.aditechnology.moneymanagement.utils.CalenderView
 import com.aditechnology.moneymanagement.utils.DateTimeUtils
 import com.aditechnology.moneymanagement.utils.TimeView
@@ -69,7 +71,7 @@ class DetailListFragment : Fragment() , DetailListAdapter.OnClickListener {
             }
     }
 
-    override fun openBottomSheet(accountId: Int, accountBalance: Int) {
+    override fun openBottomSheet(accountId: Int, accountBalance: Int,item: DetailsFileTable?) {
         var type: Type = Type.EXPENSE
         val dialog = BottomSheetDialog(requireContext(), R.style.BaseBottomSheetDialog)
         val inflater = LayoutInflater.from(requireContext())
@@ -233,6 +235,29 @@ class DetailListFragment : Fragment() , DetailListAdapter.OnClickListener {
         dialog.show()
         binding.textViewDate.text = DateTimeUtils.getDate()
         binding.textViewTime.text = DateTimeUtils.getTime()
+    }
+
+    override fun openActionOnTransactionBottomSheet(item: DetailsFileTable) {
+
+        val dialog = BottomSheetDialog(requireContext(), R.style.BaseBottomSheetDialog)
+        val inflater = LayoutInflater.from(requireContext())
+        val binding = BottomSheetAccountActionBinding.inflate(inflater, null, false)
+        binding.cardView.setBackgroundResource(R.drawable.bottom_sheet_shape)
+        dialog.setCancelable(true)
+        dialog.setContentView(binding.root)
+        dialog.show()
+        binding.textViewUpdateAccount.text = "Update Transaction"
+        binding.textViewRemoveAccount.text = "Remove Transaction"
+        binding.textViewUpdateAccount.setOnClickListener {
+            //  updateTheAccountName(accountId)
+            dialog.dismiss()
+        }
+        binding.textViewRemoveAccount.setOnClickListener {
+            // alertWarningBottomSheet(accountId)
+            dialog.dismiss()
+        }
+        dialog.show()
+
     }
 
 }
