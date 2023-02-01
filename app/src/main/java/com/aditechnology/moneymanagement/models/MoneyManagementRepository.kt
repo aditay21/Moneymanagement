@@ -44,4 +44,8 @@ class MoneyManagementRepository(private val expenseIncomeDao: ExpenseIncomeDao) 
         expenseIncomeDao.updateTransactionById(money,type,payTo,date,time,paidFor,id)
     }
 
+   suspend fun removeTransactionById(id: Int) {
+       expenseIncomeDao.removeTransactionById(id.toString())
+    }
+
 }

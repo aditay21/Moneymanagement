@@ -49,5 +49,7 @@ interface ExpenseIncomeDao {
         paidFor: String,
         id: Int
     )
+    @Query("DELETE FROM expense_income_details WHERE id LIKE :transactionId")
+    suspend fun removeTransactionById(transactionId: String)
 
 }

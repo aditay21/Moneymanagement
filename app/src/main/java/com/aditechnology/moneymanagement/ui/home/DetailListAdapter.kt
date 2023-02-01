@@ -58,14 +58,12 @@ class DetailListAdapter(val accountId: Int,val onClickListener: OnClickListener)
                 }
             (holder as HeaderViewHolder).binding.buttonAdd.setOnClickListener {
                 if (headerItem.isEmpty()){
-                    onClickListener.openBottomSheet(accountId,0,null)
+                    onClickListener.openBottomSheet(accountId,0)
                 }else {
                     headerItem[0]?.accountBalance?.let { it1 ->
                         onClickListener.openBottomSheet(
                             accountId,
-                            it1.toInt(),
-                            null
-
+                            it1.toInt()
                         )
                     }
                 }
@@ -143,7 +141,7 @@ class DetailListAdapter(val accountId: Int,val onClickListener: OnClickListener)
     }
 
     interface OnClickListener{
-        fun openBottomSheet(accountId:Int,accountBalance:Int,item:DetailsFileTable?)
-        fun openActionOnTransactionBottomSheet(accountId: Int,item:DetailsFileTable)
+        fun openBottomSheet(accountId:Int,accountBalance:Int)
+        fun openActionOnTransactionBottomSheet(accountBalance: Int,item:DetailsFileTable)
     }
 }

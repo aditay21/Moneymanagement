@@ -26,31 +26,20 @@ class ExpenseIncomeViewModel(private val managementRepository: MoneyManagementRe
             }
         }
             managementRepository.insertItem(value)
-          //Log.e("TAG", "Added "+ managementRepository.insertItem(value))
+
 
         }
-
-    fun  updateTransaction(money: Int, type: Type,accountId : Int,payTo:String,date:String,
-                           time:String,paidFor:String,id: Int) =
-
-        viewModelScope.launch {
-
-            when (type) {
-                Type.EXPENSE -> {
-                   managementRepository.updateTransactionById(1,type,accountId,payTo,date,time,paidFor,id)
-                }
-                else -> {
-                    managementRepository.updateTransactionById(0,type,accountId,payTo,date,time,paidFor,id)
-                }
-            }
-       //     Log.e("TAG", "upDate "+ managementRepository.insertItem(value))
-
-        }
-
 
     fun  getByAccountId(id : Int):LiveData<List<DetailsFileTable>>? {
         return managementRepository.allDetailsByAccountId(id).asLiveData()
 
+    }
+
+    fun removeTransaction(id: Int) {
+       viewModelScope.launch {
+             managementRepository.removeTransactionById(id)
+
+       }
     }
 }
 

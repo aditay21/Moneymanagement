@@ -71,7 +71,7 @@ class DetailListFragment : Fragment() , DetailListAdapter.OnClickListener {
             }
     }
 
-    override fun openBottomSheet(accountId: Int, accountBalance: Int,item: DetailsFileTable?) {
+    override fun openBottomSheet(accountId: Int, accountBalance: Int) {
         var type: Type = Type.EXPENSE
         val dialog = BottomSheetDialog(requireContext(), R.style.BaseBottomSheetDialog)
         val inflater = LayoutInflater.from(requireContext())
@@ -87,20 +87,7 @@ class DetailListFragment : Fragment() , DetailListAdapter.OnClickListener {
                 R.color.white
             )
         )
-        if (item!=null) {
-            if (item.type ==1){
-                binding.textViewWhoToPayTitle.text = "Pay to"
-                binding.textViewPaidForTitle.text = "Pay For"
-            }else{
-                binding.textViewWhoToPayTitle.text = "Get From"
-                binding.textViewPaidForTitle.text = "Get For"
-            }
-            binding.edittextAmount.setText(item.money.toString())
-            binding.textViewTime.text = item.time
-            binding.textViewDate.text = item.date
-            binding.editTextPaidFor.setText(item.paid_for)
-            binding.edittextToPay.setText(item.pay_to)
-        }
+
 
         binding.textViewExpense.setOnClickListener {
             binding.textViewWhoToPayTitle.text = "Pay to"
@@ -161,15 +148,10 @@ class DetailListFragment : Fragment() , DetailListAdapter.OnClickListener {
                     Toast.makeText(requireContext(), "Please enter the amount", Toast.LENGTH_SHORT)
                         .show()
                 } else {
-
-
-                    var totalBalance = 0
-                    if (type == Type.EXPENSE) {
-                        totalBalance =
-                            accountBalance - binding.edittextAmount.text.toString().toInt()
+                    var totalBalance = if (type == Type.EXPENSE) {
+                        accountBalance - binding.edittextAmount.text.toString().toInt()
                     } else {
-                        totalBalance =
-                            accountBalance + binding.edittextAmount.text.toString().toInt()
+                        accountBalance + binding.edittextAmount.text.toString().toInt()
                     }
 
                     if (type == Type.EXPENSE && totalBalance < 0) {
@@ -184,61 +166,37 @@ class DetailListFragment : Fragment() , DetailListAdapter.OnClickListener {
                         val time =
                             DateTimeUtils.getTimeStampFromTime(binding.textViewTime.text.toString())
 
-                        if (item==null) {
-                            expenseIncomeViewModel.insert(
-                                binding.edittextAmount.text.toString().toInt(),
-                                type,
-                                accountId,
-                                binding.editTextPaidFor.text.toString(),
-                                date.toString(),
-                                time.toString(),
-                                binding.edittextToPay.text.toString()
-                            )
-                            accountViewModel.updateAccountBalance(
-                                totalBalance.toString(),accountId
-                            )
-                            Toast.makeText(requireContext(), "Transaction added", Toast.LENGTH_SHORT).show()
-                        }else{
-                            expenseIncomeViewModel.updateTransaction(
-                                binding.edittextAmount.text.toString().toInt(),
-                                type,
-                                accountId,
-                                binding.editTextPaidFor.text.toString(),
-                                date.toString(),
-                                time.toString(),
-                                binding.edittextToPay.text.toString(),item.id
-                            )
-                            totalBalance =0
-                            if(binding.edittextAmount.text.toString().toInt() != item.money){
-                                if (binding.edittextAmount.text.toString().toInt()>item.money){
-                                 val diff =   binding.edittextAmount.text.toString().toInt() - item.money
-                                     totalBalance = accountBalance+diff
-                                }else{
-                                    val diff =  item.money- binding.edittextAmount.text.toString().toInt()
-                                    totalBalance = accountBalance-diff
-                                }
-                                accountBalance-item.money
-                            }
-                            accountViewModel.updateAccountBalance(
-                                totalBalance.toString(),accountId
-                            )
-                            Toast.makeText(requireContext(), "Transaction Updated", Toast.LENGTH_SHORT).show()
-                        }
-                        dialog.dismiss()
+
+                        expenseIncomeViewModel.insert(
+                            binding.edittextAmount.text.toString().toInt(),
+                            type,
+                            accountId,
+                            binding.editTextPaidFor.text.toString(),
+                            date.toString(),
+                            time.toString(),
+                            binding.edittextToPay.text.toString()
+                        )
+                        accountViewModel.updateAccountBalance(
+                            totalBalance.toString(), accountId
+                        )
+                        Toast.makeText(requireContext(), "Transaction added", Toast.LENGTH_SHORT)
+                            .show()
                     }
 
+                    dialog.dismiss()
+                }
 
-
-
-            }}
+            }
         }
         dialog.show()
         binding.textViewDate.text = DateTimeUtils.getDate()
         binding.textViewTime.text = DateTimeUtils.getTime()
     }
 
-    override fun openActionOnTransactionBottomSheet(accountBalance: Int,item: DetailsFileTable) {
 
+
+    override fun openActionOnTransactionBottomSheet(accountBalance: Int,item: DetailsFileTable) {
+        var mAccountBalance = accountBalance
         val dialog = BottomSheetDialog(requireContext(), R.style.BaseBottomSheetDialog)
         val inflater = LayoutInflater.from(requireContext())
         val binding = BottomSheetAccountActionBinding.inflate(inflater, null, false)
@@ -246,18 +204,26 @@ class DetailListFragment : Fragment() , DetailListAdapter.OnClickListener {
         dialog.setCancelable(true)
         dialog.setContentView(binding.root)
         dialog.show()
-        binding.textViewUpdateAccount.text = "Update Transaction"
-        binding.textViewRemoveAccount.text = "Remove Transaction"
-        binding.textViewUpdateAccount.setOnClickListener {
-            openBottomSheet(accountId,accountBalance,item)
-            dialog.dismiss()
-        }
-        binding.textViewRemoveAccount.setOnClickListener {
-            // alertWarningBottomSheet(accountId)
-            dialog.dismiss()
-        }
-        dialog.show()
 
+        binding.textViewRemoveAccount.text = "Remove Transaction"
+        binding.imageViewUpdateAccount.visibility =View.GONE
+        binding.textViewUpdateAccount.visibility = View.GONE
+        binding.textViewRemoveAccount.setOnClickListener {
+            expenseIncomeViewModel.removeTransaction(item.id)
+             if (item.type==1){
+                // expense
+                 mAccountBalance += item.money
+             }else{
+                 //income
+                 mAccountBalance -= item.money
+             }
+
+            accountViewModel.updateAccountBalance(
+                mAccountBalance.toString(), accountId
+            )
+            dialog.dismiss()
+        } 
+        dialog.show()
     }
 
 }
