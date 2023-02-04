@@ -28,19 +28,6 @@
 
     </fragment>
 
-
-    <fragment
-        android:id="@+id/navigation_details_list_fragment"
-        android:name="com.aditechnology.moneymanagement.ui.home.DetailListFragment"
-        android:label="@string/title_detail"
-        tools:layout="@layout/fragment_details_list" >
-
-        <action
-            android:id="@+id/action_account_to_expense_income"
-            app:destination="@id/navigation_expense_income" />
-
-    </fragment>
-
     <fragment
         android:id="@+id/navigation_dashboard"
         android:name="com.aditechnology.moneymanagement.ui.account.AccountFragment"

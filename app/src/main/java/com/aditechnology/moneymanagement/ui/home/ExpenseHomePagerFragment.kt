@@ -37,9 +37,9 @@ class ExpenseHomePagerFragment :Fragment(){
         _binding?.let {
             TabLayoutMediator(it.tabLayout, it.pager) { tab, position ->
                if (position==0) {
-                   tab.text = "Expense"
-               }else{
                    tab.text = "Income"
+               }else{
+                   tab.text = "Expense"
                }
             }.attach()
         }

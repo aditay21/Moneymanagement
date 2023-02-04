@@ -77,7 +77,7 @@ class ExpenseIncomeDetailListAdapter(val onClickListener: OnClickListener) : Rec
     }
 
     override fun getItemCount(): Int {
-       return adapterList?.size!!+1
+       return adapterList!!.size
     }
 
     fun updateList(list: List<DetailsFileTable>){
