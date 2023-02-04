@@ -30,6 +30,10 @@ class ExpenseIncomeViewModel(private val managementRepository: MoneyManagementRe
 
         }
 
+    fun  getExpenseIncomeByAccountId(id : Int,type :Int):LiveData<List<DetailsFileTable>>? {
+        return managementRepository.allExpenseOrIncomeByAccountId(id,type).asLiveData()
+    }
+
     fun  getByAccountId(id : Int):LiveData<List<DetailsFileTable>>? {
         return managementRepository.allDetailsByAccountId(id).asLiveData()
 

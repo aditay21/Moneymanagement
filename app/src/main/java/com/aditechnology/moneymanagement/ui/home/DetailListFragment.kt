@@ -17,6 +17,7 @@ import com.aditechnology.moneymanagement.databinding.BottomSheetAccountActionBin
 import com.aditechnology.moneymanagement.databinding.BottomSheetAddDetailBinding
 import com.aditechnology.moneymanagement.databinding.FragmentDetailsListBinding
 import com.aditechnology.moneymanagement.models.DetailsFileTable
+import com.aditechnology.moneymanagement.ui.adapter.DetailListAdapter
 import com.aditechnology.moneymanagement.utils.CalenderView
 import com.aditechnology.moneymanagement.utils.DateTimeUtils
 import com.aditechnology.moneymanagement.utils.TimeView
@@ -24,8 +25,6 @@ import com.aditechnology.moneymanagement.viewmodel.AccountViewModel
 import com.aditechnology.moneymanagement.viewmodel.ExpenseIncomeViewModel
 import com.aditechnology.moneymanagement.viewmodel.ExpenseViewModelFactory
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import java.text.SimpleDateFormat
-import java.util.*
 
 class DetailListFragment : Fragment() , DetailListAdapter.OnClickListener {
     private lateinit var mAccountListAdapter: DetailListAdapter
@@ -137,13 +136,13 @@ class DetailListFragment : Fragment() , DetailListAdapter.OnClickListener {
             timepicker.show(parentFragmentManager, "showDate")
         }
         binding.buttonCreate.setOnClickListener {
-            if (type== Type.EXPENSE && accountBalance <= 0) {
+           /* if (type== Type.EXPENSE && accountBalance <= 0) {
                 Toast.makeText(
                     requireContext(),
                     "You don't have money in account",
                     Toast.LENGTH_SHORT
                 ).show()
-            } else {
+            } else {*/
                 if (TextUtils.isEmpty(binding.edittextAmount.text.toString())) {
                     Toast.makeText(requireContext(), "Please enter the amount", Toast.LENGTH_SHORT)
                         .show()
@@ -154,20 +153,19 @@ class DetailListFragment : Fragment() , DetailListAdapter.OnClickListener {
                         accountBalance + binding.edittextAmount.text.toString().toInt()
                     }
 
-                    if (type == Type.EXPENSE && totalBalance < 0) {
+                    /*if (type == Type.EXPENSE && totalBalance < 0) {
                         Toast.makeText(
                             requireContext(),
                             "Your transaction is more then you have balance in this account ",
                             Toast.LENGTH_SHORT
                         ).show()
-                    } else {
+                    } else {*/
                         val date =
                             DateTimeUtils.getTimeStampFromDate(binding.textViewDate.text.toString())
                         val time =
                             DateTimeUtils.getTimeStampFromTime(binding.textViewTime.text.toString())
 
-
-                        expenseIncomeViewModel.insert(
+                    expenseIncomeViewModel.insert(
                             binding.edittextAmount.text.toString().toInt(),
                             type,
                             accountId,
@@ -184,10 +182,10 @@ class DetailListFragment : Fragment() , DetailListAdapter.OnClickListener {
                     }
 
                     dialog.dismiss()
-                }
+
 
             }
-        }
+
         dialog.show()
         binding.textViewDate.text = DateTimeUtils.getDate()
         binding.textViewTime.text = DateTimeUtils.getTime()

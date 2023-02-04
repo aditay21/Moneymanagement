@@ -19,6 +19,10 @@ interface ExpenseIncomeDao {
      @Query("SELECT * FROM expense_income_details WHERE account_id LIKE :account_id")
     fun getAllDetailsByAccountId(account_id :String): Flow<List<DetailsFileTable>>
 
+    @Query("SELECT * FROM expense_income_details WHERE account_id LIKE :account_id AND type LIKE :type")
+    fun getAllExpenseOrIncomeDetailsByAccountId(account_id :String,type:Int): Flow<List<DetailsFileTable>>
+
+
     @Query("SELECT * FROM account_detail")
     fun getAllAccountDetail(): Flow<List<AccountTable>>
 

@@ -1,24 +1,19 @@
-package com.aditechnology.moneymanagement.ui.home
+package com.aditechnology.moneymanagement.ui.adapter
 
 import android.graphics.Color
+import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.aditechnology.moneymanagement.R
 import com.aditechnology.moneymanagement.databinding.RowTransactionBinding
-import com.aditechnology.moneymanagement.databinding.ViewHolderAccountViewBinding
 import com.aditechnology.moneymanagement.databinding.ViewHolderDetailSummeryBinding
-import com.aditechnology.moneymanagement.databinding.ViewHolderDetailViewBinding
 import com.aditechnology.moneymanagement.models.AccountTable
 import com.aditechnology.moneymanagement.models.DetailsFileTable
 import com.aditechnology.moneymanagement.utils.DateTimeUtils
-import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.collections.ArrayList
+
 
 class DetailListAdapter(val accountId: Int,val onClickListener: OnClickListener) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
      private val HEADER = 0
@@ -68,6 +63,12 @@ class DetailListAdapter(val accountId: Int,val onClickListener: OnClickListener)
                     }
                 }
                 }
+
+            holder.binding.buttonDetail.setOnClickListener { view->
+                val bundle = Bundle()
+                bundle.putInt("accountid", accountId)
+                view.findNavController().navigate(R.id.action_account_to_expense_income,bundle)
+            }
         }else {
              val item =  adapterList[position-1]
              val date = DateTimeUtils.getDateFromTimeStamp(item.date)

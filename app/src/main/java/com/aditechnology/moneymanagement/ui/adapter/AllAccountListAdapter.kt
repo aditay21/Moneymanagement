@@ -4,14 +4,12 @@ import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import android.widget.TextView
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.aditechnology.moneymanagement.R
 import com.aditechnology.moneymanagement.databinding.ViewHolderDetailSummeryBinding
 import com.aditechnology.moneymanagement.models.AccountTable
-import com.aditechnology.moneymanagement.ui.home.DetailListAdapter
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
@@ -55,6 +53,7 @@ class AllAccountListAdapter(val onclickListener: OnClickListener) : RecyclerView
                 view.findNavController().navigate(R.id.action_account_to_createfragment)
             }
             holder.binding.textViewTotalAmount.text = mAccountBalance.toString()
+            holder.binding.buttonDetail.visibility = View.INVISIBLE
         }else {
             (holder as AccountListViewHolder).accountName.text = adapterList?.get(position-1)?.accountName
             holder.accountBalance.text = adapterList?.get(position-1)?.accountBalance.toString()

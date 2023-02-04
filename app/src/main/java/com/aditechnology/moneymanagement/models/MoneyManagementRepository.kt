@@ -22,6 +22,11 @@ class MoneyManagementRepository(private val expenseIncomeDao: ExpenseIncomeDao) 
 
     }
 
+    fun allExpenseOrIncomeByAccountId(id: Int,type:Int) : Flow<List<DetailsFileTable>>{
+        return expenseIncomeDao.getAllExpenseOrIncomeDetailsByAccountId(id.toString(),type)
+
+    }
+
     fun getAccountDetailsByAccountId(id: Int) : Flow<List<AccountTable>>{
         return expenseIncomeDao.getAccountDetailsByAccountId(id.toString())
     }
