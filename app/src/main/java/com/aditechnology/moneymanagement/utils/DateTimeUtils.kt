@@ -1,8 +1,10 @@
 package com.aditechnology.moneymanagement.utils
 
+import android.annotation.SuppressLint
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
+
 
 class DateTimeUtils {
 
@@ -27,6 +29,13 @@ class DateTimeUtils {
             val date = formatter.parse(date) as Date
             return date.time
        }
+        fun getCalculatedPreviousDayDateTimeStamp(timeStamp: String?): String? {
+            val cal = Calendar.getInstance()
+            cal.timeInMillis= timeStamp!!.toLong()
+            cal.add(Calendar.DAY_OF_YEAR, -1)
+            return cal.timeInMillis.toString()
+        }
+
 
         fun getTimeStampFromTime(time: String): Long {
             val formatter: DateFormat = SimpleDateFormat(TIME_FORMAT)
@@ -39,10 +48,27 @@ class DateTimeUtils {
             return formatter.format(Date(date.toLong()))
         }
 
+
+
         fun getTimeFromTimeStamp(time: String): String {
             val formatter: DateFormat = SimpleDateFormat(TIME_FORMAT)
             return formatter.format(Date(time.toLong()))
 
         }
+        @SuppressLint("SimpleDateFormat")
+        fun getCurrentTimestamp(): String? {
+            return SimpleDateFormat(DATE_FORMAT).format(
+                Calendar
+                    .getInstance().time
+            )
+        }
+
+        fun getCalculatedNextDayDateTimeStamp(timeStamp: String?): String? {
+            val cal = Calendar.getInstance()
+            cal.timeInMillis= timeStamp!!.toLong()
+            cal.add(Calendar.DAY_OF_YEAR, +1)
+            return cal.timeInMillis.toString()
+        }
     }
+
 }

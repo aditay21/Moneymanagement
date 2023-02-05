@@ -31,7 +31,7 @@
         <entry key="..\:/Moneymanagement/app/src/main/res/layout/fragment_create_account.xml" value="0.1" />
         <entry key="..\:/Moneymanagement/app/src/main/res/layout/fragment_dashboard.xml" value="0.109375" />
         <entry key="..\:/Moneymanagement/app/src/main/res/layout/fragment_details_list.xml" value="0.1" />
-        <entry key="..\:/Moneymanagement/app/src/main/res/layout/fragment_expense_income_fragment.xml" value="0.2794258373205742" />
+        <entry key="..\:/Moneymanagement/app/src/main/res/layout/fragment_expense_income_fragment.xml" value="0.2935897435897436" />
         <entry key="..\:/Moneymanagement/app/src/main/res/layout/fragment_first.xml" value="0.15208333333333332" />
         <entry key="..\:/Moneymanagement/app/src/main/res/layout/fragment_home.xml" value="0.1" />
         <entry key="..\:/Moneymanagement/app/src/main/res/layout/fragment_notifications.xml" value="0.11041666666666666" />
@@ -42,6 +42,7 @@
         <entry key="..\:/Moneymanagement/app/src/main/res/layout/view_holder_detail_view.xml" value="0.11073108165882856" />
         <entry key="..\:/Moneymanagement/app/src/main/res/menu/bottom_nav_menu.xml" value="0.1515625" />
         <entry key="..\:/Moneymanagement/app/src/main/res/menu/menu_main.xml" value="0.1" />
+        <entry key="..\:/Moneymanagement/app/src/main/res/menu/popup_menu.xml" value="0.1248396750748183" />
       </map>
     </option>
   </component>
