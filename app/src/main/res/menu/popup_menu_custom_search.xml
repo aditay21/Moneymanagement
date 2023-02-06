@@ -8,7 +8,7 @@
         android:title="Monthly" />
     <item
         android:id="@+id/yearly"
-        android:title="yearly" />
+        android:title="Yearly" />
     <item
         android:id="@+id/custom"
         android:title="Custom" />

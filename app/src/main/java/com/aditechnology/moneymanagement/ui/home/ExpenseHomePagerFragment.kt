@@ -1,29 +1,41 @@
 package com.aditechnology.moneymanagement.ui.home
 
 
+import android.opengl.Visibility
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupMenu
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.aditechnology.moneymanagement.MainApplication
 import com.aditechnology.moneymanagement.R
+import com.aditechnology.moneymanagement.databinding.BottomSheetAccountActionBinding
+import com.aditechnology.moneymanagement.databinding.BottomsheetCustomRangeBinding
 import com.aditechnology.moneymanagement.databinding.FragmentExpenseIncomeFragmentBinding
 import com.aditechnology.moneymanagement.models.DetailsFileTable
 import com.aditechnology.moneymanagement.ui.adapter.ExpenseIncomeDetailListAdapter
+import com.aditechnology.moneymanagement.utils.CalenderView
 import com.aditechnology.moneymanagement.utils.DateTimeUtils
+import com.aditechnology.moneymanagement.viewmodel.AccountViewModel
 import com.aditechnology.moneymanagement.viewmodel.ExpenseIncomeViewModel
 import com.aditechnology.moneymanagement.viewmodel.ExpenseViewModelFactory
+import com.google.android.material.bottomsheet.BottomSheetDialog
 
 
 class ExpenseHomePagerFragment :Fragment(),ExpenseIncomeDetailListAdapter.OnClickListener{
+    var mTotalBalance = 0
     var mSearchFilter =0
     private lateinit var mAccountListAdapter: ExpenseIncomeDetailListAdapter
     private val expenseIncomeViewModel: ExpenseIncomeViewModel by viewModels {
         ExpenseViewModelFactory((requireActivity().application as MainApplication).repository)
+    }
+
+    private val accountViewModel : AccountViewModel by viewModels {
+        AccountViewModel.AccountViewModelFactory((requireActivity().application as MainApplication).repository)
     }
 
     private var _binding: FragmentExpenseIncomeFragmentBinding? = null
@@ -42,60 +54,79 @@ class ExpenseHomePagerFragment :Fragment(),ExpenseIncomeDetailListAdapter.OnClic
         arguments?.takeIf { it.containsKey("accountid") }?.apply {
             accountId = requireArguments().getInt("accountid", 0);
         }
-
+        binding?.imageViewFilterApplied?.visibility   = View.GONE
+        accountViewModel.getAccountDetailBy(accountId)?.observe(requireActivity()){
+                list->
+            if (list.isNotEmpty()){
+                mTotalBalance = list[0].accountBalance.toInt()
+            }
+        }
         binding.textViewCurrentDateYearSelection.text = DateTimeUtils.getDate()
         setObservers(DateTimeUtils.getTimeStampFromDate(DateTimeUtils.getDate()).toString())
 
         binding.imageViewPrevious.setOnClickListener {
-            val currentDateSearch =  binding.textViewCurrentDateYearSelection.text.toString()
-            var   searchDateTime =""
-            var searchDate=""
-            if (mSearchFilter ==0) {
-                searchDate = DateTimeUtils.getCalculatedPreviousDayDateTimeStamp(
-                    DateTimeUtils.getTimeStampFromDate(currentDateSearch).toString())
-                 searchDateTime = DateTimeUtils.getDateFromTimeStamp(searchDate)
-                binding.textViewCurrentDateYearSelection.text=searchDateTime
-                if (searchDate != null) {
-                    setObservers(searchDate)
+            if (mSearchFilter != 3) {
+                val currentDateSearch = binding.textViewCurrentDateYearSelection.text.toString()
+                var searchDateTime = ""
+                var searchDate = ""
+                if (mSearchFilter == 0) {
+                    searchDate = DateTimeUtils.getCalculatedPreviousDayDateTimeStamp(
+                        DateTimeUtils.getTimeStampFromDate(currentDateSearch).toString()
+                    )
+                    searchDateTime = DateTimeUtils.getDateFromTimeStamp(searchDate)
+                    binding.textViewCurrentDateYearSelection.text = searchDateTime
+                    if (searchDate != null) {
+                        setObservers(searchDate)
+                    }
+                } else if (mSearchFilter == 1) {
+                    searchDate =
+                        DateTimeUtils.getPreviousMonth(binding.textViewCurrentDateYearSelection.text.toString())
+                    binding.textViewCurrentDateYearSelection.text = searchDate
+                    val monthStartDate: String =
+                        DateTimeUtils.getTimestampOfStartDateOfMonth(searchDate)
+                    val monthEndDate: String =
+                        DateTimeUtils.getTimestampOfEndDateOfMonth(searchDate)
+                    setObserversMonthlyWise(monthStartDate, monthEndDate)
+
+                } else if (mSearchFilter == 2) {
+                    searchDate =
+                        DateTimeUtils.getPreviousYear(binding.textViewCurrentDateYearSelection.text.toString())
+                    binding.textViewCurrentDateYearSelection.text = searchDate
+                    val monthStartDate: String =
+                        DateTimeUtils.getTimestampOfStartDateOfYear(searchDate)
+                    val monthEndDate: String = DateTimeUtils.getTimestampOfEndDateOfYear(searchDate)
+                    setObserversMonthlyWise(monthStartDate, monthEndDate)
+
                 }
-            }else if (mSearchFilter==1){
-                searchDate = DateTimeUtils.getPreviousMonth(binding.textViewCurrentDateYearSelection.text.toString())
-                binding.textViewCurrentDateYearSelection.text=searchDate
-                val monthStartDate :String = DateTimeUtils.getTimestampOfStartDateOfMonth(searchDate)
-                val monthEndDate :String = DateTimeUtils.getTimestampOfEndDateOfMonth(searchDate)
-                setObserversMonthlyWise(monthStartDate,monthEndDate)
 
+            }else{
+                Toast.makeText(requireContext(),
+                    "Button Disabled for Custom Search",
+                    Toast.LENGTH_SHORT).show()
             }
-            else if (mSearchFilter==2){
-                searchDate = DateTimeUtils.getPreviousYear(binding.textViewCurrentDateYearSelection.text.toString())
-                binding.textViewCurrentDateYearSelection.text=searchDate
-                val monthStartDate :String = DateTimeUtils.getTimestampOfStartDateOfYear(searchDate)
-                val monthEndDate :String = DateTimeUtils.getTimestampOfEndDateOfYear(searchDate)
-                setObserversMonthlyWise(monthStartDate,monthEndDate)
-
-            }
-
-
         }
         binding.imageViewFiltter.setOnClickListener {
             val popupMenu = PopupMenu(requireContext(), binding.imageViewFiltter)
-            popupMenu.menuInflater.inflate(R.menu.popup_menu, popupMenu.menu)
+            popupMenu.menuInflater.inflate(R.menu.popup_menu_custom_search, popupMenu.menu)
             popupMenu.show()
             popupMenu.setOnMenuItemClickListener { menuItem ->
                 when(menuItem.title){
                     "clear"->{
+                        binding?.imageViewFiltter?.visibility   = View.GONE
                         mSearchFilter =0
                         setObservers(DateTimeUtils.getDate())
                     }
                     "Monthly"->{
                         mSearchFilter=1
+                        binding?.imageViewFilterApplied?.visibility   = View.VISIBLE
                         binding.textViewCurrentDateYearSelection.text = DateTimeUtils.getCurrentMonth()
                         val monthStartDate :String = DateTimeUtils.getTimestampOfStartDateOfMonth(DateTimeUtils.getCurrentMonth())
                         val monthEndDate :String = DateTimeUtils.getTimestampOfEndDateOfMonth(DateTimeUtils.getCurrentMonth())
                         setObserversMonthlyWise(monthStartDate,monthEndDate)
                     }
 
-                    "yearly"->{
+                    "Yearly"->{
+                        binding?.imageViewFilterApplied?.visibility   = View.VISIBLE
                         mSearchFilter=2
                         binding.textViewCurrentDateYearSelection.text = DateTimeUtils.getCurrentYear()
                         val monthStartDate :String = DateTimeUtils.getTimestampOfStartDateOfYear(DateTimeUtils.getCurrentYear())
@@ -103,9 +134,9 @@ class ExpenseHomePagerFragment :Fragment(),ExpenseIncomeDetailListAdapter.OnClic
                         setObserversMonthlyWise(monthStartDate,monthEndDate)
 
                     }
-                    "custom"->{
+                    "Custom"->{
                         mSearchFilter=3
-
+                        openCustomRangeBottomSheet()
                     }
                 }
 
@@ -116,34 +147,42 @@ class ExpenseHomePagerFragment :Fragment(),ExpenseIncomeDetailListAdapter.OnClic
             }
         }
         binding.imageViewNext.setOnClickListener {
-            val currentDateSearch =  binding.textViewCurrentDateYearSelection.text.toString()
-            var searchDate=""
-            if (mSearchFilter ==0) {
-                 searchDate = DateTimeUtils.getCalculatedNextDayDateTimeStamp(
-                    DateTimeUtils.getTimeStampFromDate(currentDateSearch).toString()
-                )
-                val searchDateTime = DateTimeUtils.getDateFromTimeStamp(searchDate.toString())
-                binding.textViewCurrentDateYearSelection.text = searchDateTime
-                if (searchDate != null) {
-                    setObservers(searchDate)
-                }
-            }else if (mSearchFilter==1){
-                searchDate = DateTimeUtils.getNextMonth(currentDateSearch)
-                binding.textViewCurrentDateYearSelection.text=searchDate
-                if (searchDate!=null){
-                    val monthStartDate :String = DateTimeUtils.getTimestampOfStartDateOfMonth(searchDate)
-                    val monthEndDate :String = DateTimeUtils.getTimestampOfEndDateOfMonth(searchDate)
-                    setObserversMonthlyWise(monthStartDate,monthEndDate)
-                }
-            }
-            else if (mSearchFilter==2){
-                //  val getDateFromText = DateTimeUtils.getCurrentMonthFromMonthSelecetd(currentDateSearch)
-                searchDate = DateTimeUtils.getNextYear(currentDateSearch)
-                binding.textViewCurrentDateYearSelection.text=searchDate
-                val monthStartDate :String = DateTimeUtils.getTimestampOfStartDateOfYear(searchDate)
-                val monthEndDate :String = DateTimeUtils.getTimestampOfEndDateOfYear(searchDate)
-                setObserversMonthlyWise(monthStartDate,monthEndDate)
+            if (mSearchFilter != 3) {
+                val currentDateSearch = binding.textViewCurrentDateYearSelection.text.toString()
+                var searchDate = ""
+                if (mSearchFilter == 0) {
+                    searchDate = DateTimeUtils.getCalculatedNextDayDateTimeStamp(
+                        DateTimeUtils.getTimeStampFromDate(currentDateSearch).toString()
+                    )
+                    val searchDateTime = DateTimeUtils.getDateFromTimeStamp(searchDate.toString())
+                    binding.textViewCurrentDateYearSelection.text = searchDateTime
+                    if (searchDate != null) {
+                        setObservers(searchDate)
+                    }
+                } else if (mSearchFilter == 1) {
+                    searchDate = DateTimeUtils.getNextMonth(currentDateSearch)
+                    binding.textViewCurrentDateYearSelection.text = searchDate
+                    if (searchDate != null) {
+                        val monthStartDate: String =
+                            DateTimeUtils.getTimestampOfStartDateOfMonth(searchDate)
+                        val monthEndDate: String =
+                            DateTimeUtils.getTimestampOfEndDateOfMonth(searchDate)
+                        setObserversMonthlyWise(monthStartDate, monthEndDate)
+                    }
+                } else if (mSearchFilter == 2) {
+                    //  val getDateFromText = DateTimeUtils.getCurrentMonthFromMonthSelecetd(currentDateSearch)
+                    searchDate = DateTimeUtils.getNextYear(currentDateSearch)
+                    binding.textViewCurrentDateYearSelection.text = searchDate
+                    val monthStartDate: String =
+                        DateTimeUtils.getTimestampOfStartDateOfYear(searchDate)
+                    val monthEndDate: String = DateTimeUtils.getTimestampOfEndDateOfYear(searchDate)
+                    setObserversMonthlyWise(monthStartDate, monthEndDate)
 
+                }
+            }else{
+                Toast.makeText(requireContext(),
+                    "Button Disabled for Custom Search",
+                    Toast.LENGTH_SHORT).show()
             }
         }
         mAccountListAdapter = ExpenseIncomeDetailListAdapter( this)
@@ -171,22 +210,75 @@ class ExpenseHomePagerFragment :Fragment(),ExpenseIncomeDetailListAdapter.OnClic
                 }
         }
     }
-
-   /* private fun setObserversMontlyWise(starDate: String,endDate :String) {
-        if (searchDate != null) {
-            expenseIncomeViewModel.getByAccountIdAndDate(accountId, searchDate)
-                ?.observe(requireActivity()) { all ->
-                    mAccountListAdapter.updateList(all.reversed())
-
-                }
-        }
-    }*/
-
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
     }
     override fun openActionOnTransactionBottomSheet(item: DetailsFileTable) {
 
+        val dialog = BottomSheetDialog(requireContext(), R.style.BaseBottomSheetDialog)
+        val inflater = LayoutInflater.from(requireContext())
+        val binding = BottomSheetAccountActionBinding.inflate(inflater, null, false)
+        binding.cardView.setBackgroundResource(R.drawable.bottom_sheet_shape)
+        dialog.setCancelable(true)
+        dialog.setContentView(binding.root)
+        dialog.show()
+
+        binding.textViewRemoveAccount.text = "Remove Transaction"
+        binding.imageViewUpdateAccount.visibility =View.GONE
+        binding.textViewUpdateAccount.visibility = View.GONE
+        binding.textViewRemoveAccount.setOnClickListener {
+            expenseIncomeViewModel.removeTransaction(item.id)
+            if (item.type==1){
+                // expense
+                mTotalBalance -= item.money
+            }else{
+                //income
+                mTotalBalance += item.money
+            }
+
+            accountViewModel.updateAccountBalance(
+                mTotalBalance.toString(), accountId
+            )
+            dialog.dismiss()
+        }
+        dialog.show()
     }
+
+
+
+
+private fun  openCustomRangeBottomSheet(){
+    val dialog = BottomSheetDialog(requireContext(), R.style.BaseBottomSheetDialog)
+    val inflater = LayoutInflater.from(requireContext())
+    val binding = BottomsheetCustomRangeBinding.inflate(inflater, null, false)
+    binding.cardView.setBackgroundResource(R.drawable.bottom_sheet_shape)
+    dialog.setCancelable(true)
+
+    binding.buttonSearch.setOnClickListener {
+       val startDate =  DateTimeUtils.getTimeStampFromDate(binding.edittextStartDate.text.toString()).toString()
+       val endDate =  DateTimeUtils.getTimeStampFromDate(binding.edittextEndDate.text.toString()).toString()
+        setObserversMonthlyWise(startDate,endDate)
+        _binding?.imageViewFilterApplied?.visibility   = View.VISIBLE
+        dialog.dismiss()
+    }
+    binding.edittextStartDate.setOnClickListener {
+        val timepicker = CalenderView(binding.edittextStartDate)
+        timepicker.show(parentFragmentManager, "showDate")
+    }
+
+    binding.edittextEndDate.setOnClickListener {
+        val timepicker = CalenderView(binding.edittextEndDate)
+        timepicker.show(parentFragmentManager, "showDate")
+    }
+
+
+
+    dialog.setContentView(binding.root)
+    dialog.show()
+
+}
+
+
+
 }
