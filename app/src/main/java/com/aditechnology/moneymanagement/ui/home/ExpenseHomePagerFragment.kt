@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupMenu
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -62,10 +61,18 @@ class ExpenseHomePagerFragment :Fragment(),ExpenseIncomeDetailListAdapter.OnClic
             }else if (mSearchFilter==1){
                 searchDate = DateTimeUtils.getPreviousMonth(binding.textViewCurrentDateYearSelection.text.toString())
                 binding.textViewCurrentDateYearSelection.text=searchDate
+                val monthStartDate :String = DateTimeUtils.getTimestampOfStartDateOfMonth(searchDate)
+                val monthEndDate :String = DateTimeUtils.getTimestampOfEndDateOfMonth(searchDate)
+                setObserversMonthlyWise(monthStartDate,monthEndDate)
+
             }
             else if (mSearchFilter==2){
                 searchDate = DateTimeUtils.getPreviousYear(binding.textViewCurrentDateYearSelection.text.toString())
                 binding.textViewCurrentDateYearSelection.text=searchDate
+                val monthStartDate :String = DateTimeUtils.getTimestampOfStartDateOfYear(searchDate)
+                val monthEndDate :String = DateTimeUtils.getTimestampOfEndDateOfYear(searchDate)
+                setObserversMonthlyWise(monthStartDate,monthEndDate)
+
             }
 
 
@@ -73,11 +80,6 @@ class ExpenseHomePagerFragment :Fragment(),ExpenseIncomeDetailListAdapter.OnClic
         binding.imageViewFiltter.setOnClickListener {
             val popupMenu = PopupMenu(requireContext(), binding.imageViewFiltter)
             popupMenu.menuInflater.inflate(R.menu.popup_menu, popupMenu.menu)
-         /*   Toast.makeText(
-                requireContext(),
-                "You Clicked " + menuItem.title,
-                Toast.LENGTH_SHORT
-            ).show()*/
             popupMenu.show()
             popupMenu.setOnMenuItemClickListener { menuItem ->
                 when(menuItem.title){
@@ -88,13 +90,17 @@ class ExpenseHomePagerFragment :Fragment(),ExpenseIncomeDetailListAdapter.OnClic
                     "Monthly"->{
                         mSearchFilter=1
                         binding.textViewCurrentDateYearSelection.text = DateTimeUtils.getCurrentMonth()
-                        setObservers(DateTimeUtils.getDate())
+                        val monthStartDate :String = DateTimeUtils.getTimestampOfStartDateOfMonth(DateTimeUtils.getCurrentMonth())
+                        val monthEndDate :String = DateTimeUtils.getTimestampOfEndDateOfMonth(DateTimeUtils.getCurrentMonth())
+                        setObserversMonthlyWise(monthStartDate,monthEndDate)
                     }
 
                     "yearly"->{
                         mSearchFilter=2
                         binding.textViewCurrentDateYearSelection.text = DateTimeUtils.getCurrentYear()
-                        setObservers(DateTimeUtils.getDate())
+                        val monthStartDate :String = DateTimeUtils.getTimestampOfStartDateOfYear(DateTimeUtils.getCurrentYear())
+                        val monthEndDate :String = DateTimeUtils.getTimestampOfEndDateOfYear(DateTimeUtils.getCurrentYear())
+                        setObserversMonthlyWise(monthStartDate,monthEndDate)
 
                     }
                     "custom"->{
@@ -122,23 +128,38 @@ class ExpenseHomePagerFragment :Fragment(),ExpenseIncomeDetailListAdapter.OnClic
                     setObservers(searchDate)
                 }
             }else if (mSearchFilter==1){
-              //  val getDateFromText = DateTimeUtils.getCurrentMonthFromMonthSelecetd(currentDateSearch)
                 searchDate = DateTimeUtils.getNextMonth(currentDateSearch)
                 binding.textViewCurrentDateYearSelection.text=searchDate
+                if (searchDate!=null){
+                    val monthStartDate :String = DateTimeUtils.getTimestampOfStartDateOfMonth(searchDate)
+                    val monthEndDate :String = DateTimeUtils.getTimestampOfEndDateOfMonth(searchDate)
+                    setObserversMonthlyWise(monthStartDate,monthEndDate)
+                }
             }
             else if (mSearchFilter==2){
                 //  val getDateFromText = DateTimeUtils.getCurrentMonthFromMonthSelecetd(currentDateSearch)
                 searchDate = DateTimeUtils.getNextYear(currentDateSearch)
                 binding.textViewCurrentDateYearSelection.text=searchDate
+                val monthStartDate :String = DateTimeUtils.getTimestampOfStartDateOfYear(searchDate)
+                val monthEndDate :String = DateTimeUtils.getTimestampOfEndDateOfYear(searchDate)
+                setObserversMonthlyWise(monthStartDate,monthEndDate)
+
             }
-
         }
-
         mAccountListAdapter = ExpenseIncomeDetailListAdapter( this)
         var linearLayoutManager1 = LinearLayoutManager(context)
         linearLayoutManager1.orientation = LinearLayoutManager.VERTICAL
         binding.recycleView.layoutManager = linearLayoutManager1
         binding.recycleView.adapter = mAccountListAdapter
+    }
+
+    private fun setObserversMonthlyWise(monthStartDate: String, monthEndDate: String) {
+        expenseIncomeViewModel.getDetailsByAccountIdAndBYRANGE(accountId,monthStartDate, monthEndDate)
+                ?.observe(requireActivity()) { all ->
+                    mAccountListAdapter.updateList(all.reversed())
+
+                }
+
     }
 
     private fun setObservers(searchDate: String?) {
@@ -150,6 +171,16 @@ class ExpenseHomePagerFragment :Fragment(),ExpenseIncomeDetailListAdapter.OnClic
                 }
         }
     }
+
+   /* private fun setObserversMontlyWise(starDate: String,endDate :String) {
+        if (searchDate != null) {
+            expenseIncomeViewModel.getByAccountIdAndDate(accountId, searchDate)
+                ?.observe(requireActivity()) { all ->
+                    mAccountListAdapter.updateList(all.reversed())
+
+                }
+        }
+    }*/
 
     override fun onDestroyView() {
         super.onDestroyView()

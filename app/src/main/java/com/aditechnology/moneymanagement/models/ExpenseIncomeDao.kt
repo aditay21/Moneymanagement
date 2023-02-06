@@ -59,4 +59,11 @@ interface ExpenseIncomeDao {
     @Query("DELETE FROM expense_income_details WHERE id LIKE :transactionId")
     suspend fun removeTransactionById(transactionId: String)
 
+    @Query("SELECT * FROM expense_income_details WHERE account_id LIKE :account_id AND date between :startTimeStamp AND :endTimeStamp ")
+    fun getAllExpenseOrIncomeDetailsByAccountIdAndTwoDates(
+        account_id: String,
+        startTimeStamp: String,
+        endTimeStamp: String
+    ): Flow<List<DetailsFileTable>>
+
 }

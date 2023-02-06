@@ -43,6 +43,10 @@ class ExpenseIncomeViewModel(private val managementRepository: MoneyManagementRe
         return managementRepository.allDetailsByAccountIdAndDate(id,timeStamp).asLiveData()
 
     }
+    fun  getDetailsByAccountIdAndBYRANGE(id : Int,startDate:String,endDate:String):LiveData<List<DetailsFileTable>>? {
+        return managementRepository.allDetailsByAccountIdAndByTwoDates(id,startDate,endDate).asLiveData()
+
+    }
 
     fun removeTransaction(id: Int) {
        viewModelScope.launch {

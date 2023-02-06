@@ -119,7 +119,42 @@ class DateTimeUtils {
             return dateFormat.format(cal.time)
         }
 
+        fun getTimestampOfStartDateOfMonth(searchDate: String): String {
+            val cal = Calendar.getInstance()
+            val dateFormat = SimpleDateFormat(MONTH_FORMAT)
+            val date = dateFormat.parse(searchDate) as Date
+            cal.timeInMillis=  date.time
+            cal.add(Calendar.DAY_OF_MONTH, 1)
+            return cal.timeInMillis.toString()
+        }
 
+        fun getTimestampOfEndDateOfMonth(searchDate: String): String {
+            val cal = Calendar.getInstance()
+            val dateFormat = SimpleDateFormat(MONTH_FORMAT)
+            val date = dateFormat.parse(searchDate) as Date
+            cal.timeInMillis=  date.time
+            cal.add(Calendar.DAY_OF_MONTH, cal.getActualMaximum(Calendar.DAY_OF_MONTH))
+            return cal.timeInMillis.toString()
+        }
+
+
+        fun getTimestampOfStartDateOfYear(searchDate: String): String {
+            val cal = Calendar.getInstance()
+            val dateFormat = SimpleDateFormat(YEAR_FORMAT)
+            val date = dateFormat.parse(searchDate) as Date
+            cal.timeInMillis=  date.time
+            cal.add(Calendar.DAY_OF_YEAR, 1)
+            return cal.timeInMillis.toString()
+        }
+
+        fun getTimestampOfEndDateOfYear(searchDate: String): String {
+            val cal = Calendar.getInstance()
+            val dateFormat = SimpleDateFormat(YEAR_FORMAT)
+            val date = dateFormat.parse(searchDate) as Date
+            cal.timeInMillis=  date.time
+            cal.add(Calendar.DAY_OF_MONTH, cal.getActualMaximum(Calendar.DAY_OF_YEAR))
+            return cal.timeInMillis.toString()
+        }
 
 
     }
