@@ -27,7 +27,7 @@
         <ImageView
             android:id="@+id/image_view_previous"
             android:layout_width="wrap_content"
-            android:layout_marginEnd="5dp"
+            android:layout_marginEnd="15dp"
             android:layout_marginTop="10dp"
             android:layout_marginBottom="10dp"
             android:paddingBottom="5dp"
@@ -57,17 +57,17 @@
             android:layout_marginBottom="10dp"
             app:layout_constraintStart_toEndOf="@+id/text_view_current_date_year_selection"
             app:layout_constraintTop_toTopOf="parent"
-            android:layout_marginStart="5dp"
+            android:layout_marginStart="15dp"
             android:layout_height="wrap_content">
         </ImageView>
 
         <ImageView
             android:id="@+id/image_view_filtter"
             android:layout_width="wrap_content"
-            android:src="@drawable/next"
+            android:src="@drawable/filter"
             android:paddingBottom="5dp"
             android:layout_marginTop="10dp"
-            android:layout_marginEnd="10dp"
+            android:layout_marginEnd="20dp"
             android:layout_marginBottom="10dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"

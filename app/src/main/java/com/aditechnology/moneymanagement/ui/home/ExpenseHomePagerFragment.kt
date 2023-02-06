@@ -21,7 +21,7 @@ import com.aditechnology.moneymanagement.viewmodel.ExpenseViewModelFactory
 
 
 class ExpenseHomePagerFragment :Fragment(),ExpenseIncomeDetailListAdapter.OnClickListener{
-
+    var mSearchFilter =0
     private lateinit var mAccountListAdapter: ExpenseIncomeDetailListAdapter
     private val expenseIncomeViewModel: ExpenseIncomeViewModel by viewModels {
         ExpenseViewModelFactory((requireActivity().application as MainApplication).repository)
@@ -49,28 +49,60 @@ class ExpenseHomePagerFragment :Fragment(),ExpenseIncomeDetailListAdapter.OnClic
 
         binding.imageViewPrevious.setOnClickListener {
             val currentDateSearch =  binding.textViewCurrentDateYearSelection.text.toString()
-            val searchDate = DateTimeUtils.getCalculatedPreviousDayDateTimeStamp(DateTimeUtils.getTimeStampFromDate(currentDateSearch).toString())
-            val searchDateTime = DateTimeUtils.getDateFromTimeStamp(searchDate.toString())
-            binding.textViewCurrentDateYearSelection.text=searchDateTime
-            if (searchDate != null) {
-                setObservers(searchDate)
+            var   searchDateTime =""
+            var searchDate=""
+            if (mSearchFilter ==0) {
+                searchDate = DateTimeUtils.getCalculatedPreviousDayDateTimeStamp(
+                    DateTimeUtils.getTimeStampFromDate(currentDateSearch).toString())
+                 searchDateTime = DateTimeUtils.getDateFromTimeStamp(searchDate)
+                binding.textViewCurrentDateYearSelection.text=searchDateTime
+                if (searchDate != null) {
+                    setObservers(searchDate)
+                }
+            }else if (mSearchFilter==1){
+                searchDate = DateTimeUtils.getPreviousMonth(binding.textViewCurrentDateYearSelection.text.toString())
+                binding.textViewCurrentDateYearSelection.text=searchDate
             }
+            else if (mSearchFilter==2){
+                searchDate = DateTimeUtils.getPreviousYear(binding.textViewCurrentDateYearSelection.text.toString())
+                binding.textViewCurrentDateYearSelection.text=searchDate
+            }
+
+
         }
         binding.imageViewFiltter.setOnClickListener {
             val popupMenu = PopupMenu(requireContext(), binding.imageViewFiltter)
             popupMenu.menuInflater.inflate(R.menu.popup_menu, popupMenu.menu)
-            popupMenu.setOnMenuItemClickListener { menuItem ->
-                Toast.makeText(
+         /*   Toast.makeText(
                 requireContext(),
-                    "You Clicked " + menuItem.title,
-                    Toast.LENGTH_SHORT
-                ).show()
+                "You Clicked " + menuItem.title,
+                Toast.LENGTH_SHORT
+            ).show()*/
+            popupMenu.show()
+            popupMenu.setOnMenuItemClickListener { menuItem ->
+                when(menuItem.title){
+                    "clear"->{
+                        mSearchFilter =0
+                        setObservers(DateTimeUtils.getDate())
+                    }
+                    "Monthly"->{
+                        mSearchFilter=1
+                        binding.textViewCurrentDateYearSelection.text = DateTimeUtils.getCurrentMonth()
+                        setObservers(DateTimeUtils.getDate())
+                    }
 
-                when(menuItem.itemId){
-                    menuItem.->{
+                    "yearly"->{
+                        mSearchFilter=2
+                        binding.textViewCurrentDateYearSelection.text = DateTimeUtils.getCurrentYear()
+                        setObservers(DateTimeUtils.getDate())
+
+                    }
+                    "custom"->{
+                        mSearchFilter=3
 
                     }
                 }
+
                 true
 
 
@@ -79,12 +111,25 @@ class ExpenseHomePagerFragment :Fragment(),ExpenseIncomeDetailListAdapter.OnClic
         }
         binding.imageViewNext.setOnClickListener {
             val currentDateSearch =  binding.textViewCurrentDateYearSelection.text.toString()
-            val searchDate = DateTimeUtils.getCalculatedNextDayDateTimeStamp(DateTimeUtils.
-            getTimeStampFromDate(currentDateSearch).toString())
-            val searchDateTime = DateTimeUtils.getDateFromTimeStamp(searchDate.toString())
-            binding.textViewCurrentDateYearSelection.text=searchDateTime
-            if (searchDate != null) {
-                setObservers(searchDate)
+            var searchDate=""
+            if (mSearchFilter ==0) {
+                 searchDate = DateTimeUtils.getCalculatedNextDayDateTimeStamp(
+                    DateTimeUtils.getTimeStampFromDate(currentDateSearch).toString()
+                )
+                val searchDateTime = DateTimeUtils.getDateFromTimeStamp(searchDate.toString())
+                binding.textViewCurrentDateYearSelection.text = searchDateTime
+                if (searchDate != null) {
+                    setObservers(searchDate)
+                }
+            }else if (mSearchFilter==1){
+              //  val getDateFromText = DateTimeUtils.getCurrentMonthFromMonthSelecetd(currentDateSearch)
+                searchDate = DateTimeUtils.getNextMonth(currentDateSearch)
+                binding.textViewCurrentDateYearSelection.text=searchDate
+            }
+            else if (mSearchFilter==2){
+                //  val getDateFromText = DateTimeUtils.getCurrentMonthFromMonthSelecetd(currentDateSearch)
+                searchDate = DateTimeUtils.getNextYear(currentDateSearch)
+                binding.textViewCurrentDateYearSelection.text=searchDate
             }
 
         }

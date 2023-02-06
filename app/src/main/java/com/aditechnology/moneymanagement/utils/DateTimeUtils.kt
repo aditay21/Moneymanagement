@@ -3,6 +3,7 @@ package com.aditechnology.moneymanagement.utils
 import android.annotation.SuppressLint
 import java.text.DateFormat
 import java.text.SimpleDateFormat
+import java.time.Month
 import java.util.*
 
 
@@ -10,12 +11,25 @@ class DateTimeUtils {
 
     companion object {
     const val DATE_FORMAT =  "EEE MMM dd yyyy"
+    const val MONTH_FORMAT =  "MMM yyyy"
+    const val YEAR_FORMAT =  "yyyy"
     const val TIME_FORMAT =  "hh:mm a"
 
 
         fun getDate(): String {
             val cal = Calendar.getInstance()
             val dateFormat = SimpleDateFormat(DATE_FORMAT)
+            return dateFormat.format(cal.time)
+        }
+
+        fun getCurrentMonth(): String {
+            val cal = Calendar.getInstance()
+            val dateFormat = SimpleDateFormat(MONTH_FORMAT)
+            return dateFormat.format(cal.time)
+        }
+        fun getCurrentYear(): String {
+            val cal = Calendar.getInstance()
+            val dateFormat = SimpleDateFormat(YEAR_FORMAT)
             return dateFormat.format(cal.time)
         }
 
@@ -29,7 +43,7 @@ class DateTimeUtils {
             val date = formatter.parse(date) as Date
             return date.time
        }
-        fun getCalculatedPreviousDayDateTimeStamp(timeStamp: String?): String? {
+        fun getCalculatedPreviousDayDateTimeStamp(timeStamp: String): String {
             val cal = Calendar.getInstance()
             cal.timeInMillis= timeStamp!!.toLong()
             cal.add(Calendar.DAY_OF_YEAR, -1)
@@ -63,12 +77,51 @@ class DateTimeUtils {
             )
         }
 
-        fun getCalculatedNextDayDateTimeStamp(timeStamp: String?): String? {
+        fun getCalculatedNextDayDateTimeStamp(timeStamp: String?): String {
             val cal = Calendar.getInstance()
             cal.timeInMillis= timeStamp!!.toLong()
             cal.add(Calendar.DAY_OF_YEAR, +1)
             return cal.timeInMillis.toString()
         }
+
+        fun getPreviousMonth(currentMonth: String): String {
+            val cal = Calendar.getInstance()
+            val dateFormat = SimpleDateFormat(MONTH_FORMAT)
+            val date = dateFormat.parse(currentMonth) as Date
+            cal.timeInMillis=  date.time
+            cal.add(Calendar.MONTH, -1)
+            return dateFormat.format(cal.time)
+        }
+        fun getNextMonth(currentMonth: String): String {
+            val cal = Calendar.getInstance()
+            val dateFormat = SimpleDateFormat(MONTH_FORMAT)
+            val date = dateFormat.parse(currentMonth) as Date
+            cal.timeInMillis=  date.time
+            cal.add(Calendar.MONTH, +1)
+            return dateFormat.format(cal.time)
+        }
+
+
+        fun getPreviousYear(currentMonth: String): String {
+            val cal = Calendar.getInstance()
+            val dateFormat = SimpleDateFormat(YEAR_FORMAT)
+            val date = dateFormat.parse(currentMonth) as Date
+            cal.timeInMillis=  date.time
+            cal.add(Calendar.YEAR, -1)
+            return dateFormat.format(cal.time)
+        }
+        fun getNextYear(currentMonth: String): String {
+            val cal = Calendar.getInstance()
+            val dateFormat = SimpleDateFormat(YEAR_FORMAT)
+            val date = dateFormat.parse(currentMonth) as Date
+            cal.timeInMillis=  date.time
+            cal.add(Calendar.YEAR, +1)
+            return dateFormat.format(cal.time)
+        }
+
+
+
+
     }
 
 }
