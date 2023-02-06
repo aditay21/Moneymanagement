@@ -43,5 +43,5 @@ class HomeFragmentAdapter(fragment: Fragment, private val mVisibleList: ArrayLis
 
 }
 
-private const val ARG_OBJECT = "accountid"
+private const val ARG_OBJECT = "account_id"
 

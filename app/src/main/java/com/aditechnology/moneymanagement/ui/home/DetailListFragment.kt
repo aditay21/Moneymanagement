@@ -5,6 +5,8 @@ import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
+import android.widget.TextView.OnEditorActionListener
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -26,10 +28,11 @@ import com.aditechnology.moneymanagement.viewmodel.ExpenseIncomeViewModel
 import com.aditechnology.moneymanagement.viewmodel.ExpenseViewModelFactory
 import com.google.android.material.bottomsheet.BottomSheetDialog
 
+
 class DetailListFragment : Fragment() , DetailListAdapter.OnClickListener {
     private lateinit var mAccountListAdapter: DetailListAdapter
-    private val ARG_OBJECT = "accountid"
-    var mTotalBalance = 0
+    private val ARG_OBJECT = "account_id"
+    private var mTotalBalance = 0
     private var _binding: FragmentDetailsListBinding? = null
     private val accountViewModel : AccountViewModel by viewModels {
         AccountViewModel.AccountViewModelFactory((requireActivity().application as MainApplication).repository)
@@ -37,7 +40,7 @@ class DetailListFragment : Fragment() , DetailListAdapter.OnClickListener {
     private val expenseIncomeViewModel: ExpenseIncomeViewModel by viewModels {
         ExpenseViewModelFactory((requireActivity().application as MainApplication).repository)
     }
-    private var accountId = 0;
+    private var accountId = 0
     private val binding get() = _binding!!
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -50,15 +53,15 @@ class DetailListFragment : Fragment() , DetailListAdapter.OnClickListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         arguments?.takeIf { it.containsKey(ARG_OBJECT) }?.apply {
-            accountId = requireArguments().getInt(ARG_OBJECT, 0);
+            accountId = requireArguments().getInt(ARG_OBJECT, 0)
             mAccountListAdapter = DetailListAdapter(accountId, this@DetailListFragment)
-            var  linearLayoutManager1 = LinearLayoutManager(context)
+            val linearLayoutManager1 = LinearLayoutManager(context)
             linearLayoutManager1.orientation = LinearLayoutManager.VERTICAL
             binding.recycleView.layoutManager =linearLayoutManager1
             binding.recycleView.adapter = mAccountListAdapter
         }
-        accountViewModel.getAccountDetailBy(accountId)?.observe(requireActivity()){
-            list->
+        accountViewModel.getAccountDetailBy(accountId).observe(requireActivity()){
+                list->
             if (list.isNotEmpty()){
                 mTotalBalance = list[0].accountBalance.toInt()
             }
@@ -89,8 +92,8 @@ class DetailListFragment : Fragment() , DetailListAdapter.OnClickListener {
 
 
         binding.textViewExpense.setOnClickListener {
-            binding.textViewWhoToPayTitle.text = "Pay to"
-            binding.textViewPaidForTitle.text = "Pay For"
+            binding.textViewWhoToPayTitle.text = requireContext().getString(R.string.pay_to)
+            binding.textViewPaidForTitle.text =  requireContext().getString(R.string.pay_for)
             type = Type.EXPENSE
             binding.textViewExpense.setBackgroundResource(R.drawable.toggel_bg_black)
             binding.textViewIncome.setBackgroundResource(R.drawable.button_bg_white)
@@ -110,8 +113,8 @@ class DetailListFragment : Fragment() , DetailListAdapter.OnClickListener {
         }
         binding.textViewIncome.setOnClickListener {
             type = Type.INCOME
-            binding.textViewWhoToPayTitle.text = "Get From"
-            binding.textViewPaidForTitle.text = "Get For"
+            binding.textViewWhoToPayTitle.text = requireContext().getString(R.string.get_from)
+            binding.textViewPaidForTitle.text = requireContext().getString(R.string.get_for)
             binding.textViewExpense.setBackgroundResource(R.drawable.button_bg_white)
             binding.textViewExpense.setTextColor(
                 ContextCompat.getColor(
@@ -135,51 +138,18 @@ class DetailListFragment : Fragment() , DetailListAdapter.OnClickListener {
             val timepicker = TimeView(binding.textViewTime)
             timepicker.show(parentFragmentManager, "showDate")
         }
+        binding.editTextPaidFor.setOnEditorActionListener(OnEditorActionListener { _, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                saveTransaction(binding, type, accountBalance, accountId)
+                dialog.dismiss()
+                return@OnEditorActionListener true
+            }
+            false
+        })
+
         binding.buttonCreate.setOnClickListener {
-           /* if (type== Type.EXPENSE && accountBalance <= 0) {
-                Toast.makeText(
-                    requireContext(),
-                    "You don't have money in account",
-                    Toast.LENGTH_SHORT
-                ).show()
-            } else {*/
-                if (TextUtils.isEmpty(binding.edittextAmount.text.toString())) {
-                    Toast.makeText(requireContext(), "Please enter the amount", Toast.LENGTH_SHORT)
-                        .show()
-                } else {
-                    var totalBalance = if (type == Type.EXPENSE) {
-                        accountBalance - binding.edittextAmount.text.toString().toInt()
-                    } else {
-                        accountBalance + binding.edittextAmount.text.toString().toInt()
-                    }
 
-                    /*if (type == Type.EXPENSE && totalBalance < 0) {
-                        Toast.makeText(
-                            requireContext(),
-                            "Your transaction is more then you have balance in this account ",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    } else {*/
-                        val date =
-                            DateTimeUtils.getTimeStampFromDate(binding.textViewDate.text.toString())
-                        val time =
-                            DateTimeUtils.getTimeStampFromTime(binding.textViewTime.text.toString())
-
-                    expenseIncomeViewModel.insert(
-                            binding.edittextAmount.text.toString().toInt(),
-                            type,
-                            accountId,
-                            binding.editTextPaidFor.text.toString(),
-                            date.toString(),
-                            time.toString(),
-                            binding.edittextToPay.text.toString()
-                        )
-                        accountViewModel.updateAccountBalance(
-                            totalBalance.toString(), accountId
-                        )
-                        Toast.makeText(requireContext(), "Transaction added", Toast.LENGTH_SHORT)
-                            .show()
-                    }
+                saveTransaction(binding, type, accountBalance, accountId)
 
                     dialog.dismiss()
 
@@ -191,6 +161,44 @@ class DetailListFragment : Fragment() , DetailListAdapter.OnClickListener {
         binding.textViewTime.text = DateTimeUtils.getTime()
     }
 
+    private fun saveTransaction(
+        binding: BottomSheetAddDetailBinding,
+        type: Type,
+        accountBalance: Int,
+        accountId: Int
+    ) {
+        if (TextUtils.isEmpty(binding.edittextAmount.text.toString())) {
+            Toast.makeText(requireContext(), requireContext().getString(R.string.required_amount), Toast.LENGTH_SHORT)
+                .show()
+        } else {
+            val totalBalance = if (type == Type.EXPENSE) {
+                accountBalance - binding.edittextAmount.text.toString().toInt()
+            } else {
+                accountBalance + binding.edittextAmount.text.toString().toInt()
+            }
+
+
+            val date =
+                DateTimeUtils.getTimeStampFromDate(binding.textViewDate.text.toString())
+            val time =
+                DateTimeUtils.getTimeStampFromTime(binding.textViewTime.text.toString())
+
+            expenseIncomeViewModel.insert(
+                binding.edittextAmount.text.toString().toInt(),
+                type,
+                accountId,
+                binding.editTextPaidFor.text.toString(),
+                date.toString(),
+                time.toString(),
+                binding.edittextToPay.text.toString()
+            )
+            accountViewModel.updateAccountBalance(
+                totalBalance.toString(), accountId
+            )
+            Toast.makeText(requireContext(), "Transaction added", Toast.LENGTH_SHORT)
+                .show()
+        }
+    }
 
 
     override fun openActionOnTransactionBottomSheet(accountBalance: Int,item: DetailsFileTable) {
@@ -203,7 +211,7 @@ class DetailListFragment : Fragment() , DetailListAdapter.OnClickListener {
         dialog.setContentView(binding.root)
         dialog.show()
 
-        binding.textViewRemoveAccount.text = "Remove Transaction"
+        binding.textViewRemoveAccount.text = requireContext().getString(R.string.remove_transaction)
         binding.imageViewUpdateAccount.visibility =View.GONE
         binding.textViewUpdateAccount.visibility = View.GONE
         binding.textViewRemoveAccount.setOnClickListener {

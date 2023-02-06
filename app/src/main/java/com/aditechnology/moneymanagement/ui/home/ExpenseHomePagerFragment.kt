@@ -144,7 +144,7 @@ class ExpenseHomePagerFragment :Fragment(),ExpenseIncomeDetailListAdapter.OnClic
         binding.imageViewNext.setOnClickListener {
             if (mSearchFilter != 3) {
                 val currentDateSearch = binding.textViewCurrentDateYearSelection.text.toString()
-                var searchDate: String
+                val searchDate: String
                 if (mSearchFilter == 0) {
                     searchDate = DateTimeUtils.getCalculatedNextDayDateTimeStamp(
                         DateTimeUtils.getTimeStampFromDate(currentDateSearch).toString()
@@ -163,7 +163,6 @@ class ExpenseHomePagerFragment :Fragment(),ExpenseIncomeDetailListAdapter.OnClic
                         setObserversMonthlyWise(monthStartDate, monthEndDate)
                     }
                 } else if (mSearchFilter == 2) {
-                    //  val getDateFromText = DateTimeUtils.getCurrentMonthFromMonthSelecetd(currentDateSearch)
                     searchDate = DateTimeUtils.getNextYear(currentDateSearch)
                     binding.textViewCurrentDateYearSelection.text = searchDate
                     val monthStartDate: String =
