@@ -33,8 +33,8 @@ interface ExpenseIncomeDao {
     fun getAccountDetailsByAccountId(account_id :String): Flow<List<AccountTable>>
 
 
-    @Query("UPDATE account_detail SET account_balance =:amount WHERE accountId LIKE :account_id")
-    suspend fun updateAmountOfAccountById(amount: String,account_id: String)
+    @Query("UPDATE account_detail SET account_balance =:amount,account_expense=:expense,account_income =:income WHERE accountId LIKE :account_id")
+    suspend fun updateAmountOfAccountById(amount: String,account_id: String,expense: String,income: String)
 
     @Query("UPDATE account_detail SET account_name =:accountName WHERE accountId LIKE :accountId")
     suspend fun updateAccountNameById(accountName:String,accountId:String)

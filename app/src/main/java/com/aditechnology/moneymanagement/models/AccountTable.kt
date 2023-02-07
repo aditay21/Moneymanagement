@@ -8,8 +8,10 @@ import androidx.room.PrimaryKey
 class AccountTable(
     @ColumnInfo(name="account_name") val accountName :String,
     @ColumnInfo(name="account_balance") val accountBalance :Long,
-    @ColumnInfo(name="date") val date :Long
-  ) {
+    @ColumnInfo(name="date") val date :Long,
+    @ColumnInfo(name="account_expense") val accountExpense :Long,
+    @ColumnInfo(name="account_Income") val accountIncome :Long
+    ) {
 
     @PrimaryKey(autoGenerate = true) var accountId: Int=0
 

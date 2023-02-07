@@ -10,17 +10,18 @@ class AccountViewModel(private val managementRepository: MoneyManagementReposito
     val mAllDetails : LiveData<List<AccountTable>> = managementRepository.allAccountTable.asLiveData()
 
     fun insertAccountDetail(account: String,balance :Long) = viewModelScope.launch {
-        var value = AccountTable(account,balance,System.currentTimeMillis());
+        var value = AccountTable(account,balance,System.currentTimeMillis(),0,0);
         managementRepository.insertItem(value)
     }
 
-    fun updateAccountBalance(amount: String,accountId: Int) = viewModelScope.launch {
-        managementRepository.updateAmountOfAccountById(amount,accountId.toString())
+    fun updateAccountBalance(amount: String,accountId: Int,expense: Int,income: Int) = viewModelScope.launch {
+        managementRepository.updateAmountOfAccountById(amount,accountId.toString(),expense.toString(),income.toString())
     }
 
     fun getAccountDetailBy(accountId :Int) :LiveData<List<AccountTable>> {
-       return managementRepository.getAccountDetailsByAccountId(accountId).asLiveData()
+        return managementRepository.getAccountDetailsByAccountId(accountId).asLiveData()
     }
+
 
     fun updateAccountName(accountId: Int,accountName:String) {
         viewModelScope.launch {

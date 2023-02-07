@@ -40,8 +40,8 @@ class MoneyManagementRepository(private val expenseIncomeDao: ExpenseIncomeDao) 
         return expenseIncomeDao.getAccountDetailsByAccountId(id.toString())
     }
 
-    suspend  fun updateAmountOfAccountById(amount: String, accountId:String) {
-      expenseIncomeDao.updateAmountOfAccountById(amount,accountId)
+    suspend  fun updateAmountOfAccountById(amount: String, accountId:String,expense: String,income: String) {
+      expenseIncomeDao.updateAmountOfAccountById(amount,accountId,expense,income)
     }
 
     suspend fun updateAccountName(accountName: String, accountId: Int) {

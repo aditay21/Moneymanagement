@@ -15,6 +15,7 @@ import com.aditechnology.moneymanagement.R
 import com.aditechnology.moneymanagement.databinding.BottomSheetAccountActionBinding
 import com.aditechnology.moneymanagement.databinding.BottomsheetCustomRangeBinding
 import com.aditechnology.moneymanagement.databinding.FragmentExpenseIncomeFragmentBinding
+import com.aditechnology.moneymanagement.models.AccountTable
 import com.aditechnology.moneymanagement.models.DetailsFileTable
 import com.aditechnology.moneymanagement.ui.adapter.ExpenseIncomeDetailListAdapter
 import com.aditechnology.moneymanagement.utils.CalenderView
@@ -27,6 +28,8 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 
 class ExpenseHomePagerFragment :Fragment(),ExpenseIncomeDetailListAdapter.OnClickListener{
     var mTotalBalance = 0
+    var mTotalExpense = 0
+    var mTotalIncome = 0
     var mSearchFilter =0
     private lateinit var mAccountListAdapter: ExpenseIncomeDetailListAdapter
     private val expenseIncomeViewModel: ExpenseIncomeViewModel by viewModels {
@@ -53,16 +56,25 @@ class ExpenseHomePagerFragment :Fragment(),ExpenseIncomeDetailListAdapter.OnClic
         arguments?.takeIf { it.containsKey("accountid") }?.apply {
             accountId = requireArguments().getInt("accountid", 0)
         }
-        binding.imageViewFilterApplied?.visibility   = View.GONE
-        accountViewModel.getAccountDetailBy(accountId).observe(requireActivity()){ list->
-            if (list.isNotEmpty()){
+        binding.imageViewFilterApplied.visibility   = View.GONE
+        accountViewModel.getAccountDetailBy(accountId).observe(viewLifecycleOwner){ list->
+            if (list.isNotEmpty()) {
                 mTotalBalance = list[0].accountBalance.toInt()
+                mTotalExpense = list[0].accountExpense.toInt()
+                mTotalIncome = list[0].accountIncome.toInt()
+                 setHeader()
+                /*if (binding != null) {
+                    binding.textViewTotalBalance.text = "Account balance : $mTotalBalance"
+                    binding.textViewTotalExpense.text = "Account Expense : $mTotalExpense"
+                    binding.textViewTotalIncome.text = "Account Income   : $mTotalIncome"
+                }*/
+
             }
         }
         binding.textViewCurrentDateYearSelection.text = DateTimeUtils.getDate()
         setObservers(DateTimeUtils.getTimeStampFromDate(DateTimeUtils.getDate()).toString())
 
-        binding.imageViewPrevious.setOnClickListener {
+        binding.imageViewPrevious?.setOnClickListener {
             if (mSearchFilter != 3) {
                 val currentDateSearch = binding.textViewCurrentDateYearSelection.text.toString()
                 var searchDateTime = ""
@@ -184,6 +196,13 @@ class ExpenseHomePagerFragment :Fragment(),ExpenseIncomeDetailListAdapter.OnClic
         binding.recycleView.adapter = mAccountListAdapter
     }
 
+    private fun setHeader() {
+
+        binding.textViewTotalBalance?.text = "Account balance : $mTotalBalance"
+        binding.textViewTotalExpense?.text = "Account Expense : $mTotalExpense"
+        binding.textViewTotalIncome?.text = "Account Income   : $mTotalIncome"
+    }
+
     private fun setObserversMonthlyWise(monthStartDate: String, monthEndDate: String) {
         expenseIncomeViewModel.getDetailsByAccountIdAndBYRANGE(accountId,monthStartDate, monthEndDate)
                 ?.observe(requireActivity()) { all ->
@@ -193,6 +212,10 @@ class ExpenseHomePagerFragment :Fragment(),ExpenseIncomeDetailListAdapter.OnClic
 
     }
 
+    override fun onStop() {
+        super.onStop()
+        //accountViewModel.th().removeObservers(this);
+    }
     private fun setObservers(searchDate: String?) {
         if (searchDate != null) {
             expenseIncomeViewModel.getByAccountIdAndDate(accountId, searchDate)
@@ -225,14 +248,15 @@ class ExpenseHomePagerFragment :Fragment(),ExpenseIncomeDetailListAdapter.OnClic
             if (item.type==1){
                 // expense
                 mTotalBalance -= item.money
+                mTotalExpense -= item.money
             }else{
                 //income
                 mTotalBalance += item.money
+                mTotalIncome  -=item.money
             }
 
             accountViewModel.updateAccountBalance(
-                mTotalBalance.toString(), accountId
-            )
+                mTotalBalance.toString(), accountId,mTotalExpense,mTotalIncome)
             dialog.dismiss()
         }
         dialog.show()

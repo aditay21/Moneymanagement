@@ -33,6 +33,8 @@ class DetailListFragment : Fragment() , DetailListAdapter.OnClickListener {
     private lateinit var mAccountListAdapter: DetailListAdapter
     private val ARG_OBJECT = "account_id"
     private var mTotalBalance = 0
+    private var mTotalIncome = 0
+    private var mTotalExpense = 0
     private var _binding: FragmentDetailsListBinding? = null
     private val accountViewModel : AccountViewModel by viewModels {
         AccountViewModel.AccountViewModelFactory((requireActivity().application as MainApplication).repository)
@@ -64,10 +66,12 @@ class DetailListFragment : Fragment() , DetailListAdapter.OnClickListener {
                 list->
             if (list.isNotEmpty()){
                 mTotalBalance = list[0].accountBalance.toInt()
+                mTotalExpense = list[0].accountExpense.toInt()
+                mTotalIncome = list[0].accountIncome.toInt()
             }
             mAccountListAdapter.updateHeader(list)
         }
-        expenseIncomeViewModel.getByAccountId(accountId)?.observe(requireActivity()){
+        expenseIncomeViewModel.getAllDetailsByAccountId(accountId)?.observe(requireActivity()){
                 all->
             mAccountListAdapter.updateList(all.reversed())
             }
@@ -171,10 +175,13 @@ class DetailListFragment : Fragment() , DetailListAdapter.OnClickListener {
             Toast.makeText(requireContext(), requireContext().getString(R.string.required_amount), Toast.LENGTH_SHORT)
                 .show()
         } else {
-            val totalBalance = if (type == Type.EXPENSE) {
-                accountBalance - binding.edittextAmount.text.toString().toInt()
+
+            if (type == Type.EXPENSE) {
+                mTotalBalance -= binding.edittextAmount.text.toString().toInt()
+                mTotalExpense += binding.edittextAmount.text.toString().toInt()
             } else {
-                accountBalance + binding.edittextAmount.text.toString().toInt()
+                mTotalBalance += binding.edittextAmount.text.toString().toInt()
+                mTotalIncome += binding.edittextAmount.text.toString().toInt()
             }
 
 
@@ -193,7 +200,7 @@ class DetailListFragment : Fragment() , DetailListAdapter.OnClickListener {
                 binding.edittextToPay.text.toString()
             )
             accountViewModel.updateAccountBalance(
-                totalBalance.toString(), accountId
+                mTotalBalance.toString(), accountId,mTotalExpense,mTotalIncome
             )
             Toast.makeText(requireContext(), "Transaction added", Toast.LENGTH_SHORT)
                 .show()
@@ -225,8 +232,7 @@ class DetailListFragment : Fragment() , DetailListAdapter.OnClickListener {
              }
 
             accountViewModel.updateAccountBalance(
-                mAccountBalance.toString(), accountId
-            )
+                mAccountBalance.toString(), accountId,mTotalExpense,mTotalIncome)
             dialog.dismiss()
         } 
         dialog.show()
