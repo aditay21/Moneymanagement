@@ -42,7 +42,7 @@ class AllListFragment : Fragment(), AllAccountListAdapter.OnClickListener {
         binding.recycleView.layoutManager =linearLayoutManager1
         binding.recycleView.adapter= mAccountListAdapter
 
-        accountViewModel.mAllDetails.observe(requireActivity()) { account ->
+        accountViewModel.mAllDetails.observe(viewLifecycleOwner) { account ->
             account?.let {
                 var accountBalance = 0L
                 for (item in account) {

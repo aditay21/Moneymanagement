@@ -38,7 +38,7 @@ class HomeFragment :Fragment(){
         super.onViewCreated(view, savedInstanceState)
         homeFragmentAdapter = HomeFragmentAdapter(this,mAccountList)
         _binding?.pager?.adapter = homeFragmentAdapter
-        accountViewModel.mAllDetails.observe(requireActivity()) { account ->
+        accountViewModel.mAllDetails.observe(viewLifecycleOwner) { account ->
             if (account.isEmpty()){
                 accountViewModel.insertAccountDetail("All",0)
                 accountViewModel.insertAccountDetail("Personal",0)

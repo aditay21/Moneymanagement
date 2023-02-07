@@ -91,27 +91,26 @@ class DetailListAdapter(val accountId: Int,val onClickListener: OnClickListener)
               if (item.paid_for.isEmpty()){
                   holder.binding.textViewPaidFrom.text = "Paid For :---"
               }else{
-                  holder.binding.textViewPaidFrom.text = "Paid For "+item.pay_to
+                  holder.binding.textViewPaidFrom.text = "Paid For "+item.paid_for
               }
 
                 if (item.pay_to.isEmpty()){
-
                     holder.binding.textViewPaidForValue.text = "Paid To :---"
                 }else{
-                    holder.binding.textViewPaidForValue.text = "Paid to "+item.paid_for
+                    holder.binding.textViewPaidForValue.text = "Paid to "+item.pay_to
                 }
             }else{
                 holder.binding.textViewTransactionAmount.text = "+"+item.money.toString()
                 holder.binding.textViewTransactionAmount.setTextColor(
                     Color.GREEN
                 )
-                if (item.paid_for.isEmpty()){
+                if (item.pay_to.isEmpty()){
                     holder.binding.textViewPaidFrom.text = "Get For :----"
                 }else{
                     holder.binding.textViewPaidFrom.text = "Get For "+item.pay_to
                 }
 
-                if (item.pay_to.isEmpty()){
+                if (item.paid_for.isEmpty()){
                     holder.binding.textViewPaidForValue.text = "Get From :---"
                 }else{
                     holder.binding.textViewPaidForValue.text = "Get From  "+item.paid_for

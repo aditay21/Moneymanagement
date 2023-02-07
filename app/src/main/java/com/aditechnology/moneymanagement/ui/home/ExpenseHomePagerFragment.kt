@@ -167,13 +167,11 @@ class ExpenseHomePagerFragment :Fragment(),ExpenseIncomeDetailListAdapter.OnClic
                 } else if (mSearchFilter == 1) {
                     searchDate = DateTimeUtils.getNextMonth(currentDateSearch)
                     binding.textViewCurrentDateYearSelection.text = searchDate
-                    if (searchDate != null) {
-                        val monthStartDate: String =
-                            DateTimeUtils.getTimestampOfStartDateOfMonth(searchDate)
-                        val monthEndDate: String =
-                            DateTimeUtils.getTimestampOfEndDateOfMonth(searchDate)
-                        setObserversMonthlyWise(monthStartDate, monthEndDate)
-                    }
+                    val monthStartDate: String =
+                        DateTimeUtils.getTimestampOfStartDateOfMonth(searchDate)
+                    val monthEndDate: String =
+                        DateTimeUtils.getTimestampOfEndDateOfMonth(searchDate)
+                    setObserversMonthlyWise(monthStartDate, monthEndDate)
                 } else if (mSearchFilter == 2) {
                     searchDate = DateTimeUtils.getNextYear(currentDateSearch)
                     binding.textViewCurrentDateYearSelection.text = searchDate
@@ -205,7 +203,7 @@ class ExpenseHomePagerFragment :Fragment(),ExpenseIncomeDetailListAdapter.OnClic
 
     private fun setObserversMonthlyWise(monthStartDate: String, monthEndDate: String) {
         expenseIncomeViewModel.getDetailsByAccountIdAndBYRANGE(accountId,monthStartDate, monthEndDate)
-                ?.observe(requireActivity()) { all ->
+                ?.observe(viewLifecycleOwner) { all ->
                     mAccountListAdapter.updateList(all.reversed())
 
                 }
@@ -219,7 +217,7 @@ class ExpenseHomePagerFragment :Fragment(),ExpenseIncomeDetailListAdapter.OnClic
     private fun setObservers(searchDate: String?) {
         if (searchDate != null) {
             expenseIncomeViewModel.getByAccountIdAndDate(accountId, searchDate)
-                ?.observe(requireActivity()) { all ->
+                ?.observe(viewLifecycleOwner) { all ->
                  if (mSearchFilter ==0) {
                      mAccountListAdapter.updateList(all.reversed())
                  }

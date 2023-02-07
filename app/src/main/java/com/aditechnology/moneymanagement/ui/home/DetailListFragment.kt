@@ -62,7 +62,7 @@ class DetailListFragment : Fragment() , DetailListAdapter.OnClickListener {
             binding.recycleView.layoutManager =linearLayoutManager1
             binding.recycleView.adapter = mAccountListAdapter
         }
-        accountViewModel.getAccountDetailBy(accountId).observe(requireActivity()){
+        accountViewModel.getAccountDetailBy(accountId).observe(viewLifecycleOwner){
                 list->
             if (list.isNotEmpty()){
                 mTotalBalance = list[0].accountBalance.toInt()
@@ -71,7 +71,7 @@ class DetailListFragment : Fragment() , DetailListAdapter.OnClickListener {
             }
             mAccountListAdapter.updateHeader(list)
         }
-        expenseIncomeViewModel.getAllDetailsByAccountId(accountId)?.observe(requireActivity()){
+        expenseIncomeViewModel.getAllDetailsByAccountId(accountId)?.observe(viewLifecycleOwner){
                 all->
             mAccountListAdapter.updateList(all.reversed())
             }
