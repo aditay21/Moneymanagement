@@ -261,7 +261,10 @@ class ExpenseHomePagerFragment :Fragment(),ExpenseIncomeDetailListAdapter.OnClic
     }
 
 
-
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
+    }
 
 private fun  openCustomRangeBottomSheet(){
     val dialog = BottomSheetDialog(requireContext(), R.style.BaseBottomSheetDialog)

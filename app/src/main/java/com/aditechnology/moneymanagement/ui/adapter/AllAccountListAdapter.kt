@@ -30,7 +30,8 @@ class AllAccountListAdapter(val onclickListener: OnClickListener) : RecyclerView
     }
 
     class HeaderViewHolder(val binding: ViewHolderDetailSummeryBinding) : RecyclerView.ViewHolder(binding.root) {
-        // val totalAmount :TextView= itemView.findViewById(R.id.text_view_total_amount)
+         val buttonAdd :TextView= itemView.findViewById(R.id.button_add)
+
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -52,6 +53,7 @@ class AllAccountListAdapter(val onclickListener: OnClickListener) : RecyclerView
             (holder as HeaderViewHolder).binding.buttonAdd.setOnClickListener { view ->
                 view.findNavController().navigate(R.id.action_account_to_createfragment)
             }
+            holder.buttonAdd.text ="Add New Account"
             holder.binding.textViewTotalAmount.text = mAccountBalance.toString()
             holder.binding.buttonDetail.visibility = View.INVISIBLE
         }else {
