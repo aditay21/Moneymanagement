@@ -245,11 +245,11 @@ class ExpenseHomePagerFragment :Fragment(),ExpenseIncomeDetailListAdapter.OnClic
             expenseIncomeViewModel.removeTransaction(item.id)
             if (item.type==1){
                 // expense
-                mTotalBalance -= item.money
+                mTotalBalance += item.money
                 mTotalExpense -= item.money
             }else{
                 //income
-                mTotalBalance += item.money
+                mTotalBalance -= item.money
                 mTotalIncome  -=item.money
             }
 

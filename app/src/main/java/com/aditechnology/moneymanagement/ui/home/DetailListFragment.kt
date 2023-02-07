@@ -226,9 +226,11 @@ class DetailListFragment : Fragment() , DetailListAdapter.OnClickListener {
              if (item.type==1){
                 // expense
                  mAccountBalance += item.money
+                 mTotalExpense -= item.money
              }else{
                  //income
                  mAccountBalance -= item.money
+                 mTotalIncome -= item.money
              }
 
             accountViewModel.updateAccountBalance(
