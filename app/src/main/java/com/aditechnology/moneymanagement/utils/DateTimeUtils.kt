@@ -11,6 +11,7 @@ class DateTimeUtils {
 
     companion object {
     const val DATE_FORMAT =  "EEE MMM dd yyyy"
+    const val DATE_FORMAT_WITH_TIME =  "MMM_dd_yyyy_hh_mm_a"
     const val MONTH_FORMAT =  "MMM yyyy"
     const val YEAR_FORMAT =  "yyyy"
     const val TIME_FORMAT =  "hh:mm a"
@@ -19,6 +20,12 @@ class DateTimeUtils {
         fun getDate(): String {
             val cal = Calendar.getInstance()
             val dateFormat = SimpleDateFormat(DATE_FORMAT)
+            return dateFormat.format(cal.time)
+        }
+
+        fun getDateWithTime(): String {
+            val cal = Calendar.getInstance()
+            val dateFormat = SimpleDateFormat(DATE_FORMAT_WITH_TIME)
             return dateFormat.format(cal.time)
         }
 

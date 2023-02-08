@@ -5,6 +5,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.Environment
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -17,6 +18,7 @@ import androidx.navigation.ui.setupWithNavController
 import com.aditechnology.moneymanagement.databinding.ActivityMain2Binding
 import com.aditechnology.moneymanagement.models.AccountTable
 import com.aditechnology.moneymanagement.models.DetailsFileTable
+import com.aditechnology.moneymanagement.utils.DateTimeUtils
 import com.aditechnology.moneymanagement.viewmodel.AccountViewModel
 import com.aditechnology.moneymanagement.viewmodel.ExpenseIncomeViewModel
 import com.aditechnology.moneymanagement.viewmodel.ExpenseViewModelFactory
@@ -80,13 +82,10 @@ class MainActivity : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
     }
 
-    public fun exportDatabaseToCSVFile() {
+    fun exportDatabaseToCSVFile() {
         checkPermission(
             Manifest.permission.WRITE_EXTERNAL_STORAGE,
             STORAGE_PERMISSION_CODE)
-
-    //     savePublicly()
-
     }
     private fun checkPermission(permission: String, requestCode: Int) {
         if (ContextCompat.checkSelfPermission(this@MainActivity, permission) == PackageManager.PERMISSION_DENIED) {
@@ -99,51 +98,77 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun savePublicly() {
+    private fun savePublicly() {
         val folder = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
-       // /storage/emulated/0/Download/moneymanagment.csv
-        // Storing the data in file with name as geeksData.txt
-        val file = File(folder, "moneymanagment.csv")
+        val file = File(folder, DateTimeUtils.getDateWithTime()+"_moneymanagment.csv")
         exportMoviesWithDirectorsToCSVFile(file)
+    }
 
-        //writeTextData(file,"aditay kaskdjkasjd")
-    }
-    private fun writeTextData(file: File, data: String) {
-        var fileOutputStream: FileOutputStream? = null
-        try {
-            fileOutputStream = FileOutputStream(file)
-            fileOutputStream.write(data.toByteArray())
-            Toast.makeText(this, "Done" + file.absolutePath, Toast.LENGTH_SHORT).show()
-        } catch (e: Exception) {
-            e.printStackTrace()
-        } finally {
-            if (fileOutputStream != null) {
-                try {
-                    fileOutputStream.close()
-                } catch (e: IOException) {
-                    e.printStackTrace()
-                }
-            }
-        }
-    }
     private fun exportMoviesWithDirectorsToCSVFile(csvFile: File) {
         csvWriter().open(csvFile, append = false) {
             writeRow(listOf("[accountID]", "[${"account_name"}]", "[${"Account Balance"}]","[${"Account Income"}]","[${"Account Expense"}]"))
             mAccountList.forEachIndexed { index, item ->
-                writeRow(
-                    listOf(
-                        item.accountId, item.accountName, item.accountBalance,
-                        item.accountIncome, item.accountExpense
+                if (item.accountName != "All"){
+                    writeRow(
+                        listOf(
+                            item.accountId, item.accountName, item.accountBalance,
+                            item.accountIncome, item.accountExpense
+                        )
                     )
-                )
             }
-            writeRow(listOf("[transaction id]", "[${"money"}]", "[${"account id"}]","[${"ExpenseOrIncome"}]"
+        }
+            writeRow(listOf("[transaction id]", "[${"money"}]", "[${"account name"}]","[${"ExpenseOrIncome"}]"
                 ,"[${"Date"}]","[${"time"}]","[${"Paid For"}]","[${"Pay to For"}]"))
+
             detailListAdapterList.forEachIndexed { index, item ->
+               var type =""
+                if (item.type==1){
+                    type ="Expense"
+                }else{
+                    type ="Income"
+                }
+                var accountName = ""
+                mAccountList.forEachIndexed { index1, item1 ->
+                    if (item1.accountName != "All" && item.account_id == item1.accountId) {
+                        accountName  =  item1.accountName
+
+                    }
+                }
+               val date = DateTimeUtils.getDateFromTimeStamp(item.date)
+               val time = DateTimeUtils.getTimeFromTimeStamp(item.date)
+
+                var paidFor =""
+                var paidTo =""
+                if (item.type==1) {
+                    if (item.paid_for.isEmpty()) {
+                        paidFor = "Paid For :---"
+                    } else {
+                        paidFor = "Paid For " + item.paid_for
+                    }
+
+                    if (item.pay_to.isEmpty()) {
+                        paidTo = "Paid To :---"
+                    } else {
+                        paidTo = "Paid to " + item.pay_to
+                    }
+                }else{
+                    if (item.pay_to.isEmpty()){
+                       paidTo = "Get For :----"
+                    }else{
+                       paidTo = "Get For "+item.pay_to
+                    }
+
+                    if (item.paid_for.isEmpty()){
+                       paidFor = "Get From :---"
+                    }else{
+                       paidTo = "Get From  "+item.paid_for
+                    }
+                }
+
                 writeRow(
                     listOf(
-                        item.id, item.money, item.account_id,
-                        item.type, item.date,item.time,item.paid_for,item.pay_to
+                        item.id, item.money, accountName,
+                        type, date,time,paidFor,paidTo
                     )
                 )
             }
