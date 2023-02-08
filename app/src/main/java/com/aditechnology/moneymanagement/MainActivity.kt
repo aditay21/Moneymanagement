@@ -10,12 +10,16 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.viewModels
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
 import com.aditechnology.moneymanagement.databinding.ActivityMain2Binding
 import com.aditechnology.moneymanagement.models.AccountTable
+import com.aditechnology.moneymanagement.models.DetailsFileTable
 import com.aditechnology.moneymanagement.viewmodel.AccountViewModel
+import com.aditechnology.moneymanagement.viewmodel.ExpenseIncomeViewModel
+import com.aditechnology.moneymanagement.viewmodel.ExpenseViewModelFactory
 import com.github.doyaaaaaken.kotlincsv.dsl.csvWriter
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import java.io.File
@@ -33,11 +37,16 @@ class MainActivity : AppCompatActivity() {
     private val accountViewModel: AccountViewModel by viewModels {
         AccountViewModel.AccountViewModelFactory((application as MainApplication).repository)
     }
+
+
+    private val expenseIncomeViewModel: ExpenseIncomeViewModel by viewModels {
+        ExpenseViewModelFactory((application as MainApplication).repository)
+    }
     private val filename = "SampleFile.txt"
     private val filepath = "MyFileStorage"
     var myExternalFile: File? = null
     var myData = ""
-
+    private var  detailListAdapterList: java.util.ArrayList<DetailsFileTable> = java.util.ArrayList()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -48,6 +57,10 @@ class MainActivity : AppCompatActivity() {
             mAccountList.clear()
             mAccountList.addAll(account)
 
+        }
+        expenseIncomeViewModel.mAllDetails.observe(this){
+                all->
+            detailListAdapterList.addAll(all.reversed())
         }
         val navView: BottomNavigationView = binding.navView
 
@@ -119,8 +132,18 @@ class MainActivity : AppCompatActivity() {
             mAccountList.forEachIndexed { index, item ->
                 writeRow(
                     listOf(
-                        index, item.accountId, item.accountName, item.accountBalance,
+                        item.accountId, item.accountName, item.accountBalance,
                         item.accountIncome, item.accountExpense
+                    )
+                )
+            }
+            writeRow(listOf("[transaction id]", "[${"money"}]", "[${"account id"}]","[${"ExpenseOrIncome"}]"
+                ,"[${"Date"}]","[${"time"}]","[${"Paid For"}]","[${"Pay to For"}]"))
+            detailListAdapterList.forEachIndexed { index, item ->
+                writeRow(
+                    listOf(
+                        item.id, item.money, item.account_id,
+                        item.type, item.date,item.time,item.paid_for,item.pay_to
                     )
                 )
             }
