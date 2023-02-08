@@ -40,9 +40,9 @@
 
     <fragment
         android:id="@+id/navigation_notifications"
-        android:name="com.aditechnology.moneymanagement.ui.notifications.NotificationsFragment"
+        android:name="com.aditechnology.moneymanagement.ui.notifications.SettingFragment"
         android:label="@string/title_notifications"
-        tools:layout="@layout/fragment_notifications" />
+        tools:layout="@layout/fragment_setting" />
 
 
     <fragment

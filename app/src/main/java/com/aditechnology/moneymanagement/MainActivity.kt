@@ -212,12 +212,8 @@ class MainActivity : AppCompatActivity() {
              var shareIntent = Intent(Intent.ACTION_SEND)
              shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
              shareIntent.type = "application/csv"
-             /** set the corresponding mime type of the file to be shared */
-
              shareIntent.putExtra(Intent.EXTRA_STREAM, Uri.parse(File(path).toString()))
-
              startActivity(Intent.createChooser(shareIntent, "Share to"))
-
              dialog.dismiss()
          }
 
