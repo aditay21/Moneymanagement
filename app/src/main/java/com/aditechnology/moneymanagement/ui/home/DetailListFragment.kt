@@ -175,7 +175,6 @@ class DetailListFragment : Fragment() , DetailListAdapter.OnClickListener {
             Toast.makeText(requireContext(), requireContext().getString(R.string.required_amount), Toast.LENGTH_SHORT)
                 .show()
         } else {
-
             if (type == Type.EXPENSE) {
                 mTotalBalance -= binding.edittextAmount.text.toString().toInt()
                 mTotalExpense += binding.edittextAmount.text.toString().toInt()
@@ -183,8 +182,6 @@ class DetailListFragment : Fragment() , DetailListAdapter.OnClickListener {
                 mTotalBalance += binding.edittextAmount.text.toString().toInt()
                 mTotalIncome += binding.edittextAmount.text.toString().toInt()
             }
-
-
             val date =
                 DateTimeUtils.getTimeStampFromDate(binding.textViewDate.text.toString())
             val time =
@@ -206,8 +203,6 @@ class DetailListFragment : Fragment() , DetailListAdapter.OnClickListener {
                 .show()
         }
     }
-
-
     override fun openActionOnTransactionBottomSheet(accountBalance: Int,item: DetailsFileTable) {
         var mAccountBalance = accountBalance
         val dialog = BottomSheetDialog(requireContext(), R.style.BaseBottomSheetDialog)

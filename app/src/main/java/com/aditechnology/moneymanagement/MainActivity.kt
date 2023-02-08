@@ -3,9 +3,12 @@ package com.aditechnology.moneymanagement
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
 import android.util.Log
+import android.view.LayoutInflater
+import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -16,6 +19,8 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
 import com.aditechnology.moneymanagement.databinding.ActivityMain2Binding
+import com.aditechnology.moneymanagement.databinding.BottomSheetAccountActionBinding
+import com.aditechnology.moneymanagement.databinding.BottomsheetShareBackupBinding
 import com.aditechnology.moneymanagement.models.AccountTable
 import com.aditechnology.moneymanagement.models.DetailsFileTable
 import com.aditechnology.moneymanagement.utils.DateTimeUtils
@@ -24,6 +29,7 @@ import com.aditechnology.moneymanagement.viewmodel.ExpenseIncomeViewModel
 import com.aditechnology.moneymanagement.viewmodel.ExpenseViewModelFactory
 import com.github.doyaaaaaken.kotlincsv.dsl.csvWriter
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
@@ -44,10 +50,6 @@ class MainActivity : AppCompatActivity() {
     private val expenseIncomeViewModel: ExpenseIncomeViewModel by viewModels {
         ExpenseViewModelFactory((application as MainApplication).repository)
     }
-    private val filename = "SampleFile.txt"
-    private val filepath = "MyFileStorage"
-    var myExternalFile: File? = null
-    var myData = ""
     private var  detailListAdapterList: java.util.ArrayList<DetailsFileTable> = java.util.ArrayList()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -94,7 +96,7 @@ class MainActivity : AppCompatActivity() {
             ActivityCompat.requestPermissions(this@MainActivity, arrayOf(permission), requestCode)
         } else {
             savePublicly()
-            Toast.makeText(this@MainActivity, "Permission already granted", Toast.LENGTH_SHORT).show()
+           // Toast.makeText(this@MainActivity, "Permission already granted", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -172,9 +174,8 @@ class MainActivity : AppCompatActivity() {
                     )
                 )
             }
-
-
         }
+        openBackInfoShare(csvFile.absolutePath)
     }
     override fun onRequestPermissionsResult(requestCode: Int,
                                             permissions: Array<String>,
@@ -195,4 +196,31 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
+     fun openBackInfoShare(path:String) {
+         val dialog = BottomSheetDialog(this, R.style.BaseBottomSheetDialog)
+        val inflater = LayoutInflater.from(this)
+        val binding = BottomsheetShareBackupBinding.inflate(inflater, null, false)
+        binding.cardView.setBackgroundResource(R.drawable.bottom_sheet_shape)
+        dialog.setCancelable(false)
+        dialog.setContentView(binding.root)
+         binding.textviewShareInfo.text = "Backup is saved successfully on following path $path"
+         dialog.show()
+         binding.buttonOk.setOnClickListener {
+             dialog.dismiss()
+         }
+         binding.buttonShareInfo.setOnClickListener {
+             var shareIntent = Intent(Intent.ACTION_SEND)
+             shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+             shareIntent.type = "application/csv"
+             /** set the corresponding mime type of the file to be shared */
+
+             shareIntent.putExtra(Intent.EXTRA_STREAM, Uri.parse(File(path).toString()))
+
+             startActivity(Intent.createChooser(shareIntent, "Share to"))
+
+             dialog.dismiss()
+         }
+
+     }
+
 }
