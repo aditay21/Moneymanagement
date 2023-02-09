@@ -33,6 +33,7 @@ import com.aditechnology.moneymanagement.utils.Utils.Companion.CREATE_BACKUP_FIL
 import com.aditechnology.moneymanagement.utils.Utils.Companion.CREATE_BACKUP_FILE_MONEY_MANAGEMENT_FILE_NAME
 import com.aditechnology.moneymanagement.utils.Utils.Companion.EXPORT_FILE_EXTENSION
 import com.aditechnology.moneymanagement.utils.Utils.Companion.EXPORT_FILE_MONEY_MANAGEMENT_FILE_NAME
+import com.aditechnology.moneymanagement.utils.Utils.Companion.TRANSACTION_JSON_OBJECT
 import com.aditechnology.moneymanagement.viewmodel.AccountViewModel
 import com.aditechnology.moneymanagement.viewmodel.ExpenseIncomeViewModel
 import com.aditechnology.moneymanagement.viewmodel.ExpenseViewModelFactory
@@ -80,7 +81,43 @@ class MainActivity : AppCompatActivity() {
                     val sUri = data.data
                     try {
                         val backup =   StorageUtils.getdata(sUri!!,this) as JSONObject
-                        val jsonArray =backup.getJSONObject(ACCOUNT_DETAIL_JSON)
+                        val accountsJsonArray =backup.getJSONArray(ACCOUNT_DETAIL_JSON)
+                        for (i in 0 until accountsJsonArray.length()) {
+                            val accountObject = accountsJsonArray.getJSONObject(i)
+                            if (accountObject.getString(Utils.ACCOUNT_NAME)
+                                    .equals("ALL") && accountObject.getString(Utils.ACCOUNT_NAME)
+                                    .equals("Personal")
+                            ) {
+                                accountViewModel.insertAccountDetail(
+                                    accountObject.getString(Utils.ACCOUNT_NAME),
+                                    accountObject.getLong(Utils.ACCOUNT_BALANCE),
+                                    accountObject.getLong(Utils.DATE),
+                                    accountObject.getLong(Utils.ACCOUNT_EXPENSE),
+                                    accountObject.getLong(Utils.ACCOUNT_INCOME))
+                            }
+                        }
+
+
+                        val transactionJsonArray =backup.getJSONArray(TRANSACTION_JSON_OBJECT)
+                        for (i in 0 until transactionJsonArray.length()) {
+                            val accountObject = transactionJsonArray.getJSONObject(i)
+                           var type =Type.INCOME
+                            if (accountObject.get(Utils.TYPE)==1){
+                                type = Type.EXPENSE
+                            }else{
+                                type = Type.INCOME
+                            }
+
+                               expenseIncomeViewModel.insert(
+                                    accountObject.getInt(Utils.MONEY),
+                                    type ,
+                                    accountObject.getInt(Utils.ACCOUNT_ID),
+                                    accountObject.getString(Utils.PAY_TO),
+                                    accountObject.getString(Utils.DATE),
+                                    accountObject.getString(Utils.TIME),
+                                     accountObject.getString(Utils.PAID_FOR))
+                          }
+
                         resetDb()
 
 
@@ -299,6 +336,7 @@ class MainActivity : AppCompatActivity() {
                 accountDetailJsonObject.put(Utils.ACCOUNT_BALANCE, item.accountBalance)
                 accountDetailJsonObject.put(Utils.ACCOUNT_EXPENSE, item.accountExpense)
                 accountDetailJsonObject.put(Utils.ACCOUNT_INCOME, item.accountIncome)
+                accountDetailJsonObject.put(Utils.DATE, item.date)
                 accountDetailJsonArray.put(accountDetailJsonObject)
             }
         }
@@ -315,6 +353,7 @@ class MainActivity : AppCompatActivity() {
             transactionDetailJsonObject.put(Utils.TIME, item.time)
             transactionDetailJsonObject.put(Utils.PAID_FOR, item.paid_for)
             transactionDetailJsonObject.put(Utils.PAY_TO, item.pay_to)
+            transactionDetailJsonObject.put(Utils.TYPE, item.type)
             transactionDetailJsonArray.put(transactionDetailJsonObject)
         }
         jsonObject.put(Utils.TRANSACTION_JSON_OBJECT,transactionDetailJsonArray)

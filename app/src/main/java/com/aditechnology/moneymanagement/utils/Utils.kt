@@ -19,10 +19,11 @@ class Utils {
         const val ACCOUNT_INCOME="account_income"
         const val ACCOUNT_EXPENSE="account_expense"
 
+
         const val TRANSACTION_JSON_OBJECT ="transaction_json_object"
         const val TRANSACTION_ID="transaction_id"
         const val MONEY="money"
-        const val EXPENSE_OR_INCOME="expense_or_income"
+        const val TYPE="expense_or_income"
         const val DATE="date"
         const val TIME="time"
         const val PAID_FOR="paid_for"
