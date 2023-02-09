@@ -6,33 +6,35 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
-import android.util.Log
 import android.view.LayoutInflater
-import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.viewModels
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
 import com.aditechnology.moneymanagement.databinding.ActivityMain2Binding
-import com.aditechnology.moneymanagement.databinding.BottomSheetAccountActionBinding
 import com.aditechnology.moneymanagement.databinding.BottomsheetShareBackupBinding
 import com.aditechnology.moneymanagement.models.AccountTable
 import com.aditechnology.moneymanagement.models.DetailsFileTable
 import com.aditechnology.moneymanagement.utils.DateTimeUtils
+import com.aditechnology.moneymanagement.utils.StorageUtils
+import com.aditechnology.moneymanagement.utils.Utils
+import com.aditechnology.moneymanagement.utils.Utils.Companion.CREATE_BACKUP_FILE_EXTENSION
+import com.aditechnology.moneymanagement.utils.Utils.Companion.CREATE_BACKUP_FILE_MONEY_MANAGEMENT_FILE_NAME
+import com.aditechnology.moneymanagement.utils.Utils.Companion.EXPORT_FILE_EXTENSION
+import com.aditechnology.moneymanagement.utils.Utils.Companion.EXPORT_FILE_MONEY_MANAGEMENT_FILE_NAME
 import com.aditechnology.moneymanagement.viewmodel.AccountViewModel
 import com.aditechnology.moneymanagement.viewmodel.ExpenseIncomeViewModel
 import com.aditechnology.moneymanagement.viewmodel.ExpenseViewModelFactory
 import com.github.doyaaaaaken.kotlincsv.dsl.csvWriter
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import org.json.JSONArray
+import org.json.JSONObject
 import java.io.File
-import java.io.FileOutputStream
-import java.io.IOException
 
 
 class MainActivity : AppCompatActivity() {
@@ -40,6 +42,8 @@ class MainActivity : AppCompatActivity() {
         private const val CAMERA_PERMISSION_CODE = 100
         private const val STORAGE_PERMISSION_CODE = 101
     }
+    private  var FROM_CREATE_BACKUP = false
+
     private val mAccountList: ArrayList<AccountTable> = ArrayList()
     private lateinit var binding: ActivityMain2Binding
     private val accountViewModel: AccountViewModel by viewModels {
@@ -50,7 +54,7 @@ class MainActivity : AppCompatActivity() {
     private val expenseIncomeViewModel: ExpenseIncomeViewModel by viewModels {
         ExpenseViewModelFactory((application as MainApplication).repository)
     }
-    private var  detailListAdapterList: java.util.ArrayList<DetailsFileTable> = java.util.ArrayList()
+    private var  transactionDetailList: java.util.ArrayList<DetailsFileTable> = java.util.ArrayList()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -64,7 +68,7 @@ class MainActivity : AppCompatActivity() {
         }
         expenseIncomeViewModel.mAllDetails.observe(this){
                 all->
-            detailListAdapterList.addAll(all.reversed())
+            transactionDetailList.addAll(all.reversed())
         }
         val navView: BottomNavigationView = binding.navView
 
@@ -88,10 +92,10 @@ class MainActivity : AppCompatActivity() {
         checkPermission(
             Manifest.permission.WRITE_EXTERNAL_STORAGE,
             STORAGE_PERMISSION_CODE)
+        FROM_CREATE_BACKUP= false
     }
     private fun checkPermission(permission: String, requestCode: Int) {
         if (ContextCompat.checkSelfPermission(this@MainActivity, permission) == PackageManager.PERMISSION_DENIED) {
-
             // Requesting the permission
             ActivityCompat.requestPermissions(this@MainActivity, arrayOf(permission), requestCode)
         } else {
@@ -102,7 +106,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun savePublicly() {
         val folder = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
-        val file = File(folder, DateTimeUtils.getDateWithTime()+"_moneymanagment.csv")
+        val file = File(folder, EXPORT_FILE_MONEY_MANAGEMENT_FILE_NAME+DateTimeUtils.getDateWithTime()+ EXPORT_FILE_EXTENSION)
         exportMoviesWithDirectorsToCSVFile(file)
     }
 
@@ -120,9 +124,9 @@ class MainActivity : AppCompatActivity() {
             }
         }
             writeRow(listOf("[transaction id]", "[${"money"}]", "[${"account name"}]","[${"ExpenseOrIncome"}]"
-                ,"[${"Date"}]","[${"time"}]","[${"Paid For"}]","[${"Pay to For"}]"))
+                ,"[${"Date"}]","[${"time"}]","[${"Paid For"}]","[${"Pay to"}]"))
 
-            detailListAdapterList.forEachIndexed { index, item ->
+            transactionDetailList.forEachIndexed { index, item ->
                var type =""
                 if (item.type==1){
                     type ="Expense"
@@ -190,20 +194,28 @@ class MainActivity : AppCompatActivity() {
         } else if (requestCode == STORAGE_PERMISSION_CODE) {
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 Toast.makeText(this@MainActivity, "Storage Permission Granted", Toast.LENGTH_SHORT).show()
-                 savePublicly()
+                if (FROM_CREATE_BACKUP){
+                    createBackup()
+                }else {
+                    savePublicly()
+                }
             } else {
                 Toast.makeText(this@MainActivity, "Storage Permission Denied", Toast.LENGTH_SHORT).show()
             }
         }
     }
-     fun openBackInfoShare(path:String) {
+     private fun openBackInfoShare(path:String) {
          val dialog = BottomSheetDialog(this, R.style.BaseBottomSheetDialog)
         val inflater = LayoutInflater.from(this)
         val binding = BottomsheetShareBackupBinding.inflate(inflater, null, false)
         binding.cardView.setBackgroundResource(R.drawable.bottom_sheet_shape)
         dialog.setCancelable(false)
         dialog.setContentView(binding.root)
-         binding.textviewShareInfo.text = "Backup is saved successfully on following path $path"
+         if (FROM_CREATE_BACKUP) {
+             binding.textviewShareInfo.text = "Backup is saved successfully on following path  $path"
+         }else{
+             binding.textviewShareInfo.text = "CSV file is saved successfully on following path  $path"
+         }
          dialog.show()
          binding.buttonOk.setOnClickListener {
              dialog.dismiss()
@@ -211,12 +223,69 @@ class MainActivity : AppCompatActivity() {
          binding.buttonShareInfo.setOnClickListener {
              var shareIntent = Intent(Intent.ACTION_SEND)
              shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-             shareIntent.type = "application/csv"
+               if (FROM_CREATE_BACKUP) {
+                   shareIntent.type = "application/json"
+               }else{
+                   shareIntent.type = "application/csv"
+               }
              shareIntent.putExtra(Intent.EXTRA_STREAM, Uri.parse(File(path).toString()))
              startActivity(Intent.createChooser(shareIntent, "Share to"))
              dialog.dismiss()
          }
 
      }
+     fun createBackup() {
+         FROM_CREATE_BACKUP = true
+         if (ContextCompat.checkSelfPermission(this@MainActivity,  Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) {
+             // Requesting the permission
+             ActivityCompat.requestPermissions(this@MainActivity, arrayOf( Manifest.permission.WRITE_EXTERNAL_STORAGE), STORAGE_PERMISSION_CODE)
+         } else {
+             createJsonbackup()
+         }
 
+    }
+
+    private fun createJsonbackup() {
+        var jsonObject = JSONObject()
+        var accountDetailJsonArray = JSONArray()
+
+        mAccountList.forEachIndexed { index, item ->
+            var accountDetailJsonObject = JSONObject()
+            if (item.accountName != "All") {
+                accountDetailJsonObject.put(Utils.ACCOUNT_ID, item.accountId)
+                accountDetailJsonObject.put(Utils.ACCOUNT_NAME, item.accountName)
+                accountDetailJsonObject.put(Utils.ACCOUNT_BALANCE, item.accountBalance)
+                accountDetailJsonObject.put(Utils.ACCOUNT_EXPENSE, item.accountExpense)
+                accountDetailJsonObject.put(Utils.ACCOUNT_INCOME, item.accountIncome)
+                accountDetailJsonArray.put(accountDetailJsonObject)
+            }
+        }
+        jsonObject.put(Utils.ACCOUNT_DETAIL_JSON ,accountDetailJsonArray)
+
+        var transactionDetailJsonArray = JSONArray()
+
+        transactionDetailList.forEachIndexed { _, item ->
+            var transactionDetailJsonObject = JSONObject()
+            transactionDetailJsonObject.put(Utils.ACCOUNT_ID, item.account_id)
+            transactionDetailJsonObject.put(Utils.MONEY, item.money)
+            transactionDetailJsonObject.put(Utils.TRANSACTION_ID, item.id)
+            transactionDetailJsonObject.put(Utils.DATE, item.date)
+            transactionDetailJsonObject.put(Utils.TIME, item.time)
+            transactionDetailJsonObject.put(Utils.PAID_FOR, item.paid_for)
+            transactionDetailJsonObject.put(Utils.PAY_TO, item.pay_to)
+            transactionDetailJsonArray.put(transactionDetailJsonObject)
+        }
+        jsonObject.put(Utils.TRANSACTION_JSON_OBJECT,transactionDetailJsonArray)
+        createJsonFile(jsonObject)
+    }
+
+    private fun createJsonFile(jsonArray:JSONObject) {
+        val folder = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+        val file = File(folder, CREATE_BACKUP_FILE_MONEY_MANAGEMENT_FILE_NAME+DateTimeUtils.getDateWithTime()+ CREATE_BACKUP_FILE_EXTENSION)
+
+       StorageUtils.writeTextData(file, jsonArray)
+       openBackInfoShare(file.absolutePath)
+    }
 }
+
+

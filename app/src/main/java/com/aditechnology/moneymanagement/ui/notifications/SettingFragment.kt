@@ -25,6 +25,12 @@ class SettingFragment : Fragment() {
         binding.textExportCsv.setOnClickListener {
             (requireActivity()as MainActivity).exportDatabaseToCSVFile()
         }
+        binding.textCreateBackup.setOnClickListener {
+
+            (requireActivity()as MainActivity).createBackup()
+
+
+        }
 
 
         return root
