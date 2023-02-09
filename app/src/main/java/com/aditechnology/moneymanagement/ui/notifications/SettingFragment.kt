@@ -28,8 +28,9 @@ class SettingFragment : Fragment() {
         binding.textCreateBackup.setOnClickListener {
 
             (requireActivity()as MainActivity).createBackup()
-
-
+        }
+        binding.textRestore.setOnClickListener {
+            (requireActivity() as MainActivity).selectBackUpFile()
         }
 
 

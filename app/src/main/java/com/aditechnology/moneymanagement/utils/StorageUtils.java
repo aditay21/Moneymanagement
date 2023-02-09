@@ -1,5 +1,7 @@
 package com.aditechnology.moneymanagement.utils;
 
+import android.content.Context;
+import android.net.Uri;
 import android.os.Environment;
 import android.widget.Toast;
 
@@ -7,8 +9,11 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URI;
 
 public class StorageUtils {
 
@@ -45,4 +50,29 @@ public class StorageUtils {
          }
       }
    }
+
+   public static String getdata(Uri myfile,Context context) {
+      InputStream fileInputStream=null;
+      try {
+          fileInputStream = context.getContentResolver().openInputStream(myfile);
+         int i = -1;
+         StringBuffer buffer = new StringBuffer();
+         while ((i = fileInputStream.read()) != -1) {
+            buffer.append((char) i);
+         }
+         return buffer.toString();
+      } catch (Exception e) {
+         e.printStackTrace();
+      } finally {
+         if (fileInputStream != null) {
+            try {
+               fileInputStream.close();
+            } catch (IOException e) {
+               e.printStackTrace();
+            }
+         }
+      }
+      return null;
+   }
 }
+

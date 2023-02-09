@@ -6,8 +6,14 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
+import android.text.Html
+import android.util.Log
 import android.view.LayoutInflater
 import android.widget.Toast
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.ActivityResultCallback
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -22,6 +28,7 @@ import com.aditechnology.moneymanagement.models.DetailsFileTable
 import com.aditechnology.moneymanagement.utils.DateTimeUtils
 import com.aditechnology.moneymanagement.utils.StorageUtils
 import com.aditechnology.moneymanagement.utils.Utils
+import com.aditechnology.moneymanagement.utils.Utils.Companion.ACCOUNT_DETAIL_JSON
 import com.aditechnology.moneymanagement.utils.Utils.Companion.CREATE_BACKUP_FILE_EXTENSION
 import com.aditechnology.moneymanagement.utils.Utils.Companion.CREATE_BACKUP_FILE_MONEY_MANAGEMENT_FILE_NAME
 import com.aditechnology.moneymanagement.utils.Utils.Companion.EXPORT_FILE_EXTENSION
@@ -35,12 +42,15 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.File
+import java.lang.Exception
 
 
 class MainActivity : AppCompatActivity() {
     companion object {
         private const val CAMERA_PERMISSION_CODE = 100
         private const val STORAGE_PERMISSION_CODE = 101
+        private const val READ_STORAGE_PERMISSION_CODE = 102
+
     }
     private  var FROM_CREATE_BACKUP = false
 
@@ -50,13 +60,39 @@ class MainActivity : AppCompatActivity() {
         AccountViewModel.AccountViewModelFactory((application as MainApplication).repository)
     }
 
-
+    var resultLauncher: ActivityResultLauncher<Intent>? = null
     private val expenseIncomeViewModel: ExpenseIncomeViewModel by viewModels {
         ExpenseViewModelFactory((application as MainApplication).repository)
     }
     private var  transactionDetailList: java.util.ArrayList<DetailsFileTable> = java.util.ArrayList()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        resultLauncher = registerForActivityResult(
+            ActivityResultContracts.StartActivityForResult(),
+            ActivityResultCallback<ActivityResult> { result ->
+                // Initialize result data
+                val data: Intent? = result.getData()
+                // check condition
+                if (data != null) {
+                    // When data is not equal to empty
+                    // Get PDf uri
+                    val sUri = data.data
+                    try {
+                        val backup =   StorageUtils.getdata(sUri!!,this) as JSONObject
+                        val jsonArray =backup.getJSONObject(ACCOUNT_DETAIL_JSON)
+
+
+
+
+                   }catch (e:Exception){
+                       e.printStackTrace()
+                        Toast.makeText(this,"Invalid backup file",Toast.LENGTH_SHORT).show()
+                   }
+
+
+                }
+            })
 
         binding = ActivityMain2Binding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -202,6 +238,8 @@ class MainActivity : AppCompatActivity() {
             } else {
                 Toast.makeText(this@MainActivity, "Storage Permission Denied", Toast.LENGTH_SHORT).show()
             }
+        }else if (requestCode == READ_STORAGE_PERMISSION_CODE){
+              launchPicker()
         }
     }
      private fun openBackInfoShare(path:String) {
@@ -286,6 +324,30 @@ class MainActivity : AppCompatActivity() {
        StorageUtils.writeTextData(file, jsonArray)
        openBackInfoShare(file.absolutePath)
     }
+
+   fun selectBackUpFile() {
+        if (ContextCompat.checkSelfPermission(
+                this@MainActivity,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE
+            ) == PackageManager.PERMISSION_DENIED
+        ) {
+            // Requesting the permission
+            ActivityCompat.requestPermissions(
+                this@MainActivity,
+                arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
+                READ_STORAGE_PERMISSION_CODE
+            )
+        } else {
+            launchPicker()
+        }
+    }
+
+    private fun launchPicker() {
+        val intent = Intent(Intent.ACTION_GET_CONTENT)
+        intent.type = "application/json"
+        resultLauncher?.launch(intent)
+    }
+
 }
 
 
