@@ -54,6 +54,13 @@ class ExpenseIncomeViewModel(private val managementRepository: MoneyManagementRe
 
        }
     }
+
+    fun removeAllTransaction() {
+        viewModelScope.launch {
+            managementRepository.removeAllTransaction()
+
+        }
+    }
 }
 
 class ExpenseViewModelFactory(private val repository: MoneyManagementRepository) : ViewModelProvider.Factory {

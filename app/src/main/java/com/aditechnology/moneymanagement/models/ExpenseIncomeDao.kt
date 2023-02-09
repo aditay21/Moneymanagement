@@ -66,4 +66,10 @@ interface ExpenseIncomeDao {
         endTimeStamp: String
     ): Flow<List<DetailsFileTable>>
 
+
+    @Query("DELETE FROM account_detail")
+     suspend  fun removeAllAccounts()
+
+    @Query("DELETE FROM expense_income_details")
+    suspend  fun removeAllTransactionDetail()
 }

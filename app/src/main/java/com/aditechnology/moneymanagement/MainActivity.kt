@@ -81,8 +81,7 @@ class MainActivity : AppCompatActivity() {
                     try {
                         val backup =   StorageUtils.getdata(sUri!!,this) as JSONObject
                         val jsonArray =backup.getJSONObject(ACCOUNT_DETAIL_JSON)
-
-
+                        resetDb()
 
 
                    }catch (e:Exception){
@@ -118,6 +117,11 @@ class MainActivity : AppCompatActivity() {
         )
         //setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
+    }
+
+    public fun resetDb() {
+        accountViewModel.removeAllAccount()
+        expenseIncomeViewModel.removeAllTransaction()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

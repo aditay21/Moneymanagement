@@ -1,6 +1,7 @@
 package com.aditechnology.moneymanagement.ui.home
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -40,6 +41,7 @@ class HomeFragment :Fragment(){
         _binding?.pager?.adapter = homeFragmentAdapter
         accountViewModel.mAllDetails.observe(viewLifecycleOwner) { account ->
             if (account.isEmpty()){
+                Log.e("TAG","Insert Home")
                 accountViewModel.insertAccountDetail("All",0)
                 accountViewModel.insertAccountDetail("Personal",0)
             }else {

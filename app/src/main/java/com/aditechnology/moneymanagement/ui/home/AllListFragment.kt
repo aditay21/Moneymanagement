@@ -1,6 +1,7 @@
 package com.aditechnology.moneymanagement.ui.home
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -44,12 +45,19 @@ class AllListFragment : Fragment(), AllAccountListAdapter.OnClickListener {
 
         accountViewModel.mAllDetails.observe(viewLifecycleOwner) { account ->
             account?.let {
-                var accountBalance = 0L
-                for (item in account) {
-                    accountBalance += item.accountBalance
+                if (account.isEmpty()) {
+                    Log.e("TAG","Insert ALL")
+                  //  accountViewModel.insertAccountDetail("All", 0)
+                    //accountViewModel.insertAccountDetail("Personal", 0)
+                } else {
 
+                    var accountBalance = 0L
+                    for (item in account) {
+                        accountBalance += item.accountBalance
+
+                    }
+                    mAccountListAdapter.updateList(account, accountBalance)
                 }
-                mAccountListAdapter.updateList(account, accountBalance)
             }
         }
     }

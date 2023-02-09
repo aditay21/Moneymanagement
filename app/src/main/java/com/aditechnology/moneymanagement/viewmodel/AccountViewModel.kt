@@ -34,6 +34,11 @@ class AccountViewModel(private val managementRepository: MoneyManagementReposito
             managementRepository.removeAccountById(accountId)
         }
     }
+    fun removeAllAccount() {
+        viewModelScope.launch {
+            managementRepository.removeAllAccounts()
+        }
+    }
 
     class AccountViewModelFactory(private val repository: MoneyManagementRepository) : ViewModelProvider.Factory {
         override fun <T : ViewModel> create(modelClass: Class<T>): T {

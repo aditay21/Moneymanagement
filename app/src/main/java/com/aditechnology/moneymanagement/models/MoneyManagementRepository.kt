@@ -61,5 +61,12 @@ class MoneyManagementRepository(private val expenseIncomeDao: ExpenseIncomeDao) 
    suspend fun removeTransactionById(id: Int) {
        expenseIncomeDao.removeTransactionById(id.toString())
     }
+    suspend fun removeAllAccounts() {
+        expenseIncomeDao.removeAllAccounts()
+
+    }
+    suspend fun removeAllTransaction(){
+        expenseIncomeDao.removeAllTransactionDetail()
+    }
 
 }
