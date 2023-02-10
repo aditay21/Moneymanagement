@@ -3,6 +3,7 @@
     package="com.aditechnology.moneymanagement">
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.INTERNET"/>
     <application
         android:requestLegacyExternalStorage="true"
         android:name=".MainApplication"
@@ -22,18 +23,14 @@
         </intent-filter>
 
         </activity>
-      <!--  <activity
-            android:name=".JetPackComposeActivity"
+        <activity
+            android:name=".WebViewActivity"
             android:exported="true"
-
             android:label="@string/title_activity_main2">
-           &lt;!&ndash; <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>&ndash;&gt;
 
-        </activity>-->
+
+        </activity>
 
         <provider
             android:name="androidx.core.content.FileProvider"
@@ -44,6 +41,10 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/provider_paths" />
         </provider>
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-2786039813382028~8040479809"/>
+
     </application>
 
 </manifest>

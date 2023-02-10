@@ -8,11 +8,14 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.aditechnology.moneymanagement.MainApplication
+import com.aditechnology.moneymanagement.R
 import com.aditechnology.moneymanagement.databinding.FragmentHomeBinding
 import com.aditechnology.moneymanagement.models.AccountTable
 import com.aditechnology.moneymanagement.ui.home.HomeFragment.*
 import com.aditechnology.moneymanagement.utils.Utils
 import com.aditechnology.moneymanagement.viewmodel.AccountViewModel
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.AdView
 import com.google.android.material.tabs.TabLayoutMediator
 
 
@@ -33,7 +36,11 @@ class HomeFragment :Fragment(){
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+
+        val adRequest = AdRequest.Builder().build()
+
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
+        binding.adView.loadAd(adRequest)
         return binding.root
     }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

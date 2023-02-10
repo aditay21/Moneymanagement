@@ -46,6 +46,7 @@ import com.aditechnology.moneymanagement.viewmodel.AccountViewModel
 import com.aditechnology.moneymanagement.viewmodel.ExpenseIncomeViewModel
 import com.aditechnology.moneymanagement.viewmodel.ExpenseViewModelFactory
 import com.github.doyaaaaaken.kotlincsv.dsl.csvWriter
+import com.google.android.gms.ads.MobileAds
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import org.json.JSONArray
@@ -77,6 +78,8 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        MobileAds.initialize(this) {}
+
         resultLauncher = registerForActivityResult(
             ActivityResultContracts.StartActivityForResult(),
             ActivityResultCallback<ActivityResult> { result ->
@@ -90,6 +93,7 @@ class MainActivity : AppCompatActivity() {
                     try {
                         resetDb(false)
                         insertBackupFile(sUri)
+                        Toast.makeText(this,"Data Restored Successfully",Toast.LENGTH_SHORT).show()
                     }catch (e:Exception){
                        e.printStackTrace()
                         Toast.makeText(this,"Invalid backup file",Toast.LENGTH_SHORT).show()
@@ -194,6 +198,7 @@ class MainActivity : AppCompatActivity() {
                             isSaved = true
                         }
 
+
                     }
             }
     }
@@ -217,7 +222,7 @@ class MainActivity : AppCompatActivity() {
         dialog.setCancelable(false)
         dialog.setContentView(binding.root)
         binding.textviewShareInfo.text = "You have to restart the application"
-        binding.buttonOk.text ="Ok"
+        binding.buttonOk.text ="Restart"
         dialog.show()
         binding.buttonOk.setOnClickListener {
             dialog.dismiss()
