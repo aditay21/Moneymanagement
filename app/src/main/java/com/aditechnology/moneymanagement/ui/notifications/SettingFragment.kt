@@ -61,8 +61,8 @@ class SettingFragment : Fragment() {
             dialog.dismiss()
         }
         binding.buttonShareInfo.setOnClickListener {
-            (requireActivity() as MainActivity).resetDb()
-            (requireActivity() as MainActivity).triggerRebirth()
+            (requireActivity() as MainActivity).resetDb(true)
+          //  (requireActivity() as MainActivity).triggerRebirth()
             //dialog.dismiss()
 
 

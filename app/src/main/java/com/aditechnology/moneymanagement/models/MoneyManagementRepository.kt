@@ -13,8 +13,8 @@ class MoneyManagementRepository(private val expenseIncomeDao: ExpenseIncomeDao) 
       return expenseIncomeDao.insertData(value)
     }
 
-    public suspend fun insertItem(value: AccountTable){
-        expenseIncomeDao.insertData(value)
+    public suspend fun insertItem(value: AccountTable):Long{
+       return expenseIncomeDao.insertData(value)
     }
 
     fun allDetailsByAccountId(id: Int) : Flow<List<DetailsFileTable>>{

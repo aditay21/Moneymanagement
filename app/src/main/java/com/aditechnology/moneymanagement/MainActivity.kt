@@ -11,6 +11,7 @@ import android.os.Bundle
 import android.os.Environment
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.View
 import android.widget.Toast
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultCallback
@@ -20,6 +21,8 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
@@ -85,58 +88,9 @@ class MainActivity : AppCompatActivity() {
                     // Get PDf uri
                     val sUri = data.data
                     try {
-                        resetDb()
-                        val raw =   StorageUtils.getdata(sUri!!,this)
-                         val backup = JSONObject(raw)
-                        val accountsJsonArray =backup.getJSONArray(ACCOUNT_DETAIL_JSON)
-                        for (i in 0 until accountsJsonArray.length()) {
-                            val accountObject = accountsJsonArray.getJSONObject(i)
-                            if (!accountObject.getString(ACCOUNT_NAME)
-                                    .equals(ALL) && !accountObject.getString(ACCOUNT_NAME)
-                                    .equals(Personal)
-                            ) {
-                                accountViewModel.insertAccountDetail(
-                                    accountObject.getString(ACCOUNT_NAME),
-                                    accountObject.getLong(Utils.ACCOUNT_BALANCE),
-                                    accountObject.getLong(Utils.DATE),
-                                    accountObject.getLong(Utils.ACCOUNT_EXPENSE),
-                                    accountObject.getLong(Utils.ACCOUNT_INCOME)
-                                )
-                            }
-                        }
-                        val transactionJsonArray =backup.getJSONArray(TRANSACTION_JSON_OBJECT)
-                        for (i in 0 until transactionJsonArray.length()) {
-                            val accountObject = transactionJsonArray.getJSONObject(i)
-                            var type = Type.INCOME
-                            if (accountObject.get(Utils.TYPE) == 1) {
-                                type = Type.EXPENSE
-                            } else {
-                                type = Type.INCOME
-                            }
-                           /* accountViewModel.getAccountDetailName(accountObject.getString(Utils.ACCOUNT_NAME))
-                                .observe(this) { list ->*/
-                                    var id = accountObject.getInt(Utils.ACCOUNT_ID)
-                                    Log.e("TAG", "$mPersonalAccountId Personal Account id " +accountObject.getString(ACCOUNT_NAME))
-                                    if (accountObject.getString(ACCOUNT_NAME) == Personal  ) {
-                                        id = mPersonalAccountId
-                                    }
-                                    expenseIncomeViewModel.insert(
-                                        accountObject.getInt(Utils.MONEY),
-                                        type,
-                                        id,
-                                        accountObject.getString(Utils.PAY_TO),
-                                        accountObject.getString(Utils.DATE),
-                                        accountObject.getString(Utils.TIME),
-                                        accountObject.getString(Utils.PAID_FOR),
-                                        accountObject.getString(ACCOUNT_NAME)
-
-                                    )
-                                }
-
-                     //   }
-
-                       // triggerRebirth()
-                   }catch (e:Exception){
+                        resetDb(false)
+                        insertBackupFile(sUri)
+                    }catch (e:Exception){
                        e.printStackTrace()
                         Toast.makeText(this,"Invalid backup file",Toast.LENGTH_SHORT).show()
                    }
@@ -153,8 +107,8 @@ class MainActivity : AppCompatActivity() {
 
 
                 if (account.size>1 && account[1].accountName== Personal) {
-                    Log.e("TAG","153"+account[1].accountName)
-                    Log.e("TAG","153"+account[1].accountId)
+                  //  Log.e("TAG","153"+account[1].accountName)
+                    //Log.e("TAG","153"+account[1].accountId)
                     mPersonalAccountId = account[1].accountId
                 }
                 mAccountList.clear()
@@ -180,11 +134,103 @@ class MainActivity : AppCompatActivity() {
         navView.setupWithNavController(navController)
     }
 
-     fun resetDb() {
+    private fun insertBackupFile(sUri: Uri?) {
+        val raw = StorageUtils.getdata(sUri!!, this)
+        val backup = JSONObject(raw)
+        val accountsJsonArray = backup.getJSONArray(ACCOUNT_DETAIL_JSON)
+        accountViewModel.insertAccountDetail(ALL, 0)
+        for (i in 0 until accountsJsonArray.length()) {
+            val accountObject = accountsJsonArray.getJSONObject(i)
+            if (!accountObject.getString(ACCOUNT_NAME)
+                    .equals(ALL) /*&& !accountObject.getString(ACCOUNT_NAME)
+                    .equals(Personal)*/
+            ) {
+              val account_id =  accountViewModel.insertAccountDetail(
+                    accountObject.getString(ACCOUNT_NAME),
+                    accountObject.getLong(Utils.ACCOUNT_BALANCE),
+                    accountObject.getLong(Utils.DATE),
+                    accountObject.getLong(Utils.ACCOUNT_EXPENSE),
+                    accountObject.getLong(Utils.ACCOUNT_INCOME)
+              )
+               val ac =  accountObject.getString(ACCOUNT_NAME)
+              //  Log.e("TAG","$ac new Create "+account_id)
+            }
+        }
+        val transactionJsonArray = backup.getJSONArray(TRANSACTION_JSON_OBJECT)
+        for (i in 0 until transactionJsonArray.length()) {
+            val accountObject = transactionJsonArray.getJSONObject(i)
+            var type = Type.INCOME
+            if (accountObject.get(Utils.TYPE) == 1) {
+                type = Type.EXPENSE
+            } else {
+                type = Type.INCOME
+            }
+
+            var id = accountObject.getInt(Utils.ACCOUNT_ID)
+            Log.e("TAG","before hit "+accountObject.getString(ACCOUNT_NAME))
+            var hit =0
+            var isSaved = false
+               accountViewModel.getAccountDetailName(accountObject.getString(ACCOUNT_NAME))
+                    .observe(this) {
+                        hit+=1
+
+                        if (it.isEmpty()) {
+
+                        }else {
+                            Log.e("TAG","hit "+hit +"  "+it.get(0).accountId )
+                            id = it.get(0).accountId
+                            //if (!isSaved) {
+                                expenseIncomeViewModel.insert(
+                                    accountObject.getInt(Utils.MONEY),
+                                    type,
+                                    id,
+                                    accountObject.getString(Utils.PAY_TO),
+                                    accountObject.getString(Utils.DATE),
+                                    accountObject.getString(Utils.TIME),
+                                    accountObject.getString(Utils.PAID_FOR),
+                                    accountObject.getString(ACCOUNT_NAME)
+                                )
+                       // }
+                            isSaved = true
+                        }
+
+                    }
+            }
+    }
+
+    fun resetDb(isRestOnly : Boolean) {
         accountViewModel.removeAllAccount()
         expenseIncomeViewModel.removeAllTransaction()
-        accountViewModel.insertAccountDetail(ALL, 0)
-        accountViewModel.insertAccountDetail(Personal, 0)
+      if (isRestOnly)
+          openRestartAlertBottomSheet(isRestOnly)
+
+
+    /*  if (isRestOnly)
+        accountViewModel.insertAccountDetail(Personal, 0)*/
+    }
+
+    private fun openRestartAlertBottomSheet(isRestOnly: Boolean ) {
+        val dialog = BottomSheetDialog(this, R.style.BaseBottomSheetDialog)
+        val inflater = LayoutInflater.from(this)
+        val binding = BottomsheetShareBackupBinding.inflate(inflater, null, false)
+        binding.cardView.setBackgroundResource(R.drawable.bottom_sheet_shape)
+        dialog.setCancelable(false)
+        dialog.setContentView(binding.root)
+        binding.textviewShareInfo.text = "You have to restart the application"
+        binding.buttonOk.text ="Ok"
+        dialog.show()
+        binding.buttonOk.setOnClickListener {
+            dialog.dismiss()
+            if (isRestOnly) {
+                triggerRebirth()
+            }else{
+
+            }
+        }
+        binding.buttonShareInfo.visibility = View.GONE
+
+
+
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

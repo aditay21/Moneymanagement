@@ -11,7 +11,7 @@ interface ExpenseIncomeDao {
     suspend fun insertData(value: DetailsFileTable) : Long
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun insertData(value: AccountTable)
+    suspend fun insertData(value: AccountTable):Long
 
     @Query("SELECT * FROM expense_income_details")
      fun getAllDetails(): Flow<List<DetailsFileTable>>

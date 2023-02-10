@@ -48,7 +48,6 @@ class HomeFragment :Fragment(){
                 accountViewModel.insertAccountDetail(Utils.Personal, 0)
 
             }else {
-
                 mAccountList.clear()
                 mAccountList.addAll(account)
                 homeFragmentAdapter.notifyDataSetChanged()

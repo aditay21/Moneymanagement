@@ -13,12 +13,14 @@ class AccountViewModel(private val managementRepository: MoneyManagementReposito
         var value = AccountTable(account,balance,System.currentTimeMillis(),0,0);
         managementRepository.insertItem(value)
     }
-    fun insertAccountDetail(accountName: String,accountBalance :Long,date: Long,accountExpense: Long,income:Long) {
+    fun insertAccountDetail(accountName: String,accountBalance :Long,date: Long,accountExpense: Long,income:Long): Long {
+    var id =0L
      viewModelScope.launch {
          var value = AccountTable(accountName, accountBalance,
              date, accountExpense.toLong(),income.toLong());
-         managementRepository.insertItem(value)
+         id = managementRepository.insertItem(value)
      }
+        return id
     }
 
     fun updateAccountBalance(amount: String,accountId: Int,expense: Int,income: Int) = viewModelScope.launch {

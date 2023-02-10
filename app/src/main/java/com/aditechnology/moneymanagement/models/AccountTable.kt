@@ -15,6 +15,4 @@ class AccountTable(
 
     @PrimaryKey(autoGenerate = true) var accountId: Int=0
 
-
-
 }
