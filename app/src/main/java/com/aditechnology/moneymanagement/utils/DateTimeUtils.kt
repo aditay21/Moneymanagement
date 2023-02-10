@@ -5,6 +5,7 @@ import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.time.Month
 import java.util.*
+import kotlin.time.Duration.Companion.milliseconds
 
 
 class DateTimeUtils {
@@ -14,7 +15,7 @@ class DateTimeUtils {
     const val DATE_FORMAT_WITH_TIME =  "MMM_dd_yyyy_hh_mm_a"
     const val MONTH_FORMAT =  "MMM yyyy"
     const val YEAR_FORMAT =  "yyyy"
-    const val TIME_FORMAT =  "hh:mm a"
+    const val TIME_FORMAT =  "hh:mm:ss a"
 
 
         fun getDate(): String {
