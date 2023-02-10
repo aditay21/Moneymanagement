@@ -11,6 +11,7 @@ import com.aditechnology.moneymanagement.MainApplication
 import com.aditechnology.moneymanagement.databinding.FragmentHomeBinding
 import com.aditechnology.moneymanagement.models.AccountTable
 import com.aditechnology.moneymanagement.ui.home.HomeFragment.*
+import com.aditechnology.moneymanagement.utils.Utils
 import com.aditechnology.moneymanagement.viewmodel.AccountViewModel
 import com.google.android.material.tabs.TabLayoutMediator
 
@@ -39,12 +40,15 @@ class HomeFragment :Fragment(){
         super.onViewCreated(view, savedInstanceState)
         homeFragmentAdapter = HomeFragmentAdapter(this,mAccountList)
         _binding?.pager?.adapter = homeFragmentAdapter
+
         accountViewModel.mAllDetails.observe(viewLifecycleOwner) { account ->
             if (account.isEmpty()){
                 Log.e("TAG","Insert Home")
-                accountViewModel.insertAccountDetail("All",0)
-                accountViewModel.insertAccountDetail("Personal",0)
+                accountViewModel.insertAccountDetail(Utils.ALL, 0)
+                accountViewModel.insertAccountDetail(Utils.Personal, 0)
+
             }else {
+
                 mAccountList.clear()
                 mAccountList.addAll(account)
                 homeFragmentAdapter.notifyDataSetChanged()
@@ -56,6 +60,18 @@ class HomeFragment :Fragment(){
             }
         }
     }
+
+    private fun createDummyAccounts(name :String) {
+        Log.e("TAG","65 $name")
+        accountViewModel.getAccountDetailName(name)
+                    .observe(viewLifecycleOwner) { list ->
+                        if (list.isEmpty()) {
+                            Log.e("TAG","list is empty $name")
+                            accountViewModel.insertAccountDetail(name, 0)
+                        }
+                    }
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null

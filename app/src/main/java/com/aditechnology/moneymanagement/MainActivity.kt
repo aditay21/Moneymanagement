@@ -1,12 +1,14 @@
 package com.aditechnology.moneymanagement
 
 import android.Manifest
+import android.app.Activity
+import android.content.Context
 import android.content.Intent
+import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
-import android.text.Html
 import android.util.Log
 import android.view.LayoutInflater
 import android.widget.Toast
@@ -29,10 +31,13 @@ import com.aditechnology.moneymanagement.utils.DateTimeUtils
 import com.aditechnology.moneymanagement.utils.StorageUtils
 import com.aditechnology.moneymanagement.utils.Utils
 import com.aditechnology.moneymanagement.utils.Utils.Companion.ACCOUNT_DETAIL_JSON
+import com.aditechnology.moneymanagement.utils.Utils.Companion.ACCOUNT_NAME
+import com.aditechnology.moneymanagement.utils.Utils.Companion.ALL
 import com.aditechnology.moneymanagement.utils.Utils.Companion.CREATE_BACKUP_FILE_EXTENSION
 import com.aditechnology.moneymanagement.utils.Utils.Companion.CREATE_BACKUP_FILE_MONEY_MANAGEMENT_FILE_NAME
 import com.aditechnology.moneymanagement.utils.Utils.Companion.EXPORT_FILE_EXTENSION
 import com.aditechnology.moneymanagement.utils.Utils.Companion.EXPORT_FILE_MONEY_MANAGEMENT_FILE_NAME
+import com.aditechnology.moneymanagement.utils.Utils.Companion.Personal
 import com.aditechnology.moneymanagement.utils.Utils.Companion.TRANSACTION_JSON_OBJECT
 import com.aditechnology.moneymanagement.viewmodel.AccountViewModel
 import com.aditechnology.moneymanagement.viewmodel.ExpenseIncomeViewModel
@@ -43,7 +48,6 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.File
-import java.lang.Exception
 
 
 class MainActivity : AppCompatActivity() {
@@ -53,6 +57,7 @@ class MainActivity : AppCompatActivity() {
         private const val READ_STORAGE_PERMISSION_CODE = 102
 
     }
+    var mPersonalAccountId = 0
     private  var FROM_CREATE_BACKUP = false
 
     private val mAccountList: ArrayList<AccountTable> = ArrayList()
@@ -80,47 +85,57 @@ class MainActivity : AppCompatActivity() {
                     // Get PDf uri
                     val sUri = data.data
                     try {
-                        val backup =   StorageUtils.getdata(sUri!!,this) as JSONObject
+                        resetDb()
+                        val raw =   StorageUtils.getdata(sUri!!,this)
+                         val backup = JSONObject(raw)
                         val accountsJsonArray =backup.getJSONArray(ACCOUNT_DETAIL_JSON)
                         for (i in 0 until accountsJsonArray.length()) {
                             val accountObject = accountsJsonArray.getJSONObject(i)
-                            if (accountObject.getString(Utils.ACCOUNT_NAME)
-                                    .equals("ALL") && accountObject.getString(Utils.ACCOUNT_NAME)
-                                    .equals("Personal")
+                            if (!accountObject.getString(ACCOUNT_NAME)
+                                    .equals(ALL) && !accountObject.getString(ACCOUNT_NAME)
+                                    .equals(Personal)
                             ) {
                                 accountViewModel.insertAccountDetail(
-                                    accountObject.getString(Utils.ACCOUNT_NAME),
+                                    accountObject.getString(ACCOUNT_NAME),
                                     accountObject.getLong(Utils.ACCOUNT_BALANCE),
                                     accountObject.getLong(Utils.DATE),
                                     accountObject.getLong(Utils.ACCOUNT_EXPENSE),
-                                    accountObject.getLong(Utils.ACCOUNT_INCOME))
+                                    accountObject.getLong(Utils.ACCOUNT_INCOME)
+                                )
                             }
                         }
-
-
                         val transactionJsonArray =backup.getJSONArray(TRANSACTION_JSON_OBJECT)
                         for (i in 0 until transactionJsonArray.length()) {
                             val accountObject = transactionJsonArray.getJSONObject(i)
-                           var type =Type.INCOME
-                            if (accountObject.get(Utils.TYPE)==1){
+                            var type = Type.INCOME
+                            if (accountObject.get(Utils.TYPE) == 1) {
                                 type = Type.EXPENSE
-                            }else{
+                            } else {
                                 type = Type.INCOME
                             }
+                           /* accountViewModel.getAccountDetailName(accountObject.getString(Utils.ACCOUNT_NAME))
+                                .observe(this) { list ->*/
+                                    var id = accountObject.getInt(Utils.ACCOUNT_ID)
+                                    Log.e("TAG", "$mPersonalAccountId Personal Account id " +accountObject.getString(ACCOUNT_NAME))
+                                    if (accountObject.getString(ACCOUNT_NAME) == Personal  ) {
+                                        id = mPersonalAccountId
+                                    }
+                                    expenseIncomeViewModel.insert(
+                                        accountObject.getInt(Utils.MONEY),
+                                        type,
+                                        id,
+                                        accountObject.getString(Utils.PAY_TO),
+                                        accountObject.getString(Utils.DATE),
+                                        accountObject.getString(Utils.TIME),
+                                        accountObject.getString(Utils.PAID_FOR),
+                                        accountObject.getString(ACCOUNT_NAME)
 
-                               expenseIncomeViewModel.insert(
-                                    accountObject.getInt(Utils.MONEY),
-                                    type ,
-                                    accountObject.getInt(Utils.ACCOUNT_ID),
-                                    accountObject.getString(Utils.PAY_TO),
-                                    accountObject.getString(Utils.DATE),
-                                    accountObject.getString(Utils.TIME),
-                                     accountObject.getString(Utils.PAID_FOR))
-                          }
+                                    )
+                                }
 
-                        resetDb()
+                     //   }
 
-
+                       // triggerRebirth()
                    }catch (e:Exception){
                        e.printStackTrace()
                         Toast.makeText(this,"Invalid backup file",Toast.LENGTH_SHORT).show()
@@ -134,12 +149,21 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         accountViewModel.mAllDetails.observe(this) { account ->
-            mAccountList.clear()
-            mAccountList.addAll(account)
+            if (!account.isEmpty()) {
 
+
+                if (account.size>1 && account[1].accountName== Personal) {
+                    Log.e("TAG","153"+account[1].accountName)
+                    Log.e("TAG","153"+account[1].accountId)
+                    mPersonalAccountId = account[1].accountId
+                }
+                mAccountList.clear()
+                mAccountList.addAll(account)
+            }
         }
         expenseIncomeViewModel.mAllDetails.observe(this){
                 all->
+
             transactionDetailList.addAll(all.reversed())
         }
         val navView: BottomNavigationView = binding.navView
@@ -156,9 +180,11 @@ class MainActivity : AppCompatActivity() {
         navView.setupWithNavController(navController)
     }
 
-    public fun resetDb() {
+     fun resetDb() {
         accountViewModel.removeAllAccount()
         expenseIncomeViewModel.removeAllTransaction()
+        accountViewModel.insertAccountDetail(ALL, 0)
+        accountViewModel.insertAccountDetail(Personal, 0)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -332,7 +358,7 @@ class MainActivity : AppCompatActivity() {
             var accountDetailJsonObject = JSONObject()
             if (item.accountName != "All") {
                 accountDetailJsonObject.put(Utils.ACCOUNT_ID, item.accountId)
-                accountDetailJsonObject.put(Utils.ACCOUNT_NAME, item.accountName)
+                accountDetailJsonObject.put(ACCOUNT_NAME, item.accountName)
                 accountDetailJsonObject.put(Utils.ACCOUNT_BALANCE, item.accountBalance)
                 accountDetailJsonObject.put(Utils.ACCOUNT_EXPENSE, item.accountExpense)
                 accountDetailJsonObject.put(Utils.ACCOUNT_INCOME, item.accountIncome)
@@ -354,6 +380,7 @@ class MainActivity : AppCompatActivity() {
             transactionDetailJsonObject.put(Utils.PAID_FOR, item.paid_for)
             transactionDetailJsonObject.put(Utils.PAY_TO, item.pay_to)
             transactionDetailJsonObject.put(Utils.TYPE, item.type)
+            transactionDetailJsonObject.put(ACCOUNT_NAME, item.account_name)
             transactionDetailJsonArray.put(transactionDetailJsonObject)
         }
         jsonObject.put(Utils.TRANSACTION_JSON_OBJECT,transactionDetailJsonArray)
@@ -389,6 +416,15 @@ class MainActivity : AppCompatActivity() {
         val intent = Intent(Intent.ACTION_GET_CONTENT)
         intent.type = "application/json"
         resultLauncher?.launch(intent)
+    }
+
+    fun triggerRebirth() {
+        val packageManager = packageManager
+        val intent = packageManager.getLaunchIntentForPackage(packageName)
+        val componentName = intent!!.component
+        val mainIntent = Intent.makeRestartActivityTask(componentName)
+        startActivity(mainIntent)
+        Runtime.getRuntime().exit(0)
     }
 
 }

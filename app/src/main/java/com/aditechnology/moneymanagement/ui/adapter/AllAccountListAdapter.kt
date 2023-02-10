@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.aditechnology.moneymanagement.R
 import com.aditechnology.moneymanagement.databinding.ViewHolderDetailSummeryBinding
 import com.aditechnology.moneymanagement.models.AccountTable
+import com.aditechnology.moneymanagement.utils.Utils
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
@@ -82,7 +83,7 @@ class AllAccountListAdapter(val onclickListener: OnClickListener) : RecyclerView
     fun updateList(list: List<AccountTable>,accountBalance:Long){
         adapterList.clear()
         adapterList.addAll(list)
-        if(adapterList[0].accountName == "All") {
+        if(adapterList[0].accountName == Utils.ALL) {
             adapterList.removeAt(0)
         }
         mAccountBalance = accountBalance

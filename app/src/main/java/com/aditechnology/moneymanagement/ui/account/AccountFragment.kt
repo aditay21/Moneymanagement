@@ -54,8 +54,8 @@ class AccountFragment : Fragment() {
 
         accountViewModel.mAllDetails.observe(requireActivity(), Observer { account ->
             if (account.isEmpty()){
-                Log.e("TAG","Account is empty")
-                accountViewModel.insertAccountDetail("Personal",0)
+              //  Log.e("TAG","Account is empty")
+             //   accountViewModel.insertAccountDetail("Personal",0)
             }else{
                 account?.let {
                     mAccountListAdapter.updateList(account)

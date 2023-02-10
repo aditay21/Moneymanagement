@@ -12,17 +12,17 @@ class ExpenseIncomeViewModel(private val managementRepository: MoneyManagementRe
 
     val mAllDetailsById : LiveData<List<DetailsFileTable>> = managementRepository.allDetailsByAccountId(1).asLiveData()
 
-    fun  insert(money: Int, type: Type,accountId : Int,payTo:String,date:String,time:String,paidFor:String) =
+    fun  insert(money: Int, type: Type,accountId : Int,payTo:String,date:String,time:String,paidFor:String,accountName:String) =
 
         viewModelScope.launch {
 
         var value :DetailsFileTable
         when (type) {
             Type.EXPENSE -> {
-                 value=  DetailsFileTable( 1, money,accountId,payTo,date,time,paidFor)
+                 value=  DetailsFileTable( 1, money,accountId,payTo,date,time,paidFor,accountName)
             }
             else -> {
-                 value=  DetailsFileTable( 0, money,accountId,payTo,date,time,paidFor)
+                 value=  DetailsFileTable( 0, money,accountId,payTo,date,time,paidFor,accountName)
             }
         }
             managementRepository.insertItem(value)

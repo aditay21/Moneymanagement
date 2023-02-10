@@ -39,6 +39,9 @@ class MoneyManagementRepository(private val expenseIncomeDao: ExpenseIncomeDao) 
     fun getAccountDetailsByAccountId(id: Int) : Flow<List<AccountTable>>{
         return expenseIncomeDao.getAccountDetailsByAccountId(id.toString())
     }
+    fun getAccountDetailsByAccountName(accountName: String) : Flow<List<AccountTable>>{
+        return expenseIncomeDao.getAccountDetailsByAccountName(accountName)
+    }
 
     suspend  fun updateAmountOfAccountById(amount: String, accountId:String,expense: String,income: String) {
       expenseIncomeDao.updateAmountOfAccountById(amount,accountId,expense,income)

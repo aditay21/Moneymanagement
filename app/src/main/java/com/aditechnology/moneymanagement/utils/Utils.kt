@@ -10,6 +10,9 @@ class Utils {
         const val CREATE_BACKUP_FILE_MONEY_MANAGEMENT_FILE_NAME="MONEY_MANAGEMENT"
         const val CREATE_BACKUP_FILE_EXTENSION=".json"
 
+        const val ALL="All"
+        const val Personal="Personal"
+
 
 
         const val ACCOUNT_DETAIL_JSON="account_detail_json"

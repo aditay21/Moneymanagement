@@ -35,6 +35,7 @@ class DetailListFragment : Fragment() , DetailListAdapter.OnClickListener {
     private var mTotalBalance = 0
     private var mTotalIncome = 0
     private var mTotalExpense = 0
+    private var mAccountName =""
     private var _binding: FragmentDetailsListBinding? = null
     private val accountViewModel : AccountViewModel by viewModels {
         AccountViewModel.AccountViewModelFactory((requireActivity().application as MainApplication).repository)
@@ -68,6 +69,8 @@ class DetailListFragment : Fragment() , DetailListAdapter.OnClickListener {
                 mTotalBalance = list[0].accountBalance.toInt()
                 mTotalExpense = list[0].accountExpense.toInt()
                 mTotalIncome = list[0].accountIncome.toInt()
+                mAccountName = list[0].accountName
+
             }
             mAccountListAdapter.updateHeader(list)
         }
@@ -194,7 +197,8 @@ class DetailListFragment : Fragment() , DetailListAdapter.OnClickListener {
                 binding.editTextPaidFor.text.toString(),
                 date.toString(),
                 time.toString(),
-                binding.edittextToPay.text.toString()
+                binding.edittextToPay.text.toString(),
+                mAccountName
             )
             accountViewModel.updateAccountBalance(
                 mTotalBalance.toString(), accountId,mTotalExpense,mTotalIncome

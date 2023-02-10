@@ -12,7 +12,8 @@ data class DetailsFileTable(
     @ColumnInfo(name="pay_to")     val pay_to: String,
     @ColumnInfo(name="date")       val date: String,
     @ColumnInfo(name="time")       val time: String,
-    @ColumnInfo(name="paid_for")   val paid_for: String){
+    @ColumnInfo(name="paid_for")   val paid_for: String,
+    @ColumnInfo(name="account_name")   val account_name: String){
 
     @PrimaryKey(autoGenerate = true) var id : Int=0
 }

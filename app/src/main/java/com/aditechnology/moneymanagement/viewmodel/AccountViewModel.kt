@@ -28,6 +28,9 @@ class AccountViewModel(private val managementRepository: MoneyManagementReposito
     fun getAccountDetailBy(accountId :Int) :LiveData<List<AccountTable>> {
         return managementRepository.getAccountDetailsByAccountId(accountId).asLiveData()
     }
+    fun getAccountDetailName(accountName :String) :LiveData<List<AccountTable>> {
+        return managementRepository.getAccountDetailsByAccountName(accountName).asLiveData()
+    }
 
 
     fun updateAccountName(accountId: Int,accountName:String) {

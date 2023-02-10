@@ -46,7 +46,7 @@ class AllListFragment : Fragment(), AllAccountListAdapter.OnClickListener {
         accountViewModel.mAllDetails.observe(viewLifecycleOwner) { account ->
             account?.let {
                 if (account.isEmpty()) {
-                    Log.e("TAG","Insert ALL")
+                   // Log.e("TAG","Insert ALL")
                   //  accountViewModel.insertAccountDetail("All", 0)
                     //accountViewModel.insertAccountDetail("Personal", 0)
                 } else {
