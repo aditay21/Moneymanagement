@@ -41,10 +41,16 @@ class CreatePinFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         binding.buttonRemovePin.setOnClickListener {
             removePinBottomSheet()
         }
+        val sharedPref = requireActivity().getSharedPreferences("My",0)
+        val exitingPin = sharedPref?.getString(Utils.SET_PIN, "")
 
+        if (TextUtils.isEmpty(exitingPin)) {
+            binding.buttonRemovePin.visibility = View.GONE
+        }
         binding.buttonCreate.setOnClickListener {
             when {
                     TextUtils.isEmpty(binding.edittextSetPin.text) -> {
@@ -54,44 +60,68 @@ class CreatePinFragment : Fragment() {
                         binding.edittextReverifyPin.error = "Please enter confirm pin"
                     }
                     else -> {
-                        setPin()
+                        if (TextUtils.isEmpty(exitingPin)){
+                            setPin()
+                        }else {
+                            createPinBottomSheet()
+                        }
                     }
 
             }
         }
     }
 
+    private fun createPinBottomSheet() {
+        val dialog = BottomSheetDialog(requireContext(), R.style.BaseBottomSheetDialog)
+        val inflater = LayoutInflater.from(requireContext())
+        val binding = BottomsheetRemovePinBinding.inflate(inflater, null, false)
+        binding.cardView.setBackgroundResource(R.drawable.bottom_sheet_shape)
+        dialog.setCancelable(true)
+        binding.buttonRemovePin.text = "Create Pin"
+        binding.buttonRemovePin.setOnClickListener {
+            if (TextUtils.isEmpty(binding.edittextEnterPin.text)){
+                binding.edittextEnterPin.error = "Enter the pin"
+            }
+            else{
+                setPin()
+                dialog.dismiss()
+            }
+        }
+        dialog.setContentView(binding.root)
+        dialog.show()
+    }
     private fun removePinBottomSheet() {
-            val dialog = BottomSheetDialog(requireContext(), R.style.BaseBottomSheetDialog)
+        val sharedPref = requireActivity().getSharedPreferences("My",0)
+        val exitingPin = sharedPref?.getString(Utils.SET_PIN, "")
+
+        val dialog = BottomSheetDialog(requireContext(), R.style.BaseBottomSheetDialog)
             val inflater = LayoutInflater.from(requireContext())
             val binding = BottomsheetRemovePinBinding.inflate(inflater, null, false)
             binding.cardView.setBackgroundResource(R.drawable.bottom_sheet_shape)
             dialog.setCancelable(true)
 
             binding.buttonRemovePin.setOnClickListener {
-                if (TextUtils.isEmpty(binding.edittextEnterPin.text)){
-                    binding.edittextEnterPin.error = "Enter the pin"
-                }else{
-                     val preference = SharedPreference()
+               if(binding.edittextEnterPin.text.toString() != exitingPin){
+                    binding.edittextEnterPin.error = "Pin is invalid"
+                } else{
+
+                    val preference = SharedPreference()
                      preference.setPin(requireActivity(),"")
                     Toast.makeText(requireContext(), "Password Removed", Toast.LENGTH_SHORT).show()
-                    findNavController().popBackStack()
+                   dialog.dismiss()
+                   findNavController().popBackStack()
                 }
             }
-           dialog.setContentView(binding.root)
+            dialog.setContentView(binding.root)
             dialog.show()
     }
     private fun setPin() {
-        if (binding.edittextSetPin.text.toString() != binding.edittextReverifyPin.text.toString()) {
-            binding.edittextReverifyPin.error = "Password and confirmation password do not match"
-        } else {
             val preference = SharedPreference()
             preference.setPin(requireActivity(),binding.edittextSetPin.text.toString())
             binding.edittextSetPin.setText("")
             binding.edittextReverifyPin.setText("")
             Toast.makeText(requireContext(), "Password Lock Created", Toast.LENGTH_SHORT).show()
             findNavController().popBackStack()
-        }
     }
 
     override fun onDestroyView() {
