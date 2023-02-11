@@ -14,6 +14,7 @@ import com.aditechnology.moneymanagement.R
 import com.aditechnology.moneymanagement.WebViewActivity
 import com.aditechnology.moneymanagement.databinding.BottomsheetShareBackupBinding
 import com.aditechnology.moneymanagement.databinding.FragmentSettingBinding
+import com.google.android.gms.ads.AdRequest
 import com.google.android.material.bottomsheet.BottomSheetDialog
 
 
@@ -30,6 +31,8 @@ class SettingFragment : Fragment() {
     ): View {
         _binding = FragmentSettingBinding.inflate(inflater, container, false)
         val root: View = binding.root
+        val adRequest = AdRequest.Builder().build()
+        binding.adView.loadAd(adRequest)
         binding.textExportCsv.setOnClickListener {
             (requireActivity()as MainActivity).exportDatabaseToCSVFile()
         }

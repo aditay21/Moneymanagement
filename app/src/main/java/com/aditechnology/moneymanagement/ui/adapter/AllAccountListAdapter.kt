@@ -54,6 +54,7 @@ class AllAccountListAdapter(val onclickListener: OnClickListener) : RecyclerView
             (holder as HeaderViewHolder).binding.buttonAdd.setOnClickListener { view ->
                 view.findNavController().navigate(R.id.action_account_to_createfragment)
             }
+            holder.binding.textViewTitle.text = "All Account \n Balance"
             holder.buttonAdd.text ="Add New Account"
             holder.binding.textViewTotalAmount.text = mAccountBalance.toString()
             holder.binding.buttonDetail.visibility = View.INVISIBLE

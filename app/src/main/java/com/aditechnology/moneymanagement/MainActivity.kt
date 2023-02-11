@@ -201,20 +201,21 @@ class MainActivity : AppCompatActivity() {
 
                     }
             }
+        openRestartAlertBottomSheet()
     }
 
     fun resetDb(isRestOnly : Boolean) {
         accountViewModel.removeAllAccount()
         expenseIncomeViewModel.removeAllTransaction()
       if (isRestOnly)
-          openRestartAlertBottomSheet(isRestOnly)
+          openRestartAlertBottomSheet()
 
 
     /*  if (isRestOnly)
         accountViewModel.insertAccountDetail(Personal, 0)*/
     }
 
-    private fun openRestartAlertBottomSheet(isRestOnly: Boolean ) {
+    private fun openRestartAlertBottomSheet() {
         val dialog = BottomSheetDialog(this, R.style.BaseBottomSheetDialog)
         val inflater = LayoutInflater.from(this)
         val binding = BottomsheetShareBackupBinding.inflate(inflater, null, false)
@@ -226,11 +227,12 @@ class MainActivity : AppCompatActivity() {
         dialog.show()
         binding.buttonOk.setOnClickListener {
             dialog.dismiss()
-            if (isRestOnly) {
+            triggerRebirth()
+            /*if (isRestOnly) {
                 triggerRebirth()
             }else{
 
-            }
+            }*/
         }
         binding.buttonShareInfo.visibility = View.GONE
 

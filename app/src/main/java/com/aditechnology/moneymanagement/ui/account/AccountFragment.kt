@@ -15,6 +15,7 @@ import com.aditechnology.moneymanagement.R
 import com.aditechnology.moneymanagement.databinding.FragmentAccountsBinding
 import com.aditechnology.moneymanagement.ui.adapter.AccountListAdapter
 import com.aditechnology.moneymanagement.viewmodel.AccountViewModel
+import com.google.android.gms.ads.AdRequest
 
 
 class AccountFragment : Fragment() {
@@ -51,7 +52,8 @@ class AccountFragment : Fragment() {
         linearLayoutManager1.orientation = LinearLayoutManager.VERTICAL
         binding.recycleView.layoutManager =linearLayoutManager1
         binding.recycleView.adapter= mAccountListAdapter
-
+        val adRequest = AdRequest.Builder().build()
+        binding.adView.loadAd(adRequest)
         accountViewModel.mAllDetails.observe(requireActivity(), Observer { account ->
             if (account.isEmpty()){
               //  Log.e("TAG","Account is empty")
