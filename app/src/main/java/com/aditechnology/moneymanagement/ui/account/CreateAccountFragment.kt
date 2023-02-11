@@ -38,19 +38,13 @@ class CreateAccountFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        accountViewModel.mAllDetails.observe(requireActivity(), Observer { account ->
-
-                Log.e("TAG",""+account.size)
-
+        accountViewModel.mAllDetails.observe(viewLifecycleOwner, Observer { account ->
         })
         binding.buttonCreate.setOnClickListener {
 
             when {
                 TextUtils.isEmpty(binding.edittextAccountName.text) -> {
                     binding.edittextAccountName.error = "Please fill account name"
-                }
-                TextUtils.isEmpty(binding.edittextStartingBalance.text) -> {
-                    binding.edittextStartingBalance.error = "Please fill account name"
                 }
                 else -> {
                     accountViewModel.insertAccountDetail(

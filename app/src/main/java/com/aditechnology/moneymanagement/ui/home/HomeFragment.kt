@@ -1,21 +1,22 @@
 package com.aditechnology.moneymanagement.ui.home
 
+import android.content.Context
 import android.os.Bundle
-import android.util.Log
+import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import com.aditechnology.moneymanagement.MainApplication
 import com.aditechnology.moneymanagement.R
 import com.aditechnology.moneymanagement.databinding.FragmentHomeBinding
 import com.aditechnology.moneymanagement.models.AccountTable
-import com.aditechnology.moneymanagement.ui.home.HomeFragment.*
 import com.aditechnology.moneymanagement.utils.Utils
+import com.aditechnology.moneymanagement.utils.Utils.Companion.IS_PIN_CHECK
 import com.aditechnology.moneymanagement.viewmodel.AccountViewModel
 import com.google.android.gms.ads.AdRequest
-import com.google.android.gms.ads.AdView
 import com.google.android.material.tabs.TabLayoutMediator
 
 
@@ -36,24 +37,25 @@ class HomeFragment :Fragment(){
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-
         val adRequest = AdRequest.Builder().build()
-
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
-        binding.adView.loadAd(adRequest)
+         binding.adView.loadAd(adRequest)
+
         return binding.root
     }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+
+        navigateToLock()
+
         homeFragmentAdapter = HomeFragmentAdapter(this,mAccountList)
         _binding?.pager?.adapter = homeFragmentAdapter
 
         accountViewModel.mAllDetails.observe(viewLifecycleOwner) { account ->
             if (account.isEmpty()){
-                Log.e("TAG","Insert Home")
                 accountViewModel.insertAccountDetail(Utils.ALL, 0)
                 accountViewModel.insertAccountDetail(Utils.Personal, 0)
-
             }else {
                 mAccountList.clear()
                 mAccountList.addAll(account)
@@ -67,15 +69,14 @@ class HomeFragment :Fragment(){
         }
     }
 
-    private fun createDummyAccounts(name :String) {
-        Log.e("TAG","65 $name")
-        accountViewModel.getAccountDetailName(name)
-                    .observe(viewLifecycleOwner) { list ->
-                        if (list.isEmpty()) {
-                            Log.e("TAG","list is empty $name")
-                            accountViewModel.insertAccountDetail(name, 0)
-                        }
-                    }
+    private fun navigateToLock() {
+        val sharedPref = activity?.getPreferences(Context.MODE_PRIVATE)
+
+        if (!IS_PIN_CHECK &&!TextUtils.isEmpty(sharedPref?.getString(Utils.SET_PIN, ""))) {
+            val bundle = Bundle()
+            bundle.putBoolean(Utils.PIN_FOR_UNLOCK, true)
+            findNavController().navigate(R.id.action_setting_to_pin, bundle)
+        }
     }
 
     override fun onDestroyView() {

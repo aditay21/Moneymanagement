@@ -12,6 +12,7 @@
     <string name="title_activity_main2">MainActivity2</string>
     <string name="title_home">Home</string>
     <string name="create_account">Create Account</string>
+    <string name="create_pin">Create Pin</string>
     <string name="title_detail">Detail List</string>
     <string name="title_account">Account</string>
     <string name="title_notifications">Notifications</string>
@@ -32,6 +33,7 @@
     <string name="ads_main_screen_ads">ca-app-pub-2786039813382028/5706727793</string>
     <string name="ads_main_screen_quiz">ca-app-pub-2786039813382028/5865691659</string>
     <string name="ads_main_screen_puzzle">ca-app-pub-2786039813382028/8314641463</string>
+    <string name="title_activity_lock_screen">LockScreenActivity</string>
 
 
 </resources>

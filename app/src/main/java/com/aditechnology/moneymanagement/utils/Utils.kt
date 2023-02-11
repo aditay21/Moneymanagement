@@ -3,19 +3,24 @@ package com.aditechnology.moneymanagement.utils
 class Utils {
     companion object{
 
+
         const val EXPORT_FILE_MONEY_MANAGEMENT_FILE_NAME="MONEY_MANAGEMENT"
         const val EXPORT_FILE_EXTENSION=".csv"
 
 
         const val CREATE_BACKUP_FILE_MONEY_MANAGEMENT_FILE_NAME="MONEY_MANAGEMENT"
         const val CREATE_BACKUP_FILE_EXTENSION=".json"
-
+        const val SET_PIN="set_pin"
+        const val PIN_FOR_UNLOCK="pin for unlock"
         const val ALL="All"
         const val Personal="Personal"
+
+         var IS_PIN_CHECK= false
 
 
 
         const val ACCOUNT_DETAIL_JSON="account_detail_json"
+
         const val ACCOUNT_ID="account_id"
         const val ACCOUNT_NAME="account_name"
         const val ACCOUNT_BALANCE="account_balance"

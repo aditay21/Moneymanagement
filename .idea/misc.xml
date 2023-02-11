@@ -19,19 +19,23 @@
         <entry key="..\:/Moneymanagement/app/src/main/res/drawable/nv_tab_item_foreground.xml" value="0.1" />
         <entry key="..\:/Moneymanagement/app/src/main/res/drawable/toggel_button_selector.xml" value="0.1" />
         <entry key="..\:/Moneymanagement/app/src/main/res/layout/account_action_bottom_sheet.xml" value="0.10645575032064986" />
+        <entry key="..\:/Moneymanagement/app/src/main/res/layout/activity_lock_screen.xml" value="0.1" />
         <entry key="..\:/Moneymanagement/app/src/main/res/layout/activity_main2.xml" value="0.1515625" />
         <entry key="..\:/Moneymanagement/app/src/main/res/layout/activity_webview.xml" value="0.1248396750748183" />
         <entry key="..\:/Moneymanagement/app/src/main/res/layout/bottom_sheet_account_action.xml" value="0.22" />
         <entry key="..\:/Moneymanagement/app/src/main/res/layout/bottom_sheet_add_detail.xml" value="0.1" />
         <entry key="..\:/Moneymanagement/app/src/main/res/layout/bottomsheet_custom_range.xml" value="0.10431808465156049" />
+        <entry key="..\:/Moneymanagement/app/src/main/res/layout/bottomsheet_remove_pin.xml" value="0.14666666666666667" />
         <entry key="..\:/Moneymanagement/app/src/main/res/layout/bottomsheet_remove_warning.xml" value="0.11415134672937152" />
         <entry key="..\:/Moneymanagement/app/src/main/res/layout/bottomsheet_share_backup.xml" value="0.10389055151774262" />
         <entry key="..\:/Moneymanagement/app/src/main/res/layout/bottomsheet_update_account.xml" value="0.10645575032064986" />
+        <entry key="..\:/Moneymanagement/app/src/main/res/layout/content_lock_screen.xml" value="0.1248396750748183" />
         <entry key="..\:/Moneymanagement/app/src/main/res/layout/content_main.xml" value="0.15208333333333332" />
         <entry key="..\:/Moneymanagement/app/src/main/res/layout/create_new.xml" value="0.15208333333333332" />
         <entry key="..\:/Moneymanagement/app/src/main/res/layout/fragment_accounts.xml" value="0.14427083333333332" />
         <entry key="..\:/Moneymanagement/app/src/main/res/layout/fragment_collection_tabs.xml" value="0.1" />
         <entry key="..\:/Moneymanagement/app/src/main/res/layout/fragment_create_account.xml" value="0.1" />
+        <entry key="..\:/Moneymanagement/app/src/main/res/layout/fragment_create_pin.xml" value="0.16666666666666666" />
         <entry key="..\:/Moneymanagement/app/src/main/res/layout/fragment_dashboard.xml" value="0.109375" />
         <entry key="..\:/Moneymanagement/app/src/main/res/layout/fragment_details_list.xml" value="0.1" />
         <entry key="..\:/Moneymanagement/app/src/main/res/layout/fragment_expense_income_fragment.xml" value="0.2113564668769716" />

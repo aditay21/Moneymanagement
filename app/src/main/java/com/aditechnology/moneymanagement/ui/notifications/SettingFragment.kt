@@ -8,12 +8,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import com.aditechnology.moneymanagement.BuildConfig
 import com.aditechnology.moneymanagement.MainActivity
 import com.aditechnology.moneymanagement.R
 import com.aditechnology.moneymanagement.WebViewActivity
 import com.aditechnology.moneymanagement.databinding.BottomsheetShareBackupBinding
 import com.aditechnology.moneymanagement.databinding.FragmentSettingBinding
+import com.aditechnology.moneymanagement.utils.Utils
 import com.google.android.gms.ads.AdRequest
 import com.google.android.material.bottomsheet.BottomSheetDialog
 
@@ -42,6 +45,11 @@ class SettingFragment : Fragment() {
         }
         binding.textRateUs.setOnClickListener {
             rateUs()
+        }
+        binding.textSetPin.setOnClickListener {
+            val bundle = Bundle()
+            bundle.putBoolean(Utils.PIN_FOR_UNLOCK, false)
+            findNavController().navigate(R.id.action_setting_to_pin,bundle)
         }
         binding.textShareApp.setOnClickListener {
             try {

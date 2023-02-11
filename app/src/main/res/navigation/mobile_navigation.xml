@@ -13,7 +13,9 @@
         <action
             android:id="@+id/action_account_to_createfragment"
             app:destination="@id/create_account" />
-
+        <action
+            android:id="@+id/action_setting_to_pin"
+            app:destination="@id/create_pin" />
         <action
             android:id="@+id/action_account_to_expense_income"
             app:destination="@id/navigation_expense_income" />
@@ -42,7 +44,12 @@
         android:id="@+id/navigation_notifications"
         android:name="com.aditechnology.moneymanagement.ui.notifications.SettingFragment"
         android:label="@string/title_notifications"
-        tools:layout="@layout/fragment_setting" />
+        tools:layout="@layout/fragment_setting">
+
+        <action
+            android:id="@+id/action_setting_to_pin"
+            app:destination="@id/create_pin" />
+    </fragment>
 
 
     <fragment
@@ -50,13 +57,20 @@
         android:name="com.aditechnology.moneymanagement.ui.account.CreateAccountFragment"
         android:label="@string/create_account"
         tools:layout="@layout/fragment_create_account">
-
         <action
             android:id="@+id/action_popup_back"
             app:popUpTo="@+id/registrationSuccessFragment" />
-
-
-
     </fragment>
+
+    <fragment
+        android:id="@+id/create_pin"
+        android:name="com.aditechnology.moneymanagement.ui.account.CreatePinFragment"
+        android:label="@string/create_pin"
+        tools:layout="@layout/fragment_create_pin">
+        <action
+            android:id="@+id/action_popup_back"
+            app:popUpTo="@+id/navigation_home" />
+    </fragment>
+
 
 </navigation>
