@@ -26,14 +26,17 @@
     <string name="get_for">"Get For"</string>
     <string name="required_amount">"Please enter the amount"</string>
     <string name="csv_file_generated_text">"CSV file generated"</string>
+    <string name="title_activity_lock_screen">LockScreenActivity</string>
     <string name="csv_file_not_generated_text">"CSV file not generated"</string>
     <string name="dummy">ca-app-pub-3940256099942544/6300978111</string>
 
     <!--Live -->
-    <string name="ads_main_screen_ads">ca-app-pub-2786039813382028/5706727793</string>
-    <string name="ads_main_screen_quiz">ca-app-pub-2786039813382028/5865691659</string>
-    <string name="ads_main_screen_puzzle">ca-app-pub-2786039813382028/8314641463</string>
-    <string name="title_activity_lock_screen">LockScreenActivity</string>
+    <string name="ads_home_screen">ca-app-pub-2786039813382028/7689465327</string>
+    <string name="ads_create_screen">ca-app-pub-2786039813382028/5706299815</string>
+    <string name="ads_setting_screen">ca-app-pub-2786039813382028/3750220318</string>
+    <string name="ads_lock_screen">ca-app-pub-2786039813382028/9941607036</string>
+    <string name="ads_all_accounts_list">ca-app-pub-2786039813382028/5191843237</string>
 
+    <string name="ads_full_screen_ads">ca-app-pub-2786039813382028/6621555921</string>
 
 </resources>

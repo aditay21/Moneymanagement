@@ -59,13 +59,17 @@ class CreatePinFragment : Fragment() {
                     TextUtils.isEmpty(binding.edittextReverifyPin.text) -> {
                         binding.edittextReverifyPin.error = "Please enter confirm pin"
                     }
-                    else -> {
-                        if (TextUtils.isEmpty(exitingPin)){
+                else -> {
+                    if (binding.edittextSetPin.text.toString() != binding.edittextReverifyPin.text.toString()) {
+                        binding.edittextReverifyPin.error = "New Pin and Confirm Pin not same"
+                    } else {
+                        if (TextUtils.isEmpty(exitingPin)) {
                             setPin()
-                        }else {
+                        } else {
                             createPinBottomSheet()
                         }
                     }
+                }
 
             }
         }
