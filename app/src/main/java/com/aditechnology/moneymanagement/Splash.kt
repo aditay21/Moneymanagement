@@ -21,7 +21,8 @@ class Splash : AppCompatActivity() {
 
         setContentView(R.layout.activity_splash) // this will bind your MainActivity.class file with activity_main.
         Handler().postDelayed({
-            val sharedPref = getPreferences(Context.MODE_PRIVATE)
+            val sharedPref = getSharedPreferences("My",0)
+            //val sharedPref = getPreferences(Context.MODE_PRIVATE)
             if (!TextUtils.isEmpty(sharedPref?.getString(Utils.SET_PIN, ""))) {
                 var intent=  Intent(this,LockScreenActivity::class.java)
                 startActivity(intent)

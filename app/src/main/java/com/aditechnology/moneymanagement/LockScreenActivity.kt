@@ -25,7 +25,7 @@ class LockScreenActivity : AppCompatActivity() {
             if (TextUtils.isEmpty(binding.edittextSetPin.text.toString())) {
                 binding.edittextSetPin.error = "Please enter  pin"
             } else {
-                val sharedPref = getPreferences(Context.MODE_PRIVATE)
+                val sharedPref = getSharedPreferences("My",0)
                 if (sharedPref?.getString(Utils.SET_PIN, "")
                         .equals(binding.edittextSetPin.text.toString())
                 ) {

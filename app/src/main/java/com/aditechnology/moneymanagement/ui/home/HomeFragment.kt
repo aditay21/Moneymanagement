@@ -46,9 +46,6 @@ class HomeFragment :Fragment(){
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-
-        navigateToLock()
-
         homeFragmentAdapter = HomeFragmentAdapter(this,mAccountList)
         _binding?.pager?.adapter = homeFragmentAdapter
 
@@ -66,16 +63,6 @@ class HomeFragment :Fragment(){
                     }.attach()
                 }
             }
-        }
-    }
-
-    private fun navigateToLock() {
-        val sharedPref = activity?.getPreferences(Context.MODE_PRIVATE)
-
-        if (!IS_PIN_CHECK &&!TextUtils.isEmpty(sharedPref?.getString(Utils.SET_PIN, ""))) {
-            val bundle = Bundle()
-            bundle.putBoolean(Utils.PIN_FOR_UNLOCK, true)
-            findNavController().navigate(R.id.action_setting_to_pin, bundle)
         }
     }
 

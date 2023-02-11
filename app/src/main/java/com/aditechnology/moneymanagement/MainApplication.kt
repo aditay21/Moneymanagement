@@ -1,6 +1,7 @@
 package com.aditechnology.moneymanagement
 
 import android.app.Application
+import android.content.Context
 import com.aditechnology.moneymanagement.models.MoneyManagementRepository
 import com.aditechnology.moneymanagement.models.MoneymakingDatabase
 import kotlinx.coroutines.CoroutineScope
@@ -14,6 +15,12 @@ class MainApplication : Application() {
     val repository by lazy { MoneyManagementRepository(database.expenseDao()) }
 
 
+    companion object {
+        private var instance: MainApplication? = null
 
+        fun applicationContext() : Context {
+            return instance!!.applicationContext
+        }
+    }
 
 }
