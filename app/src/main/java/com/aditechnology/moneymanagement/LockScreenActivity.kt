@@ -7,6 +7,7 @@ import android.text.TextUtils
 import androidx.appcompat.app.AppCompatActivity
 import com.aditechnology.moneymanagement.databinding.ContentLockScreenBinding
 import com.aditechnology.moneymanagement.utils.Utils
+import com.google.android.gms.ads.AdRequest
 
 class LockScreenActivity : AppCompatActivity() {
 
@@ -18,6 +19,9 @@ class LockScreenActivity : AppCompatActivity() {
 
         binding = ContentLockScreenBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        val adRequest = AdRequest.Builder().build()
+        binding.adView.loadAd(adRequest)
 
         setSupportActionBar(binding.toolbar)
 
